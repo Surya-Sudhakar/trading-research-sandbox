@@ -9,7 +9,6 @@ it executes and records them so Phase 2 can call the same boundary repeatedly.
 
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -18,12 +17,13 @@ from typing import Any
 
 from sandbox.partition.models import PartitionRole
 from sandbox.partition.service import PartitionService
-from sandbox.research.canonical import canonical_json, sha256_canonical
+from sandbox.research.canonical import sha256_canonical
 from sandbox.research.context_scan import scan_single_contexts
 from sandbox.research.discovery_record_builder import (
     DiscoveryRecordConfig,
     build_discovery_record_population,
 )
+from sandbox.research.research_memory import ResearchMemory
 
 
 PIPELINE_VERSION = "SANDBOX_RESEARCH_PIPELINE_V1"
@@ -172,6 +172,7 @@ def run_research_pipeline(
     spec: ResearchPipelineSpec,
     *,
     results_root: Path = Path("results/research_pipeline"),
+    memory: ResearchMemory | None = None,
 ) -> dict[str, Any]:
     """Execute one Discovery experiment and persist a reproducible result package."""
     stages: list[dict[str, str]] = []
@@ -260,11 +261,23 @@ def run_research_pipeline(
     )
     (result_dir / "report.md").write_text(report, encoding="utf-8")
 
+    memory_result = None
+    if memory is not None:
+        memory_result = memory.remember_pipeline_run(
+            manifest=result_payload,
+            metrics=metrics,
+            hypothesis=spec.hypothesis,
+        )
+
     return {
         "run_id": run_id,
         "result_dir": str(result_dir),
         "manifest": result_payload,
         "metrics": metrics,
+        "memory": None if memory_result is None else {
+            "inserted": memory_result.inserted,
+            "record_fingerprint": memory_result.record_fingerprint,
+        },
     }
 
 
@@ -276,12 +289,19 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run one reproducible Sandbox Discovery experiment")
     parser.add_argument("spec", type=Path)
     parser.add_argument("--results-root", type=Path, default=Path("results/research_pipeline"))
+    parser.add_argument("--memory", type=Path, default=Path("results/research_memory.duckdb"))
     args = parser.parse_args(argv)
 
     settings = Settings.load()
     registry = ResearchRegistry(settings.catalog_path, Path.cwd(), Path("results"))
     service = PartitionService(registry)
-    result = run_research_pipeline(service, load_spec(args.spec), results_root=args.results_root)
+    memory = ResearchMemory(args.memory)
+    result = run_research_pipeline(
+        service,
+        load_spec(args.spec),
+        results_root=args.results_root,
+        memory=memory,
+    )
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     return 0
 
