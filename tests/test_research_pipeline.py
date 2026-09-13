@@ -17,7 +17,7 @@ def spec(partition_id):
         experiment_id="H001-E001",
         hypothesis="Previous-day context may contain predictive information.",
         partition_id=partition_id,
-        categorical_field_ids=("x.anchor_kind",),
+        categorical_field_ids=("x.m15.direction",),
         numeric_condition_specs=(),
         target_field_ids=("y.h4.close_return_fraction",),
         swing_left_bars=3,
