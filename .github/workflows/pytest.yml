@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f pyproject.toml ]; then pip install -e .; fi
-          pip install pytest
+          pip install pytest lightgbm pytz httpx2
 
       - name: Run Phase 1 regression tests
         run: |
