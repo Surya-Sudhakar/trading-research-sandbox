@@ -21,6 +21,7 @@ _MODULES = (
     "market_state.multitimeframe_context", "market_state.research_multitimeframe_context",
     "market_state.session_summary", "market_state.session_relationship",
     "market_state.research_session_context", "market_state.research_session_relationship",
+    "market_state.discovery_market_context", "market_state.swings", "market_state.touch_transition",
     "market_state.research_record", "market_state.discovery_projection", "market_state.discovery_dataset",
     "research.discovery_record_builder", "research.ml_discovery_matrix", "research.ml_preprocessing",
     "research.ml_lightgbm", "research.ml_evaluation", "research.ml_clue_extraction", "research.ai_researcher",

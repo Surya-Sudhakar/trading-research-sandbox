@@ -16,6 +16,9 @@ import pandas as pd
 from sandbox.market_state.block_aggregation import OHLCBar, aggregate_completed_blocks
 from sandbox.market_state.discovery_dataset import DiscoveryDataset, build_discovery_dataset
 from sandbox.market_state.future_outcome import DEFAULT_FORWARD_HORIZONS
+from sandbox.market_state.discovery_market_context import (
+    build_discovery_market_contexts, with_level_transition,
+)
 from sandbox.market_state.geometry_lifecycle import (
     BIG_BROTHER_GEOMETRY_FAMILY_ID, build_geometry_instance,
 )
@@ -31,7 +34,9 @@ from sandbox.market_state.research_record import ResearchRecord, assemble_resear
 from sandbox.market_state.research_session_context import join_research_anchors_sessions
 from sandbox.market_state.research_session_relationship import build_research_session_relationships
 from sandbox.market_state.session_clock import BlockConfig, NEW_YORK_C1_C8
-from sandbox.market_state.touch_transition import build_touch_transition_patterns
+from sandbox.market_state.touch_transition import (
+    build_touch_transition_patterns, classify_level_transition,
+)
 from sandbox.market_state.universal.continuity import QualityContext
 from sandbox.partition.models import AccessContext, AccessOperation, PartitionRole
 from sandbox.partition.service import PartitionService
@@ -134,6 +139,7 @@ def _records_for_segment(bars, config):
     prefix = bars[:eligible_count]
     decision = prefix[-1].open_time_utc + _STEP
     anchors = []
+    transitions = {}
     for candle in aggregate_completed_blocks(prefix, decision, config.block_config):
         instance = build_geometry_instance(candle, config.geometry_family_id, config.level_specs)
         # Each history and state sequence is built once, not once per prefix.
@@ -141,12 +147,16 @@ def _records_for_segment(bars, config):
         # observation (and never the eventual length/end of that run).
         for history in build_geometry_interaction_histories(instance, prefix, decision):
             sequence = build_level_state_sequence(history)
-            anchors.extend(a for pattern in build_touch_transition_patterns(sequence)
-                           if (a := build_touch_transition_research_anchor(pattern)) is not None)
+            for pattern in build_touch_transition_patterns(sequence):
+                anchor = build_touch_transition_research_anchor(pattern)
+                if anchor is not None:
+                    anchors.append(anchor)
+                    transitions[_anchor_order(anchor)] = classify_level_transition(pattern)
             anchors.extend(build_untouched_checkpoint_research_anchors(history, config.checkpoints))
     if not anchors:
         return
     anchors.sort(key=_anchor_order)
+    market_contexts = build_discovery_market_contexts(prefix)
     # These existing historical joins enforce each anchor's exact availability
     # window even when later completed candles are precomputed in the same call.
     context_count = (anchors[-1].evidence_end_utc - bars[0].open_time_utc) // _STEP
@@ -160,9 +170,15 @@ def _records_for_segment(bars, config):
         for mtf_context, session_context in deepcopy(tuple(group)):
             anchor = mtf_context.anchor
             count = (anchor.evidence_end_utc - bars[0].open_time_utc) // _STEP
+            market_context = market_contexts.get(anchor.evidence_end_utc)
+            if market_context is None:
+                raise ValueError("no exact market context at anchor evidence time")
+            market_context = with_level_transition(
+                market_context, transitions.get(_anchor_order(anchor)))
             yield assemble_research_record(
                 mtf_context, build_research_session_relationships(session_context),
-                measure_research_anchor_outcomes(anchor, bars[count:count + horizon], config.horizons))
+                measure_research_anchor_outcomes(anchor, bars[count:count + horizon], config.horizons),
+                market_context)
 
 
 def build_discovery_record_population(

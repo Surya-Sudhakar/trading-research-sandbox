@@ -1,6 +1,7 @@
 """Mechanical TOUCH-centered patterns from validated maximal state runs."""
 from dataclasses import dataclass
 from datetime import date, datetime
+from enum import StrEnum
 
 from .level_state_sequence import LevelRangeState, LevelStateRun, LevelStateSequence
 from .level_interaction import LevelBarObservation
@@ -41,6 +42,43 @@ class TouchTransitionPattern:
     previous_run: LevelStateRun | None
     touch_run: LevelStateRun
     next_run: LevelStateRun | None
+
+
+class SweepDirection(StrEnum):
+    ABOVE = "ABOVE"
+    BELOW = "BELOW"
+
+
+class ReclaimDirection(StrEnum):
+    ABOVE = "ABOVE"
+    BELOW = "BELOW"
+
+
+@dataclass(frozen=True, slots=True)
+class LevelTransitionSemantics:
+    sweep: SweepDirection | None
+    reclaim: ReclaimDirection | None
+
+
+def classify_level_transition(pattern: TouchTransitionPattern) -> LevelTransitionSemantics:
+    """Classify completed TOUCH-centered state transitions without price inference."""
+    if not isinstance(pattern, TouchTransitionPattern):
+        raise TypeError("pattern must be TouchTransitionPattern")
+    sweep = None
+    reclaim = None
+    if pattern.pattern_code == "BELOW_TOUCH_BELOW":
+        if any(observation.traded_above_level for observation in pattern.touch_run.observations):
+            sweep = SweepDirection.ABOVE
+        reclaim = ReclaimDirection.BELOW
+    elif pattern.pattern_code == "ABOVE_TOUCH_ABOVE":
+        if any(observation.traded_below_level for observation in pattern.touch_run.observations):
+            sweep = SweepDirection.BELOW
+        reclaim = ReclaimDirection.ABOVE
+    elif pattern.pattern_code == "BELOW_TOUCH_ABOVE":
+        reclaim = ReclaimDirection.ABOVE
+    elif pattern.pattern_code == "ABOVE_TOUCH_BELOW":
+        reclaim = ReclaimDirection.BELOW
+    return LevelTransitionSemantics(sweep, reclaim)
 
 
 _IDENTITY = (

@@ -1,4 +1,6 @@
-"""Frozen test oracle: original V1 prefix-replay composition."""
+"""Frozen test oracle: original prefix-replay composition."""
+from sandbox.market_state.discovery_market_context import build_discovery_market_contexts, with_level_transition
+from sandbox.market_state.touch_transition import classify_level_transition
 from sandbox.research.discovery_record_builder import (
     _STEP, _anchor_order, aggregate_completed_blocks, build_geometry_instance,
     build_geometry_interaction_histories, build_level_state_sequence,
@@ -20,11 +22,16 @@ def reference_records_for_segment(bars, config):
                 instances[candle.block_start_utc] = build_geometry_instance(
                     candle, config.geometry_family_id, config.level_specs)
         anchors = []
+        transitions = {}
         for instance in instances.values():
             for history in build_geometry_interaction_histories(instance, prefix, decision):
                 sequence = build_level_state_sequence(history)
-                candidates = [a for pattern in build_touch_transition_patterns(sequence)
-                              if (a := build_touch_transition_research_anchor(pattern)) is not None]
+                candidates = []
+                for pattern in build_touch_transition_patterns(sequence):
+                    anchor = build_touch_transition_research_anchor(pattern)
+                    if anchor is not None:
+                        candidates.append(anchor)
+                        transitions[_anchor_order(anchor)] = classify_level_transition(pattern)
                 candidates.extend(build_untouched_checkpoint_research_anchors(history, config.checkpoints))
                 # Past anchors appear in later prefixes; emit exactly at formation.
                 anchors.extend(a for a in candidates if a.evidence_end_utc == decision)
@@ -34,8 +41,11 @@ def reference_records_for_segment(bars, config):
         mtf = join_research_anchors_multitimeframe(anchors, prefix)
         sessions = join_research_anchors_sessions(anchors, prefix)
         future = bars[count:count + max(config.horizons)]
+        contexts = build_discovery_market_contexts(prefix)
         for anchor, mtf_context, session_context in zip(anchors, mtf, sessions):
             yield assemble_research_record(
                 mtf_context, build_research_session_relationships(session_context),
-                measure_research_anchor_outcomes(anchor, future, config.horizons))
+                measure_research_anchor_outcomes(anchor, future, config.horizons),
+                with_level_transition(contexts[anchor.evidence_end_utc],
+                                      transitions.get(_anchor_order(anchor))))
 

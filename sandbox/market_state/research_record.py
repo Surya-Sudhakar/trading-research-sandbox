@@ -6,6 +6,7 @@ from .research_anchor import GeometryResearchAnchor
 from .research_multitimeframe_context import ResearchAnchorMultiTimeframeContext
 from .research_session_relationship import ResearchAnchorSessionRelationshipContext
 from .future_outcome import ForwardOutcome
+from .discovery_market_context import DiscoveryMarketContext
 
 
 @dataclass(frozen=True)
@@ -14,6 +15,7 @@ class ResearchRecord:
     multitimeframe_context: ResearchAnchorMultiTimeframeContext
     session_relationship_context: ResearchAnchorSessionRelationshipContext
     outcomes: tuple[ForwardOutcome, ...]
+    market_context: DiscoveryMarketContext | None = None
 
     def __post_init__(self):
         if not isinstance(self.anchor, GeometryResearchAnchor):
@@ -52,13 +54,19 @@ class ResearchRecord:
                     or outcome.last_bar_open_time_utc != start + (outcome.horizon_bars - 1) * step):
                 raise ValueError("outcome timing mismatch")
         object.__setattr__(self, "outcomes", outcomes)
+        if (self.market_context is not None
+                and not isinstance(self.market_context, DiscoveryMarketContext)):
+            raise TypeError("market_context must be DiscoveryMarketContext")
+        if (self.market_context is not None
+                and self.market_context.decision_time_utc != self.anchor.evidence_end_utc):
+            raise ValueError("market context must match exact evidence time")
 
 
 def assemble_research_record(multitimeframe_context: ResearchAnchorMultiTimeframeContext,
                              session_relationship_context: ResearchAnchorSessionRelationshipContext,
-                             outcomes) -> ResearchRecord:
+                             outcomes, market_context: DiscoveryMarketContext | None = None) -> ResearchRecord:
     if not isinstance(multitimeframe_context, ResearchAnchorMultiTimeframeContext):
         raise TypeError("invalid multitimeframe context")
     # ResearchRecord materializes outcomes once and retains all evidence objects.
     return ResearchRecord(multitimeframe_context.anchor, multitimeframe_context,
-                          session_relationship_context, outcomes)
+                          session_relationship_context, outcomes, market_context)
