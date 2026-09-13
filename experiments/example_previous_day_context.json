@@ -1,0 +1,18 @@
+{
+  "version": "SANDBOX_RESEARCH_EXPERIMENT_V1",
+  "experiment_id": "H001-E001",
+  "hypothesis": "Previous-day reference levels and subsequent market structure may contain predictive information.",
+  "partition_id": "REPLACE_WITH_DISCOVERY_PARTITION_ID",
+  "mode": "DISCOVERY",
+  "categorical_field_ids": [
+    "x.market.m15.latest_high_class",
+    "x.market.m15.latest_low_class"
+  ],
+  "numeric_condition_specs": [],
+  "target_field_ids": [
+    "y.h4.close_return_fraction"
+  ],
+  "swing_left_bars": 3,
+  "swing_right_bars": 3,
+  "swing_count_window": 8
+}
