@@ -54,6 +54,9 @@ class DiscoveryRecordConfig:
     level_specs: tuple[ProjectionLevelSpec, ...] = BIG_BROTHER_COMMON_LEVELS
     horizons: tuple[int, ...] = DEFAULT_FORWARD_HORIZONS
     checkpoints: tuple[int, ...] = DEFAULT_UNTOUCHED_CHECKPOINTS
+    swing_left_bars: int = 2
+    swing_right_bars: int = 2
+    swing_count_window: int = 8
 
     def __post_init__(self):
         if not isinstance(self.block_config, BlockConfig):
@@ -76,6 +79,9 @@ class DiscoveryRecordConfig:
             if name == "horizons" and not values:
                 raise ValueError("at least one horizon required")
             object.__setattr__(self, name, values)
+        for name in ("swing_left_bars", "swing_right_bars", "swing_count_window"):
+            if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
+                raise ValueError(f"{name} must be a positive integer")
 
 
 @dataclass(frozen=True)
@@ -101,9 +107,6 @@ def _segment_bars(frame, timeframe):
     source_minutes = 1 if timeframe == "M1" else 15
     source_step = timedelta(minutes=source_minutes)
     for group in QualityContext().split(frame):
-        # Native datetime arithmetic is substantially cheaper than pandas scalar
-        # arithmetic in the Phase-3 loops. Convert only losslessly: preserve any
-        # nanosecond remainder so the existing grid validator still rejects it.
         def timestamp(value):
             if isinstance(value, pd.Timestamp) and value.nanosecond == 0:
                 return value.to_pydatetime()
@@ -113,7 +116,6 @@ def _segment_bars(frame, timeframe):
         if any(right.open_time_utc - left.open_time_utc != source_step
                for left, right in zip(bars, bars[1:])):
             raise ValueError("missing bar inside continuity segment; explicit boundary required")
-        # Existing aggregation owns exact grid validation and complete buckets.
         completed = aggregate_completed_blocks(
             bars, bars[-1].open_time_utc + source_step, _M15_BLOCKS, source_minutes)
         if timeframe == "M1":
@@ -130,8 +132,6 @@ def _anchor_order(anchor):
 
 
 def _records_for_segment(bars, config):
-    # A completed evidence bar needs the entire longest future horizon. The
-    # trailing outcome-only bars never enter geometry or context precomputation.
     horizon = max(config.horizons)
     eligible_count = len(bars) - horizon
     if eligible_count <= 0:
@@ -142,9 +142,6 @@ def _records_for_segment(bars, config):
     transitions = {}
     for candle in aggregate_completed_blocks(prefix, decision, config.block_config):
         instance = build_geometry_instance(candle, config.geometry_family_id, config.level_specs)
-        # Each history and state sequence is built once, not once per prefix.
-        # Existing anchor construction uses only the first confirming next-run
-        # observation (and never the eventual length/end of that run).
         for history in build_geometry_interaction_histories(instance, prefix, decision):
             sequence = build_level_state_sequence(history)
             for pattern in build_touch_transition_patterns(sequence):
@@ -156,17 +153,17 @@ def _records_for_segment(bars, config):
     if not anchors:
         return
     anchors.sort(key=_anchor_order)
-    market_contexts = build_discovery_market_contexts(prefix)
-    # These existing historical joins enforce each anchor's exact availability
-    # window even when later completed candles are precomputed in the same call.
+    market_contexts = build_discovery_market_contexts(
+        prefix,
+        swing_left_bars=config.swing_left_bars,
+        swing_right_bars=config.swing_right_bars,
+        swing_count_window=config.swing_count_window,
+    )
     context_count = (anchors[-1].evidence_end_utc - bars[0].open_time_utc) // _STEP
     context_bars = prefix[:context_count]
     mtf = join_research_anchors_multitimeframe(anchors, context_bars)
     sessions = join_research_anchors_sessions(anchors, context_bars)
     for _, group in groupby(zip(mtf, sessions), key=lambda pair: pair[0].anchor.evidence_end_utc):
-        # The persisted V1 snapshot fingerprint includes dataclass sharing. Keep
-        # the old per-decision sharing boundary while reusing all calculations.
-        # Copy related contexts together to retain required summary identities.
         for mtf_context, session_context in deepcopy(tuple(group)):
             anchor = mtf_context.anchor
             count = (anchor.evidence_end_utc - bars[0].open_time_utc) // _STEP
@@ -185,19 +182,12 @@ def build_discovery_record_population(
     service: PartitionService, partition_id: str,
     config: DiscoveryRecordConfig = DiscoveryRecordConfig(),
 ) -> DiscoveryRecordPopulation:
-    """Read only via Discovery authorization; return records and their dataset.
-
-    continuity_segment_id is mandatory. Unmarked gaps fail closed. M1 inputs
-    become complete UTC M15 buckets independently within each segment. Partial
-    leading/trailing buckets are dropped by the existing block aggregator.
-    Context slots lacking a complete segment-local window remain missing.
-    """
+    """Read only via Discovery authorization; return records and their dataset."""
     if not isinstance(config, DiscoveryRecordConfig):
         raise TypeError("config must be DiscoveryRecordConfig")
     manifest = service.get_partition(partition_id)
     if manifest is not None and manifest.role == PartitionRole.DIAGNOSTIC:
         raise ResearchError("Discovery partition required; diagnostic population not supported")
-    # Validation/Final denials go through the existing audited authorization.
     frame = service.access(partition_id, AccessContext.DISCOVERY_CONTEXT,
                            AccessOperation.FEATURE_ANALYSIS, actor="discovery-record-builder")
     if manifest is None or manifest.role != PartitionRole.DISCOVERY:
