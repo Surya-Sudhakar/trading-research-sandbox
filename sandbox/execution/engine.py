@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections import Counter
 from dataclasses import dataclass
 from typing import Callable, Iterable
 
@@ -63,12 +64,26 @@ class BacktestEngine:
 
     def run(self, intents: Iterable[TradeIntent], candles: pd.DataFrame | dict[str, pd.DataFrame]) -> RunResult:
         items = list(intents)
-        duplicates = {x.trade_intent_id for x in items if sum(y.trade_intent_id == x.trade_intent_id for y in items) > 1}
-        markets = {symbol: canonical_market_data(frame) for symbol, frame in candles.items()} if isinstance(candles, dict) else None
+
+        # Preserve exact duplicate-rejection semantics, but do it in O(n) rather
+        # than comparing every intent against every other intent (O(n^2)).
+        counts = Counter(item.trade_intent_id for item in items)
+        duplicates = {trade_intent_id for trade_intent_id, count in counts.items() if count > 1}
+
+        # Canonicalization is deterministic and independent of an individual
+        # intent. Do it once per market dataset instead of copying/sorting the
+        # entire DataFrame once for every TradeIntent.
+        if isinstance(candles, dict):
+            markets = {symbol: canonical_market_data(frame) for symbol, frame in candles.items()}
+            single_market = None
+        else:
+            markets = None
+            single_market = canonical_market_data(candles)
+
         ledger = []
         for intent in sorted(items, key=lambda x: (x.signal_timestamp, x.trade_intent_id)):
             self._emit("trade_intent", trade_intent_id=intent.trade_intent_id)
-            frame = markets.get(intent.symbol) if markets is not None else canonical_market_data(candles)
+            frame = markets.get(intent.symbol) if markets is not None else single_market
             if intent.trade_intent_id in duplicates:
                 record = self._reject(intent, "DUPLICATE_TRADE_INTENT_ID")
             elif frame is None:
