@@ -36,6 +36,10 @@ jobs:
         run: |
           python -m pytest -q tests/test_research_pipeline.py
 
+      - name: Run research memory regression tests
+        run: |
+          python -m pytest -q tests/test_research_memory.py
+
       - name: Run full test suite
         run: |
           python -m pytest -q
