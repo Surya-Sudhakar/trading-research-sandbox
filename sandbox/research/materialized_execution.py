@@ -72,7 +72,6 @@ def _categorical(value):
     elif type(value) is float:
         if not isfinite(value):
             raise ValueError("categorical float must be finite")
-        # Python equality treats -0.0 == 0.0; normalize that representation.
         payload = ("float", "0.0" if value == 0.0 else repr(value))
     elif type(value) is str:
         payload = ("str", value)
@@ -157,24 +156,15 @@ def _manifest_state(view: MaterializedExecutionView | None = None, **kwargs):
     return kwargs
 
 
-def materialize_execution_view(
-    dataset: DiscoveryDataset,
-    packet: AIResearchPacket,
-    *,
-    directory: Path,
-    prepared_id: str,
-    dataset_id: str,
-    symbol: str,
-    timeframe: str,
-) -> MaterializedExecutionView:
-    """Materialize one compact, target-free execution table from a prepared dataset."""
+def materialize_execution_view(dataset: DiscoveryDataset, packet: AIResearchPacket, *, directory: Path,
+                               prepared_id: str, dataset_id: str, symbol: str,
+                               timeframe: str) -> MaterializedExecutionView:
     if type(dataset) is not DiscoveryDataset or type(packet) is not AIResearchPacket:
         raise TypeError("expected exact DiscoveryDataset and AIResearchPacket")
     packet.__post_init__()
     _validate_sha(prepared_id, "prepared_id")
     for value in (dataset_id, symbol, timeframe):
         _nonblank(value)
-
     feature_ids = tuple(packet.allowed_condition_feature_ids)
     kinds = dict(zip(packet.feature_ids, packet.feature_kinds))
     feature_kinds = tuple(kinds[field] for field in feature_ids)
@@ -184,302 +174,141 @@ def materialize_execution_view(
     if missing:
         raise ValueError(f"packet feature missing from DiscoveryDataset: {missing[0]}")
     predictor_index = {field: dataset.predictor_field_ids.index(field) for field in feature_ids}
-
-    row_indices = []
-    timestamps = []
-    reference_prices = []
-    anchor_kinds = []
-    geometry_family_ids = []
-    geometry_level_ids = []
+    row_indices=[]; timestamps=[]; reference_prices=[]; anchor_kinds=[]; geometry_family_ids=[]; geometry_level_ids=[]
     feature_columns = {field: [] for field in feature_ids}
-
     for row_index, row in enumerate(dataset.rows):
         anchor = row.record.anchor
         row_indices.append(row_index)
         timestamps.append(_timestamp(anchor.evidence_end_utc))
         reference = _number(anchor.outcome_anchor.reference_price)
-        if reference <= 0:
-            raise ValueError("anchor reference price must be positive")
+        if reference <= 0: raise ValueError("anchor reference price must be positive")
         reference_prices.append(reference)
         anchor_kinds.append(anchor.kind.value)
         geometry_family_ids.append(anchor.geometry_family_id)
         geometry_level_ids.append(anchor.level_id)
         for field in feature_ids:
-            raw = row.predictors[predictor_index[field]].value
-            feature_columns[field].append(_field_value(raw, kinds[field]))
-
-    arrays = [
-        pa.array(row_indices, type=pa.int64()),
-        pa.array(timestamps, type=pa.timestamp("us", tz="UTC")),
-        pa.array(reference_prices, type=pa.float64()),
-        pa.array(anchor_kinds, type=pa.string()),
-        pa.array(geometry_family_ids, type=pa.string()),
-        pa.array(geometry_level_ids, type=pa.string()),
-    ]
-    names = list(_BASE_COLUMNS)
-    for field, kind in zip(feature_ids, feature_kinds):
-        arrays.append(pa.array(
-            feature_columns[field],
-            type=pa.float64() if kind == "NUMERIC" else pa.string(),
-        ))
-        names.append(field)
-    table = pa.Table.from_arrays(arrays, names=names)
-
-    directory = Path(directory)
-    directory.mkdir(parents=True, exist_ok=True)
-    parquet_path = directory / PARQUET_FILENAME
-    manifest_path = directory / MANIFEST_FILENAME
-    temporary = directory / f".{PARQUET_FILENAME}.{uuid4().hex}.tmp"
+            feature_columns[field].append(_field_value(row.predictors[predictor_index[field]].value, kinds[field]))
+    arrays=[pa.array(row_indices,type=pa.int64()),pa.array(timestamps,type=pa.timestamp("us",tz="UTC")),
+            pa.array(reference_prices,type=pa.float64()),pa.array(anchor_kinds,type=pa.string()),
+            pa.array(geometry_family_ids,type=pa.string()),pa.array(geometry_level_ids,type=pa.string())]
+    names=list(_BASE_COLUMNS)
+    for field,kind in zip(feature_ids,feature_kinds):
+        arrays.append(pa.array(feature_columns[field],type=pa.float64() if kind=="NUMERIC" else pa.string()));names.append(field)
+    table=pa.Table.from_arrays(arrays,names=names)
+    directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
+    parquet_path=directory/PARQUET_FILENAME;manifest_path=directory/MANIFEST_FILENAME
+    temporary=directory/f".{PARQUET_FILENAME}.{uuid4().hex}.tmp"
     try:
-        pq.write_table(
-            table,
-            temporary,
-            compression="zstd",
-            use_dictionary=True,
-            write_statistics=True,
-        )
-        parquet_sha256 = sha256_file(temporary)
-        state = _manifest_state(
-            version=MATERIALIZED_EXECUTION_VIEW_VERSION,
-            prepared_id=prepared_id,
-            packet_fingerprint=packet.fingerprint,
-            dataset_id=dataset_id,
-            symbol=symbol,
-            timeframe=timeframe,
-            row_count=len(dataset.rows),
-            feature_ids=feature_ids,
-            feature_kinds=feature_kinds,
-            parquet_filename=PARQUET_FILENAME,
-            parquet_sha256=parquet_sha256,
-        )
-        fingerprint = sha256_canonical(state)
-        document = {**state, "fingerprint": fingerprint}
-
+        pq.write_table(table,temporary,compression="zstd",use_dictionary=True,write_statistics=True)
+        parquet_sha256=sha256_file(temporary)
+        state=_manifest_state(version=MATERIALIZED_EXECUTION_VIEW_VERSION,prepared_id=prepared_id,
+            packet_fingerprint=packet.fingerprint,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,
+            row_count=len(dataset.rows),feature_ids=feature_ids,feature_kinds=feature_kinds,
+            parquet_filename=PARQUET_FILENAME,parquet_sha256=parquet_sha256)
+        fingerprint=sha256_canonical(state);document={**state,"fingerprint":fingerprint}
         if parquet_path.exists() or manifest_path.exists():
-            if not (parquet_path.exists() and manifest_path.exists()):
-                raise ValueError("partial materialized execution view exists")
-            existing = load_execution_view(directory)
-            candidate = MaterializedExecutionView(
-                version=MATERIALIZED_EXECUTION_VIEW_VERSION,
-                prepared_id=prepared_id,
-                packet_fingerprint=packet.fingerprint,
-                dataset_id=dataset_id,
-                symbol=symbol,
-                timeframe=timeframe,
-                row_count=len(dataset.rows),
-                feature_ids=feature_ids,
-                feature_kinds=feature_kinds,
-                parquet_path=parquet_path,
-                parquet_sha256=parquet_sha256,
-                fingerprint=fingerprint,
-            )
-            if _manifest_state(existing) != _manifest_state(candidate):
-                raise ValueError("existing execution view does not match requested lineage")
+            if not(parquet_path.exists() and manifest_path.exists()): raise ValueError("partial materialized execution view exists")
+            existing=load_execution_view(directory)
+            candidate=MaterializedExecutionView(version=MATERIALIZED_EXECUTION_VIEW_VERSION,prepared_id=prepared_id,
+                packet_fingerprint=packet.fingerprint,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,
+                row_count=len(dataset.rows),feature_ids=feature_ids,feature_kinds=feature_kinds,parquet_path=parquet_path,
+                parquet_sha256=parquet_sha256,fingerprint=fingerprint)
+            if _manifest_state(existing)!=_manifest_state(candidate): raise ValueError("existing execution view does not match requested lineage")
             return existing
-
-        temporary.replace(parquet_path)
-        manifest_path.write_text(canonical_json(document), encoding="utf-8")
-        return load_execution_view(directory)
+        temporary.replace(parquet_path);manifest_path.write_text(canonical_json(document),encoding="utf-8");return load_execution_view(directory)
     finally:
-        if temporary.exists():
-            temporary.unlink()
+        if temporary.exists(): temporary.unlink()
 
 
 def load_execution_view(directory: Path) -> MaterializedExecutionView:
-    directory = Path(directory)
-    manifest_path = directory / MANIFEST_FILENAME
-    document = json.loads(manifest_path.read_text(encoding="utf-8"))
-    fingerprint = document.pop("fingerprint", None)
-    if fingerprint != sha256_canonical(document):
-        raise ValueError("execution-view manifest fingerprint mismatch")
-    if document.get("parquet_filename") != PARQUET_FILENAME:
-        raise ValueError("unsupported execution-view parquet filename")
-    parquet_path = directory / PARQUET_FILENAME
-    if sha256_file(parquet_path) != document["parquet_sha256"]:
-        raise ValueError("execution-view parquet checksum mismatch")
-    return MaterializedExecutionView(
-        version=document["version"],
-        prepared_id=document["prepared_id"],
-        packet_fingerprint=document["packet_fingerprint"],
-        dataset_id=document["dataset_id"],
-        symbol=document["symbol"],
-        timeframe=document["timeframe"],
-        row_count=document["row_count"],
-        feature_ids=tuple(document["feature_ids"]),
-        feature_kinds=tuple(document["feature_kinds"]),
-        parquet_path=parquet_path,
-        parquet_sha256=document["parquet_sha256"],
-        fingerprint=fingerprint,
-    )
+    directory=Path(directory);manifest_path=directory/MANIFEST_FILENAME
+    document=json.loads(manifest_path.read_text(encoding="utf-8"));fingerprint=document.pop("fingerprint",None)
+    if fingerprint!=sha256_canonical(document): raise ValueError("execution-view manifest fingerprint mismatch")
+    if document.get("parquet_filename")!=PARQUET_FILENAME: raise ValueError("unsupported execution-view parquet filename")
+    parquet_path=directory/PARQUET_FILENAME
+    if sha256_file(parquet_path)!=document["parquet_sha256"]: raise ValueError("execution-view parquet checksum mismatch")
+    return MaterializedExecutionView(version=document["version"],prepared_id=document["prepared_id"],
+        packet_fingerprint=document["packet_fingerprint"],dataset_id=document["dataset_id"],symbol=document["symbol"],
+        timeframe=document["timeframe"],row_count=document["row_count"],feature_ids=tuple(document["feature_ids"]),
+        feature_kinds=tuple(document["feature_kinds"]),parquet_path=parquet_path,parquet_sha256=document["parquet_sha256"],fingerprint=fingerprint)
 
 
-def _sql_scalar(value, kind):
-    return _field_value(value, kind)
+def _sql_scalar(value,kind): return _field_value(value,kind)
 
-
-def _sql_condition(condition, kinds, parameters):
-    if type(condition) is AndCondition:
-        return "(" + " AND ".join(_sql_condition(c, kinds, parameters) for c in condition.children) + ")"
-    if type(condition) is not ComparisonCondition:
-        raise ValueError("V1 supports only comparison and AND conditions")
-    field = condition.reference.key
-    kind = kinds[field]
-    column = _quote(field)
-    op = condition.operator.value
-
-    if op in ("EQ", "NE"):
-        if condition.value is None:
-            return f"{column} IS {'NOT ' if op == 'NE' else ''}NULL"
-        parameters.append(_sql_scalar(condition.value, kind))
-        if op == "EQ":
-            return f"{column} = ?"
-        # Python V1 semantics: None != non-None is True.
-        return f"({column} IS NULL OR {column} <> ?)"
-
-    if op in ("GT", "GTE", "LT", "LTE"):
-        parameters.append(_sql_scalar(condition.value, kind))
-        token = {"GT": ">", "GTE": ">=", "LT": "<", "LTE": "<="}[op]
+def _sql_condition(condition,kinds,parameters):
+    if type(condition) is AndCondition: return "("+" AND ".join(_sql_condition(c,kinds,parameters) for c in condition.children)+")"
+    if type(condition) is not ComparisonCondition: raise ValueError("V1 supports only comparison and AND conditions")
+    field=condition.reference.key;kind=kinds[field];column=_quote(field);op=condition.operator.value
+    if op in ("EQ","NE"):
+        if condition.value is None: return f"{column} IS {'NOT ' if op=='NE' else ''}NULL"
+        parameters.append(_sql_scalar(condition.value,kind))
+        return f"{column} = ?" if op=="EQ" else f"({column} IS NULL OR {column} <> ?)"
+    if op in ("GT","GTE","LT","LTE"):
+        parameters.append(_sql_scalar(condition.value,kind));token={"GT":">","GTE":">=","LT":"<","LTE":"<="}[op]
         return f"({column} IS NOT NULL AND {column} {token} ?)"
-
-    values = tuple(condition.value)
-    nonnull = [value for value in values if value is not None]
-    contains_null = len(nonnull) != len(values)
-    encoded = [_sql_scalar(value, kind) for value in nonnull]
-
-    if op == "IN":
-        clauses = []
-        if contains_null:
-            clauses.append(f"{column} IS NULL")
-        for value in encoded:
-            parameters.append(value)
-            clauses.append(f"{column} = ?")
-        return "(" + " OR ".join(clauses) + ")"
-
-    if op == "NOT_IN":
-        if not nonnull:
-            return f"{column} IS NOT NULL"
-        comparisons = []
-        for value in encoded:
-            parameters.append(value)
-            comparisons.append(f"{column} <> ?")
-        nonnull_clause = "(" + " AND ".join(comparisons) + ")"
-        if contains_null:
-            return f"({column} IS NOT NULL AND {nonnull_clause})"
-        # Python V1 semantics: None is not in a list that contains no None.
-        return f"({column} IS NULL OR {nonnull_clause})"
-
+    values=tuple(condition.value);nonnull=[v for v in values if v is not None];contains_null=len(nonnull)!=len(values)
+    encoded=[_sql_scalar(v,kind) for v in nonnull]
+    if op=="IN":
+        clauses=[f"{column} IS NULL"] if contains_null else []
+        for value in encoded: parameters.append(value);clauses.append(f"{column} = ?")
+        return "("+" OR ".join(clauses)+")"
+    if op=="NOT_IN":
+        if not nonnull: return f"{column} IS NOT NULL"
+        comparisons=[]
+        for value in encoded: parameters.append(value);comparisons.append(f"{column} <> ?")
+        nonnull_clause="("+" AND ".join(comparisons)+")"
+        return f"({column} IS NOT NULL AND {nonnull_clause})" if contains_null else f"({column} IS NULL OR {nonnull_clause})"
     raise ValueError("unsupported comparison operator")
 
 
-def _query_rule(connection, view, rule, kinds):
-    parameters = []
-    where = _sql_condition(rule.condition, kinds, parameters)
-    path = str(view.parquet_path.resolve()).replace("'", "''")
-    selected = ", ".join(_quote(name) for name in _BASE_COLUMNS)
-    sql = (
-        f"SELECT {selected} FROM read_parquet('{path}') "
-        f"WHERE {where} ORDER BY {_quote('source_row_index')}"
-    )
-    return connection.execute(sql, parameters).fetchall()
+def _query_rule(connection,view,rule,kinds):
+    parameters=[];where=_sql_condition(rule.condition,kinds,parameters);path=str(view.parquet_path.resolve()).replace("'","''")
+    selected=", ".join(_quote(name) for name in _BASE_COLUMNS)
+    sql=f"SELECT {selected} FROM read_parquet('{path}') WHERE {where} ORDER BY {_quote('source_row_index')}"
+    return connection.execute(sql,parameters).fetchall()
 
 
-def build_materialized_strategy_intents(
-    view: MaterializedExecutionView,
-    compiled: CompiledHypothesis,
-    packet: AIResearchPacket,
-    *,
-    pip_size: float,
-) -> CompiledStrategyIntentBatch:
-    """Execute the frozen V1 hypothesis directly against the compact Parquet view."""
+def build_materialized_strategy_intents(view: MaterializedExecutionView,compiled: CompiledHypothesis,
+                                        packet: AIResearchPacket,*,pip_size: float) -> CompiledStrategyIntentBatch:
     if type(view) is not MaterializedExecutionView or type(compiled) is not CompiledHypothesis or type(packet) is not AIResearchPacket:
         raise TypeError("expected exact materialized view, compiled hypothesis, and packet types")
     packet.__post_init__()
-    if view.packet_fingerprint != packet.fingerprint:
-        raise ValueError("execution view must match research packet")
-    if tuple(view.feature_ids) != tuple(packet.allowed_condition_feature_ids):
-        raise ValueError("execution-view feature schema does not match packet")
-    if tuple(view.feature_kinds) != tuple(packet.feature_kinds):
-        raise ValueError("execution-view feature kinds do not match packet")
-    if compiled.research_packet_fingerprint != packet.fingerprint or compiled.target_field_id != packet.target_field_id:
-        raise ValueError("compiled hypothesis must match packet")
-    _nonblank(view.dataset_id)
-    _nonblank(view.symbol)
-    pip_size = _number(pip_size)
-    if pip_size <= 0:
-        raise ValueError("pip size must be positive")
-
-    kinds = dict(zip(packet.feature_ids, packet.feature_kinds))
-    referenced = set()
+    if view.packet_fingerprint!=packet.fingerprint: raise ValueError("execution view must match research packet")
+    if tuple(view.feature_ids)!=tuple(packet.allowed_condition_feature_ids): raise ValueError("execution-view feature schema does not match packet")
+    if tuple(view.feature_kinds)!=tuple(packet.feature_kinds): raise ValueError("execution-view feature kinds do not match packet")
+    if compiled.research_packet_fingerprint!=packet.fingerprint or compiled.target_field_id!=packet.target_field_id: raise ValueError("compiled hypothesis must match packet")
+    _nonblank(view.dataset_id);_nonblank(view.symbol);pip_size=_number(pip_size)
+    if pip_size<=0: raise ValueError("pip size must be positive")
+    kinds=dict(zip(packet.feature_ids,packet.feature_kinds));referenced=set()
     for rule in compiled.strategy_spec.rules:
-        _check_condition(rule.condition, kinds, view.feature_ids, referenced)
+        _check_condition(rule.condition,kinds,view.feature_ids,referenced)
         if type(rule.entry) is not MarketEntry or type(rule.stop) is not FixedPipsStop or type(rule.target) is not RiskMultipleTarget:
             raise ValueError("V1 requires market entry, fixed-pips stop, and risk-multiple target")
-
-    matches = []
+    matches=[]
     with duckdb.connect(database=":memory:") as connection:
-        for rule_order, rule in enumerate(compiled.strategy_spec.rules):
-            for source in _query_rule(connection, view, rule, kinds):
-                matches.append((source[0], rule_order, source, rule))
-    matches.sort(key=lambda item: (item[0], item[1]))
-
-    intents = []
-    matched_indices = []
-    for row_index, _, source, rule in matches:
-        _, timestamp, reference, anchor_kind, geometry_family_id, geometry_level_id = source
-        timestamp = _timestamp(timestamp)
-        reference = _number(reference)
-        if reference <= 0:
-            raise ValueError("anchor reference price must be positive")
-        risk = rule.stop.pips * pip_size
-        direction = Direction(rule.entry.side.value)
-        sign = 1 if direction == Direction.LONG else -1
-        stop = reference - sign * risk
-        target = reference + sign * risk * rule.target.multiple
-        _geometry(reference, stop, target, direction)
-        metadata = dict(
-            execution_adapter="COMPILED_DISCOVERY_DSL_V1",
-            hypothesis_id=compiled.hypothesis_id,
-            compiled_hypothesis_fingerprint=compiled.fingerprint,
-            strategy_spec_fingerprint=compiled.strategy_spec_fingerprint,
-            research_packet_fingerprint=packet.fingerprint,
-            rule_id=rule.rule_id,
-            source_row_index=row_index,
-            anchor_kind=anchor_kind,
-            geometry_family_id=geometry_family_id,
-            geometry_level_id=geometry_level_id,
-        )
-        intents.append(TradeIntent(
-            trade_intent_id=_intent_id(compiled.fingerprint, view.dataset_id, row_index, timestamp, rule.rule_id),
-            strategy_id=compiled.strategy_spec.strategy_id,
-            experiment_id=compiled.hypothesis_id,
-            dataset_id=view.dataset_id,
-            symbol=view.symbol,
-            direction=direction,
-            signal_timestamp=timestamp,
-            requested_entry_type=EntryType.MARKET_CLOSE,
-            requested_entry_price=reference,
-            stop_loss=stop,
-            take_profit=target,
-            metadata=metadata,
-        ))
-        if not matched_indices or matched_indices[-1] != row_index:
-            matched_indices.append(row_index)
-
-    state = dict(
-        version=COMPILED_STRATEGY_EXECUTION_VERSION,
-        compiled_hypothesis_fingerprint=compiled.fingerprint,
-        strategy_spec_fingerprint=compiled.strategy_spec_fingerprint,
-        research_packet_fingerprint=packet.fingerprint,
-        hypothesis_id=compiled.hypothesis_id,
-        strategy_id=compiled.strategy_spec.strategy_id,
-        dataset_id=view.dataset_id,
-        symbol=view.symbol,
-        pip_size=pip_size,
-        source_row_count=view.row_count,
-        matched_row_count=len(matched_indices),
-        intent_count=len(intents),
-        matched_source_row_indices=tuple(matched_indices),
-        intents=tuple(intents),
-    )
-    payload = {**state, "intents": [intent.model_dump(mode="json") for intent in intents]}
-    return CompiledStrategyIntentBatch(**state, fingerprint=_digest(payload))
+        connection.execute("SET TimeZone='UTC'")
+        for rule_order,rule in enumerate(compiled.strategy_spec.rules):
+            for source in _query_rule(connection,view,rule,kinds): matches.append((source[0],rule_order,source,rule))
+    matches.sort(key=lambda item:(item[0],item[1]));intents=[];matched_indices=[]
+    for row_index,_,source,rule in matches:
+        _,timestamp,reference,anchor_kind,geometry_family_id,geometry_level_id=source
+        timestamp=_timestamp(timestamp);reference=_number(reference)
+        if reference<=0: raise ValueError("anchor reference price must be positive")
+        risk=rule.stop.pips*pip_size;direction=Direction(rule.entry.side.value);sign=1 if direction==Direction.LONG else -1
+        stop=reference-sign*risk;target=reference+sign*risk*rule.target.multiple;_geometry(reference,stop,target,direction)
+        metadata=dict(execution_adapter="COMPILED_DISCOVERY_DSL_V1",hypothesis_id=compiled.hypothesis_id,
+            compiled_hypothesis_fingerprint=compiled.fingerprint,strategy_spec_fingerprint=compiled.strategy_spec_fingerprint,
+            research_packet_fingerprint=packet.fingerprint,rule_id=rule.rule_id,source_row_index=row_index,
+            anchor_kind=anchor_kind,geometry_family_id=geometry_family_id,geometry_level_id=geometry_level_id)
+        intents.append(TradeIntent(trade_intent_id=_intent_id(compiled.fingerprint,view.dataset_id,row_index,timestamp,rule.rule_id),
+            strategy_id=compiled.strategy_spec.strategy_id,experiment_id=compiled.hypothesis_id,dataset_id=view.dataset_id,symbol=view.symbol,
+            direction=direction,signal_timestamp=timestamp,requested_entry_type=EntryType.MARKET_CLOSE,requested_entry_price=reference,
+            stop_loss=stop,take_profit=target,metadata=metadata))
+        if not matched_indices or matched_indices[-1]!=row_index: matched_indices.append(row_index)
+    state=dict(version=COMPILED_STRATEGY_EXECUTION_VERSION,compiled_hypothesis_fingerprint=compiled.fingerprint,
+        strategy_spec_fingerprint=compiled.strategy_spec_fingerprint,research_packet_fingerprint=packet.fingerprint,
+        hypothesis_id=compiled.hypothesis_id,strategy_id=compiled.strategy_spec.strategy_id,dataset_id=view.dataset_id,
+        symbol=view.symbol,pip_size=pip_size,source_row_count=view.row_count,matched_row_count=len(matched_indices),intent_count=len(intents),
+        matched_source_row_indices=tuple(matched_indices),intents=tuple(intents))
+    payload={**state,"intents":[intent.model_dump(mode="json") for intent in intents]}
+    return CompiledStrategyIntentBatch(**state,fingerprint=_digest(payload))
