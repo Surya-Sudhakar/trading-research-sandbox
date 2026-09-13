@@ -89,19 +89,35 @@ def with_level_transition(context: DiscoveryMarketContext,
     return replace(context, level_transition=semantics)
 
 
-def build_discovery_market_contexts(bars, base_minutes: int = 15) -> dict[datetime, DiscoveryMarketContext]:
-    """Build one context per completed bar; confirmed pivots appear at confirmation_index."""
+def build_discovery_market_contexts(
+    bars, base_minutes: int = 15, *, swing_left_bars: int = 2,
+    swing_right_bars: int = 2, swing_count_window: int = 8,
+) -> dict[datetime, DiscoveryMarketContext]:
+    """Build causal contexts with caller-configurable confirmed-swing parameters."""
     materialized = tuple(bars)
     if not materialized:
         return {}
     if any(not isinstance(bar, OHLCBar) for bar in materialized):
         raise TypeError("bars must contain OHLCBar")
+    if type(base_minutes) is not int or base_minutes <= 0:
+        raise ValueError("base_minutes must be a positive integer")
+    for name, value in (
+        ("swing_left_bars", swing_left_bars),
+        ("swing_right_bars", swing_right_bars),
+        ("swing_count_window", swing_count_window),
+    ):
+        if type(value) is not int or value <= 0:
+            raise ValueError(f"{name} must be a positive integer")
     frame = pd.DataFrame({
         "timestamp_utc": [bar.open_time_utc for bar in materialized],
         "open": [bar.open for bar in materialized], "high": [bar.high for bar in materialized],
         "low": [bar.low for bar in materialized], "close": [bar.close for bar in materialized],
     })
-    configuration = FeatureConfiguration()
+    configuration = FeatureConfiguration(
+        swing_left_bars=swing_left_bars,
+        swing_right_bars=swing_right_bars,
+        swing_count_window=swing_count_window,
+    )
     rows = UniversalFeatureEngine(f"M{base_minutes}").compute(frame, symbol="DISCOVERY")
     highs = [bar.high for bar in materialized]
     lows = [bar.low for bar in materialized]
