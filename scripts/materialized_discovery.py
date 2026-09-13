@@ -15,11 +15,10 @@ from sandbox.config import Settings
 from sandbox.execution.models import ExecutionConfig
 from sandbox.partition.service import PartitionService
 from sandbox.research.registry import ResearchRegistry
+from sandbox.research.materialized_bootstrap import materialize_prepared_execution_view_direct
 from sandbox.research.materialized_runner import (
     execute_materialized_discovery_proposal,
-    execution_view_directory,
     load_materialized_context,
-    materialize_prepared_execution_view,
 )
 
 
@@ -64,7 +63,7 @@ def main(argv=None):
 
     if args.command == "materialize":
         started = perf_counter()
-        view = materialize_prepared_execution_view(
+        view = materialize_prepared_execution_view_direct(
             service,
             args.prepared_id,
             root=args.root,
