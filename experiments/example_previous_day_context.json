@@ -5,8 +5,8 @@
   "partition_id": "REPLACE_WITH_DISCOVERY_PARTITION_ID",
   "mode": "DISCOVERY",
   "categorical_field_ids": [
-    "x.market.m15.latest_high_class",
-    "x.market.m15.latest_low_class"
+    "x.market.m15.swing.high.label",
+    "x.market.m15.swing.low.label"
   ],
   "numeric_condition_specs": [],
   "target_field_ids": [
