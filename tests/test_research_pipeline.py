@@ -12,6 +12,24 @@ from sandbox.research.research_pipeline import (
 from test_discovery_record_builder import market_frame, partition
 
 
+def varied_context_frame():
+    """Preserve the touch geometry while varying an independent M15 predictor."""
+    frame = market_frame(64, touches=True)
+    for i in range(12, len(frame)):
+        opening = float(frame.loc[i, "open"])
+        mode = i % 3
+        if mode == 0:
+            closing = opening + 0.05
+        elif mode == 1:
+            closing = opening - 0.05
+        else:
+            closing = opening
+        frame.loc[i, "close"] = closing
+        frame.loc[i, "high"] = max(float(frame.loc[i, "high"]), opening, closing)
+        frame.loc[i, "low"] = min(float(frame.loc[i, "low"]), opening, closing)
+    return frame
+
+
 def spec(partition_id):
     return ResearchPipelineSpec(
         experiment_id="H001-E001",
@@ -27,7 +45,7 @@ def spec(partition_id):
 
 
 def test_pipeline_writes_reproducible_result_package(tmp_path, monkeypatch):
-    service, manifest = partition(tmp_path / "partition", market_frame(64, touches=True))
+    service, manifest = partition(tmp_path / "partition", varied_context_frame())
     monkeypatch.setattr("sandbox.research.research_pipeline._git_commit", lambda: "abc123")
     result = run_research_pipeline(service, spec(manifest.partition_id), results_root=tmp_path / "results")
     folder = Path(result["result_dir"])
@@ -46,7 +64,7 @@ def test_pipeline_writes_reproducible_result_package(tmp_path, monkeypatch):
 
 def test_run_identity_changes_with_pivot_configuration(tmp_path, monkeypatch):
     monkeypatch.setattr("sandbox.research.research_pipeline._git_commit", lambda: "abc123")
-    service, manifest = partition(tmp_path / "partition", market_frame(64, touches=True))
+    service, manifest = partition(tmp_path / "partition", varied_context_frame())
     first = run_research_pipeline(service, spec(manifest.partition_id), results_root=tmp_path / "a")
     second_spec = replace(spec(manifest.partition_id), swing_left_bars=4, swing_right_bars=4)
     second = run_research_pipeline(service, second_spec, results_root=tmp_path / "b")
@@ -55,7 +73,7 @@ def test_run_identity_changes_with_pivot_configuration(tmp_path, monkeypatch):
 
 def test_pipeline_refuses_protected_partition(tmp_path):
     service, manifest = partition(
-        tmp_path / "partition", market_frame(64, touches=True), PartitionRole.VALIDATION
+        tmp_path / "partition", varied_context_frame(), PartitionRole.VALIDATION
     )
     with pytest.raises(ValueError, match="DISCOVERY"):
         run_research_pipeline(service, spec(manifest.partition_id), results_root=tmp_path / "results")
