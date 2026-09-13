@@ -14,6 +14,7 @@ from sandbox.market_state.swings import (
     ConfirmedSwing, PivotLabel, StructureBreakKind, confirmed_structure_breaks,
     label_confirmed_swings,
 )
+from sandbox.research.discovery_record_builder import DiscoveryRecordConfig
 from test_discovery_context_projection import record
 
 
@@ -84,6 +85,20 @@ def test_market_context_prefix_equivalence_prevents_swing_lookahead():
         assert prefix == expected
     assert complete[source[2].open_time_utc + STEP].latest_high_price is None
     assert complete[source[4].open_time_utc + STEP].latest_high_price == 15
+
+
+def test_market_context_pivot_strength_is_configurable():
+    source = bars([
+        (10, 8, 9), (15, 9, 14), (11, 8, 10), (12, 9, 11), (10, 7, 8),
+    ])
+    default = build_discovery_market_contexts(source)
+    faster = build_discovery_market_contexts(source, swing_left_bars=1, swing_right_bars=1)
+    decision = source[2].open_time_utc + STEP
+    assert default[decision].latest_high_price is None
+    assert faster[decision].latest_high_price == 15
+    assert DiscoveryRecordConfig(swing_left_bars=1, swing_right_bars=3).swing_right_bars == 3
+    with pytest.raises(ValueError):
+        DiscoveryRecordConfig(swing_left_bars=0)
 
 
 def test_previous_completed_new_york_day_and_market_features_are_projected():
