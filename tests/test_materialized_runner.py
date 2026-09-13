@@ -74,15 +74,15 @@ def test_materialized_runner_matches_existing_runner(tmp_path):
         execution_config=EXECUTION,
     )
 
-    assert fast["run_id"] == legacy["run_id"]
-    assert fast["intent_count"] == legacy["intent_count"]
-    assert fast["chain"] == legacy["chain"]
-    assert fast["execution_view_fingerprint"]
+    # Identical execution semantics intentionally deduplicate to the same immutable
+    # run artifact. Because the legacy run was persisted first, the materialized
+    # call must return that existing provenance unchanged rather than rewriting it.
+    assert fast == legacy
 
 
 def test_repeated_materialized_execution_is_deterministic(tmp_path):
     service, prepared, root = _environment(tmp_path)
-    materialized.materialize_prepared_execution_view(service, prepared.prepared_id, root=root)
+    view = materialized.materialize_prepared_execution_view(service, prepared.prepared_id, root=root)
     proposal = external_proposal(prepared.packet, "MATERIALIZED_REPEAT")
     first = materialized.execute_materialized_discovery_proposal(
         service,
@@ -100,4 +100,5 @@ def test_repeated_materialized_execution_is_deterministic(tmp_path):
         pip_size=0.1,
         execution_config=EXECUTION,
     )
+    assert first["execution_view_fingerprint"] == view.fingerprint
     assert second == first
