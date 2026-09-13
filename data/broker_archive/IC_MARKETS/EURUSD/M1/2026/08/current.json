@@ -1,0 +1,19 @@
+{
+  "file": "9edc922d600f6fe72fd3f469bc0415d90e9be95bde355e5b2d67fd13c98def3a.parquet",
+  "sha256": "6c64969b05cb67e5b3dcbda658a9e3b3ab4e1d35160a1b3e651e297271fbf221",
+  "logical_fingerprint": "9edc922d600f6fe72fd3f469bc0415d90e9be95bde355e5b2d67fd13c98def3a",
+  "provider": "IC_MARKETS",
+  "symbol": "EURUSD",
+  "timeframe": "M1",
+  "row_count": 61,
+  "provider_symbol": "EURUSD",
+  "price_type": "BID",
+  "timezone": "UTC",
+  "kind": "RAW",
+  "source_identifier": "DATASET:5b112f9b-e110-4269-8936-0e04cefc8ea7",
+  "parent_revision_sha256": null,
+  "imported_at": "2026-09-08T22:50:22.997518+00:00",
+  "first_timestamp": "2026-08-27T08:00:00+00:00",
+  "last_timestamp": "2026-08-27T09:00:00+00:00",
+  "gaps": []
+}

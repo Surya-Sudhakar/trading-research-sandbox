@@ -1,0 +1,20 @@
+{
+  "config_version": "1.0.0",
+  "confidence_level": 0.95,
+  "bootstrap_iterations": 2000,
+  "random_seed": 742019,
+  "block_length": 5,
+  "minimum_group_size_for_reporting": 20,
+  "concentration_thresholds": {
+    "temporal": 0.60,
+    "symbol": 0.70,
+    "direction": 0.90,
+    "outlier": 0.30
+  },
+  "sample_labels": {"very_small": 30, "small": 100, "moderate": 300},
+  "wide_interval_threshold": 0.20,
+  "dependence_threshold": 0.30,
+  "high_search_burden": 20,
+  "sensitivity_reporting_policy": "REGISTERED_VARIANTS_ONLY",
+  "resampling_method_versions": {"iid_bootstrap": "1", "moving_block_bootstrap": "1", "permutation": "1"}
+}

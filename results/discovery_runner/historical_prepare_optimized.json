@@ -1,0 +1,57 @@
+{
+  "partition_id": "PART-71fedba48045173cebd3b331",
+  "target": "y.h4.close_return_fraction",
+  "features": [
+    {
+      "field_id": "x.anchor_kind",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.geometry.coordinate",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.geometry.source_block_label",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.event.pattern_code",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.event.checkpoint_bars",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.m15.body_to_range",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.m15.range_fraction",
+      "feature_kind": "NUMERIC"
+    }
+  ],
+  "status": "PREPARED_AWAITING_EXTERNAL_AI",
+  "source_bars_read": 243177,
+  "bars_processed": 243177,
+  "segments_available": 611,
+  "segments_completed": 611,
+  "research_records_generated": 385021,
+  "touch_transition_count": 260549,
+  "untouched_checkpoint_count": 124472,
+  "dataset_rows": 385021,
+  "packet_fingerprint": "19fb2d00de92f55d256ecae4d46114b24efef1a22e6a2e99cfe2411672bb9b05",
+  "runtime_seconds": 3242.993239500007,
+  "peak_memory_bytes": 4263329792,
+  "prepared_id": "37a019f7d44a097486d1949784b8c187ae48ea764fc3a369106f6b23b5b3bff7",
+  "ml_target_selected": "y.h4.close_return_fraction",
+  "ml_features_selected": [
+    "x.anchor_kind",
+    "x.geometry.coordinate",
+    "x.geometry.source_block_label",
+    "x.event.pattern_code",
+    "x.event.checkpoint_bars",
+    "x.m15.body_to_range",
+    "x.m15.range_fraction"
+  ]
+}

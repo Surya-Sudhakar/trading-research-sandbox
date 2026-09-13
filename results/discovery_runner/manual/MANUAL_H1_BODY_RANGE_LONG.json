@@ -1,0 +1,37 @@
+{
+  "evidence_feature_ids": [
+    "x.m15.body_to_range",
+    "x.m15.range_fraction"
+  ],
+  "family_id": "MANUAL_DISCOVERY",
+  "hypothesis_id": "MANUAL_H1_BODY_RANGE_LONG",
+  "rationale": "The research packet ranks body_to_range and range_fraction as the strongest ML clues. Direction and thresholds are unverified Discovery hypotheses.",
+  "research_packet_fingerprint": "19fb2d00de92f55d256ecae4d46114b24efef1a22e6a2e99cfe2411672bb9b05",
+  "rules": [
+    {
+      "condition_logic": "ALL",
+      "conditions": [
+        {
+          "field_id": "x.m15.body_to_range",
+          "operator": "GTE",
+          "value": 0.7
+        },
+        {
+          "field_id": "x.m15.range_fraction",
+          "operator": "GTE",
+          "value": 0.0004
+        }
+      ],
+      "rule_id": "RULE_1",
+      "side": "LONG",
+      "stop_pips": 10.0,
+      "target_r_multiple": 2.0
+    }
+  ],
+  "statement": "Test whether EURUSD research anchors with a large M15 body-to-range ratio and sufficiently large M15 range have positive 4-hour directional trading value on the LONG side.",
+  "status": "UNVERIFIED_DISCOVERY_HYPOTHESIS",
+  "strategy_id": "EURUSD_BODY_RANGE",
+  "target_field_id": "y.h4.close_return_fraction",
+  "variant_id": "V1",
+  "version": "HYPOTHESIS_PROPOSAL_V1"
+}

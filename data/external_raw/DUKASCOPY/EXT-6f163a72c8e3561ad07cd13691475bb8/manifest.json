@@ -1,0 +1,76 @@
+{
+  "canonical_dataset_sha256": "c7ffea3968f8d3d15e46f595f7d48473776b9dbd76f0778a29a99290c3688dc7",
+  "canonical_path": "data\\derived\\external\\DUKASCOPY\\EURUSD\\M15\\EXT-6f163a72c8e3561ad07cd13691475bb8.parquet",
+  "canonical_symbol": "EURUSD",
+  "canonical_timezone": "UTC",
+  "column_mapping": {
+    "close": "close",
+    "high": "high",
+    "low": "low",
+    "open": "open",
+    "timestamp": "timestamp"
+  },
+  "component_files": [
+    "0000-eurusd-m15-bid-2016-01-01-2026-08-24.csv"
+  ],
+  "component_sha256s": [
+    "52b5d212943f20fddea6d403377f24a035a0b53c05159ad8bc71147b87ecd85c"
+  ],
+  "component_sizes": [
+    13072346
+  ],
+  "created_at": "2026-08-28T08:23:01.862145+00:00",
+  "data_source_provider": "DUKASCOPY",
+  "dataset_id": "EXT-6f163a72c8e3561ad07cd13691475bb8",
+  "derive_mid": false,
+  "first_timestamp": "2016-01-03T00:00:00+00:00",
+  "import_id": "IMP-a1c8721ec1ac4f64b6f84928d7034cdc",
+  "importer_version": "1.0.0",
+  "initial_classification": "UNASSIGNED_RESEARCH_DATA",
+  "integrity_summary": {
+    "component_overlap": 0,
+    "crossed_quotes": 0,
+    "duplicate_events": 0,
+    "expected_gaps": 0,
+    "issues": [
+      {
+        "category": "confirmed_data_error",
+        "code": "invalid_ohlc",
+        "detail": "10 rows"
+      }
+    ],
+    "ohlc_violations": 10,
+    "ordering_issues": 0,
+    "rows_accepted": 287049,
+    "rows_read": 287059,
+    "rows_rejected": 10,
+    "suspicious_gaps": 723,
+    "timezone_conversion": "UTC -> UTC"
+  },
+  "interpretation_reason": "Corrected source interpretation: original Dukascopy file contains M15 BID OHLC candles with Unix-millisecond timestamps. Previous quarantined import incorrectly declared the same immutable source bytes as M1 with ISO8601 timestamps.",
+  "last_timestamp": "2026-08-23T23:45:00+00:00",
+  "manifest_fingerprint": "ed19cea562390a3aae984fa4697ac3d4443c0f81aca5f030e2a9ebe6651e96c4",
+  "multiple_interpretations": true,
+  "normalization_method": "UTC_CANONICAL_V1",
+  "normalization_timezone": "UTC",
+  "original_filenames": [
+    "eurusd-m15-bid-2016-01-01-2026-08-24.csv"
+  ],
+  "price_type": "BID",
+  "processing": {
+    "approach": "bounded-memory chunked parsing and incremental Parquet writing",
+    "duration_seconds": 5.66808430000674,
+    "file_size_bytes": 13072346,
+    "input_chunk_rows": 200000
+  },
+  "provider_authentication": "DECLARED_PROVENANCE",
+  "resolution": "M15",
+  "row_count": 287059,
+  "scientific_fingerprint": "6f163a72c8e3561ad07cd13691475bb849c0a330c82c457acc80f9049c5be476",
+  "source_symbol": "EURUSD",
+  "source_timezone": "UTC",
+  "source_type": "EXTERNAL_HISTORICAL",
+  "spread_units": null,
+  "target_execution_broker": null,
+  "timestamp_format": "UNIX_MILLISECONDS"
+}

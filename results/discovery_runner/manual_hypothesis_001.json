@@ -1,0 +1,37 @@
+{
+  "version": "HYPOTHESIS_PROPOSAL_V1",
+  "status": "UNVERIFIED_DISCOVERY_HYPOTHESIS",
+  "research_packet_fingerprint": "19fb2d00de92f55d256ecae4d46114b24efef1a22e6a2e99cfe2411672bb9b05",
+  "hypothesis_id": "MANUAL_H1_BODY_RANGE_LONG",
+  "statement": "Test whether EURUSD research anchors with a large M15 body-to-range ratio and sufficiently large M15 range have positive 4-hour directional trading value on the LONG side.",
+  "rationale": "The packet ranks x.m15.body_to_range as the dominant LightGBM gain feature and x.m15.range_fraction as the second strongest. The LONG direction and numeric thresholds are unverified Discovery hypotheses and are not claimed as established facts.",
+  "target_field_id": "y.h4.close_return_fraction",
+  "family_id": "MANUAL_DISCOVERY",
+  "strategy_id": "EURUSD_BODY_RANGE",
+  "variant_id": "V1",
+  "evidence_feature_ids": [
+    "x.m15.body_to_range",
+    "x.m15.range_fraction"
+  ],
+  "rules": [
+    {
+      "rule_id": "RULE_1",
+      "condition_logic": "ALL",
+      "conditions": [
+        {
+          "field_id": "x.m15.body_to_range",
+          "operator": "GTE",
+          "value": 0.70
+        },
+        {
+          "field_id": "x.m15.range_fraction",
+          "operator": "GTE",
+          "value": 0.00040
+        }
+      ],
+      "side": "LONG",
+      "stop_pips": 10.0,
+      "target_r_multiple": 2.0
+    }
+  ]
+}

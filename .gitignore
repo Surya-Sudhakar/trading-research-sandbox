@@ -1,0 +1,35 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.test-tmp-*/
+tests/runtime/*
+!tests/runtime/.gitkeep
+results/runs/*
+results/ledgers/*
+results/summaries/*
+!results/runs/.gitkeep
+!results/ledgers/.gitkeep
+!results/summaries/.gitkeep
+data/derived/*
+!data/derived/.gitkeep
+data/catalog.sqlite3*
+data/raw/**
+data/quarantine/**
+!data/raw/.gitkeep
+!data/quarantine/.gitkeep
+data/final_vault/**
+!data/final_vault/.gitkeep
+frontend/node_modules/
+frontend/dist/
+# Large generated Discovery artifacts
+results/discovery_runner/prepared/
+results/discovery_runner/executed/
+
+# Binary research snapshots
+*.bin
+# Generated research artifacts
+results/discovery_runner/prepared/
+results/discovery_runner/executed/
+*.bin

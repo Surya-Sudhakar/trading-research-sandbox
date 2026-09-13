@@ -1,0 +1,88 @@
+{
+  "old": {
+    "seconds": 3.2497643000006065,
+    "records": 72,
+    "functions": {
+      "aggregate_completed_blocks": {
+        "calls": 144,
+        "cumulative_seconds": 0.7911142000000001
+      },
+      "build_level_state_sequence": {
+        "calls": 435,
+        "cumulative_seconds": 0.22473050000000003
+      },
+      "build_touch_transition_research_anchor": {
+        "calls": 1053,
+        "cumulative_seconds": 0.1427719
+      },
+      "join_research_anchors_sessions": {
+        "calls": 20,
+        "cumulative_seconds": 0.0824796
+      },
+      "join_research_anchors_multitimeframe": {
+        "calls": 20,
+        "cumulative_seconds": 0.9399347
+      },
+      "build_geometry_instance": {
+        "calls": 5,
+        "cumulative_seconds": 0.0013536000000000002
+      },
+      "measure_research_anchor_outcomes": {
+        "calls": 72,
+        "cumulative_seconds": 0.1497312
+      },
+      "build_geometry_interaction_histories": {
+        "calls": 145,
+        "cumulative_seconds": 0.8519528000000001
+      },
+      "build_untouched_checkpoint_research_anchors": {
+        "calls": 435,
+        "cumulative_seconds": 0.2929252
+      }
+    }
+  },
+  "optimized": {
+    "seconds": 0.2698049999999057,
+    "records": 72,
+    "functions": {
+      "aggregate_completed_blocks": {
+        "calls": 5,
+        "cumulative_seconds": 0.0128841
+      },
+      "build_level_state_sequence": {
+        "calls": 15,
+        "cumulative_seconds": 0.009590900000000001
+      },
+      "build_touch_transition_research_anchor": {
+        "calls": 39,
+        "cumulative_seconds": 0.0039055
+      },
+      "join_research_anchors_sessions": {
+        "calls": 1,
+        "cumulative_seconds": 0.021694500000000002
+      },
+      "join_research_anchors_multitimeframe": {
+        "calls": 1,
+        "cumulative_seconds": 0.030088700000000003
+      },
+      "build_geometry_instance": {
+        "calls": 5,
+        "cumulative_seconds": 0.0010124
+      },
+      "measure_research_anchor_outcomes": {
+        "calls": 72,
+        "cumulative_seconds": 0.035648400000000004
+      },
+      "build_geometry_interaction_histories": {
+        "calls": 5,
+        "cumulative_seconds": 0.0135647
+      },
+      "build_untouched_checkpoint_research_anchors": {
+        "calls": 15,
+        "cumulative_seconds": 0.0116746
+      }
+    }
+  },
+  "equal": true,
+  "speedup": 12.044863141905235
+}

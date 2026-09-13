@@ -1,0 +1,16 @@
+{
+  "config_version": "1.0.0",
+  "hypothesis_warning_count": 5,
+  "hypothesis_high_risk_count": 10,
+  "parameter_search_warning_count": 3,
+  "parameter_search_high_risk_count": 10,
+  "very_small_sample": 30,
+  "small_sample": 100,
+  "complexity_parameter_warning": 15,
+  "complexity_trade_ratio_warning": 0.25,
+  "near_duplicate_max_changed_fields": 2,
+  "risk_points": {
+    "warning": 10,
+    "high": 25
+  }
+}

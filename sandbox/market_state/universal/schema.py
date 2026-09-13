@@ -1,0 +1,71 @@
+from dataclasses import dataclass
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict
+
+
+class FeatureRow(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+    timestamp: datetime
+    symbol: str
+    decision_timeframe: str
+    feature_ready: bool
+    candle_range: float
+    body_size: float
+    body_ratio: float | None
+    upper_wick: float
+    lower_wick: float
+    body_midpoint: float
+    close_location: float | None
+    candle_direction: int
+    atr_14: float | None
+    atr_percentile_100: float | None
+    range_percentile_100: float | None
+    displacement_4_atr: float | None
+    displacement_8_atr: float | None
+    prior_high_12: float | None
+    prior_low_12: float | None
+    breakout_high_12: bool | None
+    breakout_low_12: bool | None
+    completed_h1_direction: int | None
+    completed_h3_direction: int | None
+    analysis_hour: int
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureDefinition:
+    name: str
+    category: str
+    dtype: str
+    timeframe: str
+    lookback: int
+    description: str
+    version: int = 1
+
+
+def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
+    specs = [
+        ("candle_range", "candle", "float", 1, "high-low"),
+        ("body_size", "candle", "float", 1, "abs(close-open)"),
+        ("body_ratio", "candle", "float", 1, "body_size/candle_range; null if zero range"),
+        ("upper_wick", "candle", "float", 1, "high-max(open,close)"),
+        ("lower_wick", "candle", "float", 1, "min(open,close)-low"),
+        ("body_midpoint", "candle", "float", 1, "(open+close)/2"),
+        ("close_location", "candle", "float", 1, "(close-low)/range; null if zero range"),
+        ("candle_direction", "candle", "int", 1, "sign(close-open)"),
+        ("atr_14", "volatility", "float", 15, "Wilder ATR; 14 TR mean seed; first bar has no TR; nonpositive ATR null"),
+        ("atr_percentile_100", "volatility", "float", 114, "100*count(ATR<=current)/100 over 100 valid trailing ATRs including current"),
+        ("range_percentile_100", "volatility", "float", 100, "100*count(range<=current)/100 over 100 trailing bars including current"),
+        ("displacement_4_atr", "momentum", "float", 15, "(close[t]-close[t-4])/ATR[t]"),
+        ("displacement_8_atr", "momentum", "float", 15, "(close[t]-close[t-8])/ATR[t]"),
+        ("prior_high_12", "structure", "float", 13, "max(high[t-12:t]); current excluded"),
+        ("prior_low_12", "structure", "float", 13, "min(low[t-12:t]); current excluded"),
+        ("breakout_high_12", "structure", "bool", 13, "close>prior_high_12; equality false"),
+        ("breakout_low_12", "structure", "bool", 13, "close<prior_low_12; equality false"),
+        ("completed_h1_direction", "context", "int", 1, "sign(close-open) of latest complete H1 with end<=decision"),
+        ("completed_h3_direction", "context", "int", 1, "sign(close-open) of latest complete H3 with end<=decision"),
+        ("analysis_hour", "time", "int", 1, "decision close timestamp hour in configured analysis timezone"),
+    ]
+    return tuple(FeatureDefinition(n, c, d, "H1" if n == "completed_h1_direction" else
+                 "H3" if n == "completed_h3_direction" else decision_timeframe, lb, desc)
+                 for n, c, d, lb, desc in specs)
+

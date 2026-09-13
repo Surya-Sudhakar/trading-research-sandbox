@@ -1,0 +1,49 @@
+{
+  "partition_id": "PART-71fedba48045173cebd3b331",
+  "target": "y.h4.close_return_fraction",
+  "features": [
+    {
+      "field_id": "x.anchor_kind",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.geometry.coordinate",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.geometry.source_block_label",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.event.pattern_code",
+      "feature_kind": "CATEGORICAL"
+    },
+    {
+      "field_id": "x.event.checkpoint_bars",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.m15.body_to_range",
+      "feature_kind": "NUMERIC"
+    },
+    {
+      "field_id": "x.m15.range_fraction",
+      "feature_kind": "NUMERIC"
+    }
+  ],
+  "source_bars_read": 243177,
+  "continuity_segments_available": 611,
+  "continuity_segments_completed": 0,
+  "segment_bars_started": 568,
+  "research_records_generated": 487,
+  "touch_transition_count": 297,
+  "untouched_checkpoint_count": 190,
+  "dataset_rows": null,
+  "packet_fingerprint": null,
+  "status": "ATTEMPT_TIME_LIMIT",
+  "attempt_limit_seconds": 300,
+  "error_type": "KeyboardInterrupt",
+  "error": "",
+  "runtime_seconds": 300.0291445999901,
+  "peak_working_set_bytes": 338497536
+}
