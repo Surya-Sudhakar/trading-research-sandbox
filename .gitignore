@@ -6,15 +6,23 @@ __pycache__/
 .test-tmp-*/
 tests/runtime/*
 !tests/runtime/.gitkeep
+
+# Local/runtime databases and locks
+/catalog.sqlite3
+data/catalog.sqlite3*
+data/broker_archive/**/.writer.lock
+
+# Generated execution outputs
 results/runs/*
 results/ledgers/*
 results/summaries/*
 !results/runs/.gitkeep
 !results/ledgers/.gitkeep
 !results/summaries/.gitkeep
+
+# Generated market-data areas
 data/derived/*
 !data/derived/.gitkeep
-data/catalog.sqlite3*
 data/raw/**
 data/quarantine/**
 !data/raw/.gitkeep
@@ -22,9 +30,10 @@ data/quarantine/**
 data/final_vault/**
 !data/final_vault/.gitkeep
 
-# Large generated Discovery artifacts
+# Large/generated Discovery artifacts
 results/discovery_runner/prepared/
 results/discovery_runner/executed/
+results/discovery_runner/materialized/
 
 # Binary research snapshots
 *.bin
