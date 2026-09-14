@@ -74,6 +74,16 @@ def _geometry(reference, stop, target, direction):
         raise ValueError("invalid entry/stop/target geometry")
 
 
+def _validate_predictor_schema(dataset):
+    expected = tuple(dataset.predictor_field_ids)
+    if len(set(expected)) != len(expected):
+        raise ValueError("duplicate predictor ID")
+    for row in dataset.rows:
+        actual = tuple(value.field_id for value in row.predictors)
+        if actual != expected:
+            raise ValueError("predictor schema mismatch")
+
+
 @dataclass(frozen=True)
 class CompiledStrategyIntentBatch:
     version: str
@@ -210,6 +220,7 @@ def build_compiled_strategy_intents(compiled: CompiledHypothesis, packet: AIRese
     pip_size = _number(pip_size)
     if pip_size <= 0:
         raise ValueError("pip size must be positive")
+    _validate_predictor_schema(dataset)
     kinds = dict(zip(packet.feature_ids, packet.feature_kinds))
     kinds = {k: v for k, v in kinds.items() if k in packet.allowed_condition_feature_ids}
     referenced = set()
@@ -217,8 +228,6 @@ def build_compiled_strategy_intents(compiled: CompiledHypothesis, packet: AIRese
         _check_condition(rule.condition, kinds, dataset.predictor_field_ids, referenced)
         if type(rule.entry) is not MarketEntry or type(rule.stop) is not FixedPipsStop or type(rule.target) is not RiskMultipleTarget:
             raise ValueError("V1 requires market entry, fixed-pips stop, and risk-multiple target")
-    if len(set(dataset.predictor_field_ids)) != len(dataset.predictor_field_ids):
-        raise ValueError("duplicate predictor ID")
     predictor_index = {field: dataset.predictor_field_ids.index(field) for field in referenced}
 
     intents, matched = [], []
