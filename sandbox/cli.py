@@ -44,8 +44,6 @@ def _date(value: str) -> datetime:
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(prog="sandbox", description="Read-only IC Markets MT5 data foundation")
     groups = root.add_subparsers(dest="group", required=True)
-    api = groups.add_parser("api").add_subparsers(dest="command", required=True)
-    serve=api.add_parser("serve");serve.add_argument("--host",default="127.0.0.1",choices=["127.0.0.1","localhost"]);serve.add_argument("--port",type=int,default=8765)
     mt5 = groups.add_parser("mt5").add_subparsers(dest="command", required=True)
     mt5.add_parser("status")
     symbols = groups.add_parser("symbols").add_subparsers(dest="command", required=True)
@@ -164,10 +162,6 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings.load()
     configure(settings.log_level)
     args = parser().parse_args(argv)
-    if args.group=="api":
-        import uvicorn
-        uvicorn.run("sandbox.api.app:app",host=args.host,port=args.port,reload=False)
-        return 0
     catalog = Catalog(settings.catalog_path)
     try:
         if args.group=="strategies":
