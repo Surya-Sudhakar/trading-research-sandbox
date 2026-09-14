@@ -21,15 +21,10 @@ data/quarantine/**
 !data/quarantine/.gitkeep
 data/final_vault/**
 !data/final_vault/.gitkeep
-frontend/node_modules/
-frontend/dist/
+
 # Large generated Discovery artifacts
 results/discovery_runner/prepared/
 results/discovery_runner/executed/
 
 # Binary research snapshots
-*.bin
-# Generated research artifacts
-results/discovery_runner/prepared/
-results/discovery_runner/executed/
 *.bin
