@@ -61,7 +61,7 @@ def inventory(frame, metadata, profile=SessionProfile(), policy=ContinuityPolicy
     times=pd.DatetimeIndex(frame.timestamp_utc)
     excluded=sorted(pd.Timestamp(t) for t in excluded_times if not pd.isna(t))
     import bisect
-    rows=[];segments=[0];segment=0;delta=pd.Timedelta(f"{int(minutes)}min")
+    rows=[];segments=[0];segment=0;delta=timedelta(minutes=int(minutes))
     for previous,following in zip(times[:-1],times[1:]):
         missing=int((following-previous)/delta)-1
         if missing>0:
