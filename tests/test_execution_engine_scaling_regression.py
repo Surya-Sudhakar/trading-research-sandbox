@@ -67,14 +67,25 @@ def test_duplicate_trade_intent_semantics_preserved():
 
 
 def test_microsecond_market_resolution_preserves_execution_semantics():
+    config = ExecutionConfig(candle_interval_seconds=60)
+    baseline = execution_engine.BacktestEngine(config).run(
+        [_intent("baseline-resolution")], _market()
+    ).ledger[0]
+
     market = _market()
     market["timestamp_utc"] = pd.Series(
         pd.DatetimeIndex(pd.to_datetime(market["timestamp_utc"], utc=True)).as_unit("us")
     )
-    result = execution_engine.BacktestEngine(ExecutionConfig(candle_interval_seconds=60)).run(
+    microsecond = execution_engine.BacktestEngine(config).run(
         [_intent("microsecond-resolution")], market
-    )
-    record = result.ledger[0]
-    assert record.rejection_reason is None
-    assert record.status == PositionStatus.CLOSED
-    assert record.exit_reason == "TAKE_PROFIT"
+    ).ledger[0]
+
+    assert microsecond.rejection_reason is None
+    assert microsecond.status == baseline.status
+    assert microsecond.exit_reason == baseline.exit_reason
+    assert microsecond.entry_timestamp == baseline.entry_timestamp
+    assert microsecond.entry_price == baseline.entry_price
+    assert microsecond.exit_timestamp == baseline.exit_timestamp
+    assert microsecond.exit_price == baseline.exit_price
+    assert microsecond.gross_r == baseline.gross_r
+    assert microsecond.net_r == baseline.net_r
