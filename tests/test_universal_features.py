@@ -1,5 +1,5 @@
 import json
-from datetime import timezone
+from datetime import timedelta, timezone
 import pandas as pd
 import pytest
 from sandbox.models import Candle
@@ -127,7 +127,7 @@ def test_context_missing_bar_and_partial_start_not_fabricated():
 
 def test_as_of_excludes_forming_bar_and_matches_completed_prefix():
     frame = bars()
-    cutoff = frame.timestamp_utc.iloc[50] + pd.Timedelta(minutes=7)
+    cutoff = frame.timestamp_utc.iloc[50] + timedelta(minutes=7)
     assert compute(frame, as_of=cutoff) == compute(frame.iloc[:50])
 
 
@@ -137,7 +137,7 @@ def test_invalid_input_rejected(kind):
     if kind == "reverse": frame = frame.iloc[::-1]
     if kind == "duplicate": frame.loc[1, "timestamp_utc"] = frame.timestamp_utc.iloc[0]
     if kind == "naive": frame.timestamp_utc = frame.timestamp_utc.dt.tz_localize(None)
-    if kind == "offgrid": frame.timestamp_utc += pd.Timedelta(minutes=1)
+    if kind == "offgrid": frame.timestamp_utc += timedelta(minutes=1)
     if kind == "nan": frame.loc[1, "high"] = float("nan")
     if kind == "infinite": frame.loc[1, "high"] = float("inf")
     if kind == "bad_ohlc": frame.loc[1, "high"] = 1
@@ -190,4 +190,3 @@ def test_h3_utc_anchor_does_not_follow_analysis_timezone():
     utc = UniversalFeatureEngine(analysis_timezone="UTC").compute(full, symbol="EURUSD")
     ny = compute(full)
     assert [r.completed_h3_direction for r in utc] == [r.completed_h3_direction for r in ny]
-

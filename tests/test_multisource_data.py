@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 from uuid import uuid4
 import shutil
 import pandas as pd
@@ -92,7 +93,7 @@ def test_explicit_weekend_dst_and_unknown_session():
 
 
 def test_continuity_resets_unexplained_and_can_continue_expected_weekend():
-    raw=bars();raw.loc[80:,"timestamp_utc"]+=pd.Timedelta("4h")
+    raw=bars();raw.loc[80:,"timestamp_utc"]+=timedelta(hours=4)
     clean,_,gaps,_=sanitize(raw,META)
     assert clean.continuity_segment_id.nunique()==2 and gaps.iloc[0].reset
     assert clean.continuity_segment_id.iloc[79]==0 and clean.continuity_segment_id.iloc[80]==1
@@ -106,7 +107,7 @@ def test_feature_optional_quality_no_reset_regression_and_unexplained_reset():
     engine=UniversalFeatureEngine();raw=bars(280)
     clean,_,_,_=sanitize(raw,META)
     assert engine.compute(clean,symbol="EURUSD")==engine.compute(clean,symbol="EURUSD",quality_context=QualityContext())
-    raw.loc[140:,"timestamp_utc"]+=pd.Timedelta("4h")
+    raw.loc[140:,"timestamp_utc"]+=timedelta(hours=4)
     clean,_,_,_=sanitize(raw,META)
     rows=engine.compute(clean,symbol="EURUSD",quality_context=QualityContext())
     assert rows[139].feature_ready and not rows[140].feature_ready
@@ -188,7 +189,7 @@ def test_archive_poll_overlap_is_incremental(root):
             return raw[raw.timestamp_utc>=start]
     feed=Feed()
     archive.poll(feed,now=pd.Timestamp("2024-01-01 02:00Z"),overlap_minutes=10)
-    assert feed.start==raw.timestamp_utc.max()-pd.Timedelta("10min")
+    assert feed.start==raw.timestamp_utc.max()-timedelta(minutes=10)
 
 
 def test_cross_provider_alignment_variance_and_no_overlap():
@@ -198,7 +199,7 @@ def test_cross_provider_alignment_variance_and_no_overlap():
     assert m["matched_bars"]==4 and m["missing_on_b"]==1
     assert m["median_absolute_close_difference_pips"]==pytest.approx(1)
     assert m["direction_agreement_rate"]==1
-    b.timestamp_utc+=pd.Timedelta("7d")
+    b.timestamp_utc+=timedelta(days=7)
     assert compare_providers(a,b)[1]["matched_bars"]==0
 
 def test_sanitation_restart_recovers_complete_unregistered_artifact(root):
@@ -220,4 +221,3 @@ def test_sanitation_reread_detects_tampered_audit(root):
     audit=root/m["artifact_directory"]/"audit.parquet"
     audit.write_bytes(b"corrupt test evidence")
     with pytest.raises(ValueError,match="checksum"):sanitize_external(registry,rawid)
-
