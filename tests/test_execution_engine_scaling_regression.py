@@ -64,3 +64,17 @@ def test_duplicate_trade_intent_semantics_preserved():
     assert all(row.status == PositionStatus.REJECTED for row in duplicate_records)
     assert all(row.rejection_reason == "DUPLICATE_TRADE_INTENT_ID" for row in duplicate_records)
     assert next(row for row in result.ledger if row.trade_intent_id == "unique").rejection_reason is None
+
+
+def test_microsecond_market_resolution_preserves_execution_semantics():
+    market = _market()
+    market["timestamp_utc"] = pd.Series(
+        pd.DatetimeIndex(pd.to_datetime(market["timestamp_utc"], utc=True)).as_unit("us")
+    )
+    result = execution_engine.BacktestEngine(ExecutionConfig(candle_interval_seconds=60)).run(
+        [_intent("microsecond-resolution")], market
+    )
+    record = result.ledger[0]
+    assert record.rejection_reason is None
+    assert record.status == PositionStatus.CLOSED
+    assert record.exit_reason == "TAKE_PROFIT"
