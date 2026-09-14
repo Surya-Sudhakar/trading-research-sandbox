@@ -60,7 +60,10 @@ def canonical_market_data(frame: pd.DataFrame) -> pd.DataFrame:
 def _prepare_market(frame: pd.DataFrame, interval: pd.Timedelta) -> _PreparedMarket:
     canonical = canonical_market_data(frame)
     timestamps = pd.DatetimeIndex(canonical["timestamp_utc"])
-    timestamp_ns = timestamps.asi8
+    # Pandas 3 may preserve datetime64[us] resolution. Explicitly normalize the
+    # integer search/gap representation to nanoseconds because Timestamp.value
+    # and Timedelta.value are nanosecond-based.
+    timestamp_ns = timestamps.as_unit("ns").asi8
     interval_ns = int(interval.value)
     gaps = np.zeros(len(timestamps), dtype=np.bool_)
     if len(timestamps) > 1:
