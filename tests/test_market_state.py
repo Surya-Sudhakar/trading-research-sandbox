@@ -30,7 +30,7 @@ def aligned_frames(n=320):
 
 
 def snap(frames=None,cutoff=None,config=None,**kw):
-    frames=frames or aligned_frames();cutoff=cutoff or (frames["M15"].timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime()
+    frames=frames or aligned_frames();cutoff=cutoff or (frames["M15"].timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime()
     return MarketStateEngine(config).snapshot(frames,symbol="EURUSD",decision_timestamp=cutoff,information_cutoff_timestamp=cutoff,**kw)
 
 
@@ -44,7 +44,7 @@ def test_configuration_and_snapshot_identity_deterministic_and_material_changes(
     a=MarketStateEngine();b=MarketStateEngine();assert a.configuration_fingerprint==b.configuration_fingerprint and a.code_fingerprint==b.code_fingerprint
     changed=MarketStateEngine(FeatureConfiguration(horizons=(4,8)));assert changed.configuration_fingerprint!=a.configuration_fingerprint
     one=snap();two=snap();assert one.snapshot_id==two.snapshot_id and one.values==two.values
-    later=snap(cutoff=(aligned_frames()["M15"].timestamp_utc.iloc[-2]+pd.Timedelta(minutes=15)).to_pydatetime());assert later.snapshot_id!=one.snapshot_id
+    later=snap(cutoff=(aligned_frames()["M15"].timestamp_utc.iloc[-2]+timedelta(minutes=15)).to_pydatetime());assert later.snapshot_id!=one.snapshot_id
 
 
 def test_snapshot_and_configuration_are_immutable_and_outcome_is_rejected():
@@ -70,7 +70,7 @@ def test_information_cutoff_cannot_follow_decision_and_protected_phase_denied():
 
 
 def test_trend_displacement_slope_efficiency_and_atr_normalization_are_manual():
-    frame=candles(30);cutoff=(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime();s=snap({"M15":frame},cutoff,FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=10))
+    frame=candles(30);cutoff=(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime();s=snap({"M15":frame},cutoff,FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=10))
     closes=frame.close.iloc[-5:].tolist();expected=closes[-1]-closes[0];path=sum(abs(b-a) for a,b in zip(closes,closes[1:]))
     assert s.values["M15.h4.displacement_price"]==pytest.approx(expected)
     assert s.values["M15.h4.directional_efficiency"]==pytest.approx(abs(expected)/path)
@@ -80,14 +80,14 @@ def test_trend_displacement_slope_efficiency_and_atr_normalization_are_manual():
 
 
 def test_zero_efficiency_atr_and_range_are_explicitly_unavailable():
-    frame=candles(30,flat=True);s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=10))
+    frame=candles(30,flat=True);s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=10))
     assert not s.validity_flags["M15.h4.directional_efficiency"] and not s.validity_flags["M15.volatility.atr"] and not s.validity_flags["M15.h4.close_position_in_range"]
     assert "M15.h4.directional_efficiency" not in s.values
 
 
 def test_volatility_atr_tr_stats_ratio_and_percentile_are_causal():
     frame=candles(80);cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=5,volatility_short_window=5,volatility_long_window=10,volatility_percentile_history=20)
-    cutoff=(frame.timestamp_utc.iloc[50]+pd.Timedelta(minutes=15)).to_pydatetime();a=snap({"M15":frame},cutoff,cfg)
+    cutoff=(frame.timestamp_utc.iloc[50]+timedelta(minutes=15)).to_pydatetime();a=snap({"M15":frame},cutoff,cfg)
     changed=frame.copy();changed.loc[55:,"high"]=9999;b=snap({"M15":changed},cutoff,cfg)
     assert a.values==b.values and a.values["M15.volatility.atr"]>0 and a.values["M15.volatility.tr_mean_short"]>0
     assert 0<a.values["M15.volatility.atr_percentile"]<=100 and a.values["M15.volatility.short_long_atr_ratio"]>0
@@ -96,16 +96,16 @@ def test_volatility_atr_tr_stats_ratio_and_percentile_are_causal():
 def test_momentum_recent_preceding_sign_change_and_missing_denominator():
     frame=candles(20,flat=True);frame.loc[:8,"close"]=list(range(100,109));frame.loc[9:,"close"]=list(range(108,97,-1))[:11];frame["high"]=frame[["open","close"]].max(axis=1)+.2;frame["low"]=frame[["open","close"]].min(axis=1)-.2
     cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5)
-    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg)
+    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg)
     assert s.values["M15.h4.momentum_change.recent_displacement_price"]<0
     # A dedicated V-shaped window establishes sign-change behavior without interpreting it.
     v=frame.iloc[:9].copy();v["close"]=[100,101,102,103,104,103,102,101,100];v["high"]=v[["open","close"]].max(axis=1)+.2;v["low"]=v[["open","close"]].min(axis=1)-.2
-    sv=snap({"M15":v},(v.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg)
+    sv=snap({"M15":v},(v.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg)
     assert sv.values["M15.h4.momentum_change.displacement_sign_changed"] is True
 
 
 def test_range_extremes_distances_and_maturity_are_manual():
-    frame=candles(20);cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5);s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg)
+    frame=candles(20);cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5);s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg)
     tail=frame.iloc[-4:];hi=tail.high.max();lo=tail.low.min();close=tail.close.iloc[-1]
     assert s.values["M15.h4.rolling_range_price"]==pytest.approx(hi-lo) and s.values["M15.h4.close_position_in_range"]==pytest.approx((close-lo)/(hi-lo))
     assert s.values["M15.h4.bars_since_rolling_high"]==0 and s.values["M15.h4.distance_from_rolling_low_price"]==pytest.approx(close-lo)
@@ -117,16 +117,16 @@ def test_confirmed_pivot_has_exact_right_bar_delay_and_distances():
     swings=confirmed_swings(highs,lows,2,2);assert swings and swings[0].kind=="HIGH" and swings[0].confirmation_index==4
     frame=candles(12,flat=True);frame["high"]=[1,2,5,2,1,2,3,2,1,2,3,2];frame["low"]=[0,.5,1,.5,0,.5,1,.5,0,.5,1,.5];frame["open"]=1.5;frame["close"]=1.5
     cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5)
-    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg)
+    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg)
     assert s.values["M15.swing.high.price"]==3 and s.values["M15.swing.high.bars_since_confirmation"]==3
     assert s.values["M15.swing.high.distance_price"]==pytest.approx(-1.5) and "M15.structure.lower_high_count" in s.values
 
 
 def test_insufficient_history_no_forward_fill_and_nonfinite_fails_safely():
     frame=candles(3);cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=14,volatility_short_window=14,volatility_long_window=50,volatility_percentile_history=250)
-    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg);assert not s.validity_flags["M15.h4.displacement_price"] and "M15.h4.displacement_price" not in s.values
+    s=snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg);assert not s.validity_flags["M15.h4.displacement_price"] and "M15.h4.displacement_price" not in s.values
     frame.loc[1,"close"]=math.nan
-    with pytest.raises(ResearchError,match="NON_FINITE"):snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+pd.Timedelta(minutes=15)).to_pydatetime(),cfg)
+    with pytest.raises(ResearchError,match="NON_FINITE"):snap({"M15":frame},(frame.timestamp_utc.iloc[-1]+timedelta(minutes=15)).to_pydatetime(),cfg)
 
 
 def test_multitimeframe_alignment_h1_becomes_available_only_at_close():
@@ -166,7 +166,7 @@ def test_engine_has_no_filter_ranking_optimizer_ml_outcome_or_stage7_surface():
 
 
 def test_visible_bad_ohlc_flagged_but_future_bad_ohlc_cannot_contaminate_cache():
-    frame=candles(20);cutoff=(frame.timestamp_utc.iloc[10]+pd.Timedelta(minutes=15)).to_pydatetime();cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5)
+    frame=candles(20);cutoff=(frame.timestamp_utc.iloc[10]+timedelta(minutes=15)).to_pydatetime();cfg=FeatureConfiguration(requested_timeframes=("M15",),horizons=(4,),atr_period=3,volatility_short_window=3,volatility_long_window=5,volatility_percentile_history=5)
     base=snap({"M15":frame},cutoff,cfg);future=frame.copy();future.loc[15,["high","low"]]=[-999,999];assert snap({"M15":future},cutoff,cfg).values==base.values
     visible=frame.copy();visible.loc[5,["high","low"]]=[-999,999]
     assert "M15:INVALID_OHLC_GEOMETRY_OBSERVED" in snap({"M15":visible},cutoff,cfg).data_quality_flags

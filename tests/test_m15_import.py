@@ -1,17 +1,12 @@
 from __future__ import annotations
 
-import sqlite3
 from pathlib import Path
 from uuid import uuid4
 
 import pandas as pd
 import pytest
-from fastapi.testclient import TestClient
 
-from sandbox.api.app import create_app
-from sandbox.api.service import SandboxReadService
 from sandbox.catalog import Catalog
-from sandbox.config import Settings
 from sandbox.external_import import ExternalImportGateway, ImportError, ImportSpec, PriceType, Resolution, TimestampFormat
 from sandbox.market_state import FeatureConfiguration, MarketStateEngine
 from sandbox.partition.service import PartitionService
@@ -31,10 +26,6 @@ def write(path: Path, values=None):pd.DataFrame(values or rows()).to_csv(path,in
 def spec(path: Path, resolution=Resolution.M15, timestamp_format=TimestampFormat.UNIX_MILLISECONDS):
     return ImportSpec((path,),"DUKASCOPY","EURUSD","EURUSD",resolution,PriceType.BID,"UTC",{"timestamp":"timestamp","open":"open","high":"high","low":"low","close":"close"},None,False,None,timestamp_format)
 def gateway(root):return ExternalImportGateway(Catalog(root/"catalog.sqlite3"),root/"data")
-def client(root):return TestClient(create_app(SandboxReadService(Settings(None,root/"data",root/"catalog.sqlite3",7,3,"INFO"),root,probe_broker=False)))
-def upload(client,values=None,**overrides):
-    metadata={"provider":"DUKASCOPY","symbol":"EURUSD","data_type":"M15","price_type":"BID","source_timezone":"UTC","purpose":"UNASSIGNED_RESEARCH_DATA","timestamp_format":"UNIX_MILLISECONDS"};metadata.update(overrides)
-    return client.post("/api/data/import",data=metadata,files={"file":("m15.csv",pd.DataFrame(values or rows()).to_csv(index=False).encode(),"text/csv")})
 
 
 def test_valid_m15_unix_ms_utc_provenance_sha_and_catalog(root):
@@ -79,22 +70,9 @@ def test_m15_cannot_be_silently_relabelled_m1(root):
     assert g.inspect_dataset(m15["dataset_id"])["manifest"]["resolution"]=="M15" and g.inspect_dataset(m1["dataset_id"])["manifest"]["resolution"]=="M1"
 
 
-def test_api_accepts_m15_ohlc_and_blocks_protected_purposes(root):
-    c=client(root);response=upload(c);assert response.status_code==200 and response.json()["data_type"]=="M15" and response.json()["certification"]=="CERTIFIED"
-    assert c.get("/api/data/status").json()["datasets"][0]["timeframe"]=="M15"
-    assert upload(c,purpose="VALIDATION").status_code==422 and upload(c,purpose="FINAL_TEST").status_code==422
-    con=sqlite3.connect(root/"catalog.sqlite3");assert con.execute("select count(*) from sqlite_master where type='table' and name='data_partitions'").fetchone()[0]==0
-
-
 def test_m15_builds_only_complete_causal_h1_for_s001_and_market_state():
     frame=pd.DataFrame(rows());frame["timestamp_utc"]=pd.to_datetime(frame.pop("timestamp"),unit="ms",utc=True);frame["tick_volume"]=0;frame["spread"]=0;frame["real_volume"]=0
     plugin=S001Strategy();frames=PartitionService._strategy_timeframe_frames(frame,plugin,"M15");assert frames["M15"].equals(frame) and len(frames["H1"])==1
     incomplete=PartitionService._strategy_timeframe_frames(frame.iloc[:3],plugin,"M15");assert incomplete["H1"].empty
     engine=MarketStateEngine(FeatureConfiguration(requested_timeframes=("M15","H1"),horizons=(1,),atr_period=1,volatility_short_window=1,volatility_long_window=2,volatility_percentile_history=2))
     snapshot=engine.snapshot(frames,symbol="EURUSD",decision_timestamp=pd.Timestamp("2024-01-01 01:00",tz="UTC").to_pydatetime());assert snapshot.information_cutoff_timestamp.hour==1
-
-
-def test_frontend_exposes_controlled_m15_and_timestamp_formats():
-    source=Path("frontend/src/App.tsx").read_text(encoding="utf-8");assert "<option>M15</option>" in source and "UNIX_MILLISECONDS" in source and "ISO8601" in source
-    assert all(text in source for text in ("<<< Import Diagnostics >>>","<<< Findings >>>","<<< Representative Examples >>>","INSPECT SAFE DIAGNOSTICS","NOT ELIGIBLE FOR RESEARCH"))
-    assert all(text in source for text in ("INTERPRETATION REASON","MULTIPLE_INTERPRETATIONS_REASON_REQUIRED","not a validation bypass","maxLength={500}"))

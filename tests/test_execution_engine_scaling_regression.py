@@ -64,3 +64,28 @@ def test_duplicate_trade_intent_semantics_preserved():
     assert all(row.status == PositionStatus.REJECTED for row in duplicate_records)
     assert all(row.rejection_reason == "DUPLICATE_TRADE_INTENT_ID" for row in duplicate_records)
     assert next(row for row in result.ledger if row.trade_intent_id == "unique").rejection_reason is None
+
+
+def test_microsecond_market_resolution_preserves_execution_semantics():
+    config = ExecutionConfig(candle_interval_seconds=60)
+    baseline = execution_engine.BacktestEngine(config).run(
+        [_intent("baseline-resolution")], _market()
+    ).ledger[0]
+
+    market = _market()
+    market["timestamp_utc"] = pd.Series(
+        pd.DatetimeIndex(pd.to_datetime(market["timestamp_utc"], utc=True)).as_unit("us")
+    )
+    microsecond = execution_engine.BacktestEngine(config).run(
+        [_intent("microsecond-resolution")], market
+    ).ledger[0]
+
+    assert microsecond.rejection_reason is None
+    assert microsecond.status == baseline.status
+    assert microsecond.exit_reason == baseline.exit_reason
+    assert microsecond.entry_timestamp == baseline.entry_timestamp
+    assert microsecond.entry_price == baseline.entry_price
+    assert microsecond.exit_timestamp == baseline.exit_timestamp
+    assert microsecond.exit_price == baseline.exit_price
+    assert microsecond.gross_r == baseline.gross_r
+    assert microsecond.net_r == baseline.net_r

@@ -30,16 +30,16 @@ class SessionProfile:
         if self.week_close is not None:
             local=previous.tz_convert(self.timezone)
             for shift in (-7,0,7):
-                monday=(local.normalize()-pd.Timedelta(days=local.weekday())).date()+timedelta(days=shift)
+                monday=(local.normalize()-timedelta(days=local.weekday())).date()+timedelta(days=shift)
                 cd,ch,cm=self.week_close;od,oh,om=self.week_open
-                close=(pd.Timestamp(monday+timedelta(days=cd))+pd.Timedelta(hours=ch,minutes=cm)).tz_localize(self.timezone)
+                close=(pd.Timestamp(monday+timedelta(days=cd))+timedelta(hours=ch,minutes=cm)).tz_localize(self.timezone)
                 # Build wall times independently across DST.
                 open_date=monday+timedelta(days=od+(7 if od<=cd else 0))
-                opened=(pd.Timestamp(open_date)+pd.Timedelta(hours=oh,minutes=om)).tz_localize(self.timezone)
-                if previous+pd.Timedelta(minutes=minutes)==close.tz_convert("UTC") and following==opened.tz_convert("UTC"):
+                opened=(pd.Timestamp(open_date)+timedelta(hours=oh,minutes=om)).tz_localize(self.timezone)
+                if previous+timedelta(minutes=int(minutes))==close.tz_convert("UTC") and following==opened.tz_convert("UTC"):
                     return "EXPECTED_WEEKEND"
         # This is an association, not an assertion that coverage is valid.
-        if previous.weekday()==4 and following.weekday() in (6,0) and following-previous<=pd.Timedelta(days=4):
+        if previous.weekday()==4 and following.weekday() in (6,0) and following-previous<=timedelta(days=4):
             return "WEEKEND_ASSOCIATED_UNKNOWN"
         return "UNEXPLAINED_GAP"
 
@@ -61,7 +61,7 @@ def inventory(frame, metadata, profile=SessionProfile(), policy=ContinuityPolicy
     times=pd.DatetimeIndex(frame.timestamp_utc)
     excluded=sorted(pd.Timestamp(t) for t in excluded_times if not pd.isna(t))
     import bisect
-    rows=[];segments=[0];segment=0;delta=pd.Timedelta(f"{minutes}min")
+    rows=[];segments=[0];segment=0;delta=timedelta(minutes=int(minutes))
     for previous,following in zip(times[:-1],times[1:]):
         missing=int((following-previous)/delta)-1
         if missing>0:

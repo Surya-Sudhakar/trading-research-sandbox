@@ -1,5 +1,6 @@
 """Integration checks against the actual sanitized Discovery dataset, when provisioned."""
 from pathlib import Path
+from datetime import timedelta
 import json
 from types import SimpleNamespace
 import pandas as pd
@@ -44,7 +45,7 @@ def test_real_exclusions_raw_status_and_complete_row_alignment(real):
     assert len(excluded)==10 and excluded.classification.eq("INVALID_OHLC").all()
     assert not source.timestamp_utc.isin(excluded.timestamp_utc).any()
     assert len(source)==len(feature)
-    assert ((source.timestamp_utc+pd.Timedelta("15min")).reset_index(drop=True)==feature.timestamp.reset_index(drop=True)).all()
+    assert ((source.timestamp_utc+timedelta(minutes=15)).reset_index(drop=True)==feature.timestamp.reset_index(drop=True)).all()
 
 
 def test_real_future_mutation_prefix_and_determinism(real):
@@ -85,12 +86,12 @@ def test_real_context_intraday_boundaries_weekend_and_dst(real):
     assert len(weekend);selected.append(weekend.iloc[1])
     for row in selected:
         current=source[(source.continuity_segment_id==row.continuity_segment_id)&
-                       (source.timestamp_utc+pd.Timedelta("15min")<=row.timestamp)]
+                       (source.timestamp_utc+timedelta(minutes=15)<=row.timestamp)]
         for hours,name in ((1,"completed_h1_direction"),(3,"completed_h3_direction")):
             # Independent arithmetic bucket check, not feature-engine context helpers.
             candidates=[]
             for start,group in current.groupby(current.timestamp_utc.dt.floor(f"{hours}h")):
-                end=start+pd.Timedelta(f"{hours}h")
+                end=start+timedelta(hours=hours)
                 expected=pd.date_range(start,periods=hours*4,freq="15min")
                 if len(group)==hours*4 and list(group.timestamp_utc)==list(expected) and end<=row.timestamp:
                     candidates.append((end,int(group.close.iloc[-1]>group.open.iloc[0])-int(group.close.iloc[-1]<group.open.iloc[0])))
