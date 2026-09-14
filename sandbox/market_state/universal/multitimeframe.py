@@ -1,6 +1,6 @@
 """Use the existing partition-local UTC reconstruction without strategy execution."""
+from datetime import timedelta
 from types import SimpleNamespace
-import pandas as pd
 from sandbox.partition.service import PartitionService
 from sandbox.market_state.normalization import timeframe_minutes
 
@@ -14,7 +14,7 @@ def completed_context(frame, decision_timeframe, context_timeframes):
     frames = PartitionService._strategy_timeframe_frames(source, request, decision_timeframe)
     result = {}
     for tf, bars in frames.items():
-        duration = pd.Timedelta(minutes=timeframe_minutes(tf))
+        duration = timedelta(minutes=int(timeframe_minutes(tf)))
         result[tf] = [
             (r.timestamp_utc + duration, int(r.close > r.open)-int(r.close < r.open))
             for r in bars.itertuples(index=False)

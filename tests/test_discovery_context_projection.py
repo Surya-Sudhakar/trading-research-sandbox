@@ -78,7 +78,17 @@ def test_exact_order_and_metrics():
         expected += [f"x.session.{name}."+m for m in ("available","active","missing_completed",*SHAPE)]
     for name in ("z_pair","a_pair"):
         expected += [f"x.relationship.{name}."+m for m in ("available",*REL)]
-    assert ids==expected
+    assert ids[:len(expected)]==expected
+    assert ids[len(expected):] == [
+        "x.market.m15.available", *("x.market.m15." + name for name, _ in projection._MARKET_FIELDS),
+        *("x.market.m15.structure." + name for name in projection._BREAK_FLAGS),
+        "x.level_transition.sweep", "x.level_transition.reclaim",
+        "x.daily.previous.available", "x.daily.previous.open", "x.daily.previous.high",
+        "x.daily.previous.low", "x.daily.previous.close", "x.daily.previous.range",
+        "x.daily.previous.midpoint",
+        *(f"x.daily.previous.level.{level}.{metric}"
+          for level in projection._DAILY_LEVELS for metric in projection._LEVEL_MEASUREMENTS),
+    ]
     values=values_by_id(row.predictors)
     for prefix in ("x.m15.","x.mtf.z_custom.","x.session.z_custom."):
         assert values[prefix+"direction"]=="BULLISH"
@@ -138,7 +148,8 @@ def test_future_leakage_and_raw_price_scale_invariance():
     scaled=projection.project_research_record_with_context(record(scale=2))
     assert first.predictors==scaled.predictors
     assert first.identity!=scaled.identity
-    for value in first.predictors[8:]:
+    legacy_count = 4 + 2*7 + 4*7 + 2*15
+    for value in first.predictors[8:8+legacy_count]:
         assert not isinstance(value.value,(date,datetime))
         assert value.field_id.split(".")[-1] not in ("open","high","low","close","range","level_price","reference_price")
 

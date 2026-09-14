@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections import Counter
 from dataclasses import dataclass
 from typing import Callable, Iterable
 
+import numpy as np
 import pandas as pd
 
 from sandbox import EXECUTION_ENGINE_VERSION, LEDGER_SCHEMA_VERSION, METRICS_VERSION
@@ -28,6 +30,22 @@ class RunResult:
         return pd.DataFrame([record.model_dump(mode="json") for record in self.ledger])
 
 
+@dataclass(frozen=True)
+class _PreparedMarket:
+    timestamps: pd.DatetimeIndex
+    timestamp_ns: np.ndarray
+    opens: np.ndarray
+    highs: np.ndarray
+    lows: np.ndarray
+    closes: np.ndarray
+    spreads: np.ndarray
+    gap_after_previous: np.ndarray
+    interval: pd.Timedelta
+    interval_ns: int
+    start: pd.Timestamp | None
+    dataset_end: pd.Timestamp | None
+
+
 def canonical_market_data(frame: pd.DataFrame) -> pd.DataFrame:
     missing = [name for name in REQUIRED if name not in frame.columns]
     if missing:
@@ -37,6 +55,35 @@ def canonical_market_data(frame: pd.DataFrame) -> pd.DataFrame:
     if result.timestamp_utc.duplicated().any():
         raise ValueError("market data contains duplicate timestamps")
     return result.sort_values("timestamp_utc", kind="mergesort").reset_index(drop=True)
+
+
+def _prepare_market(frame: pd.DataFrame, interval: pd.Timedelta) -> _PreparedMarket:
+    canonical = canonical_market_data(frame)
+    timestamps = pd.DatetimeIndex(canonical["timestamp_utc"])
+    # Pandas 3 may preserve datetime64[us] resolution. Explicitly normalize the
+    # integer search/gap representation to nanoseconds because Timestamp.value
+    # and Timedelta.value are nanosecond-based.
+    timestamp_ns = timestamps.as_unit("ns").asi8
+    interval_ns = int(interval.value)
+    gaps = np.zeros(len(timestamps), dtype=np.bool_)
+    if len(timestamps) > 1:
+        gaps[1:] = (timestamp_ns[1:] - timestamp_ns[:-1]) > interval_ns
+    start = timestamps[0] if len(timestamps) else None
+    dataset_end = timestamps[-1] + interval if len(timestamps) else None
+    return _PreparedMarket(
+        timestamps=timestamps,
+        timestamp_ns=timestamp_ns,
+        opens=canonical["open"].to_numpy(dtype=np.float64, copy=False),
+        highs=canonical["high"].to_numpy(dtype=np.float64, copy=False),
+        lows=canonical["low"].to_numpy(dtype=np.float64, copy=False),
+        closes=canonical["close"].to_numpy(dtype=np.float64, copy=False),
+        spreads=canonical["spread"].to_numpy(dtype=np.float64, copy=False),
+        gap_after_previous=gaps,
+        interval=interval,
+        interval_ns=interval_ns,
+        start=start,
+        dataset_end=dataset_end,
+    )
 
 
 def run_fingerprint(intents: Iterable[TradeIntent], config: ExecutionConfig) -> str:
@@ -63,18 +110,25 @@ class BacktestEngine:
 
     def run(self, intents: Iterable[TradeIntent], candles: pd.DataFrame | dict[str, pd.DataFrame]) -> RunResult:
         items = list(intents)
-        duplicates = {x.trade_intent_id for x in items if sum(y.trade_intent_id == x.trade_intent_id for y in items) > 1}
-        markets = {symbol: canonical_market_data(frame) for symbol, frame in candles.items()} if isinstance(candles, dict) else None
+        counts = Counter(item.trade_intent_id for item in items)
+        duplicates = {trade_intent_id for trade_intent_id, count in counts.items() if count > 1}
+        interval = pd.Timedelta(int(self.config.candle_interval_seconds) * 1_000_000_000, unit="ns")
+        if isinstance(candles, dict):
+            markets = {symbol: _prepare_market(frame, interval) for symbol, frame in candles.items()}
+            single_market = None
+        else:
+            markets = None
+            single_market = _prepare_market(candles, interval)
         ledger = []
         for intent in sorted(items, key=lambda x: (x.signal_timestamp, x.trade_intent_id)):
             self._emit("trade_intent", trade_intent_id=intent.trade_intent_id)
-            frame = markets.get(intent.symbol) if markets is not None else canonical_market_data(candles)
+            market = markets.get(intent.symbol) if markets is not None else single_market
             if intent.trade_intent_id in duplicates:
                 record = self._reject(intent, "DUPLICATE_TRADE_INTENT_ID")
-            elif frame is None:
+            elif market is None:
                 record = self._reject(intent, "SYMBOL_DATA_NOT_FOUND")
             else:
-                record = self._execute(intent, frame)
+                record = self._execute(intent, market)
             ledger.append(record)
         fingerprint = run_fingerprint(items, self.config)
         self._emit("run_completion", run_fingerprint=fingerprint, ledger_rows=len(ledger))
@@ -83,11 +137,16 @@ class BacktestEngine:
     def _base(self, intent: TradeIntent) -> dict:
         return dict(
             trade_id="trade-" + hashlib.sha256(intent.trade_intent_id.encode()).hexdigest()[:24],
-            trade_intent_id=intent.trade_intent_id, strategy_id=intent.strategy_id,
-            experiment_id=intent.experiment_id, dataset_id=intent.dataset_id,
-            symbol=intent.symbol, direction=intent.direction,
-            signal_timestamp=intent.signal_timestamp, stop_loss=intent.stop_loss,
-            take_profit=intent.take_profit, quantity=intent.quantity,
+            trade_intent_id=intent.trade_intent_id,
+            strategy_id=intent.strategy_id,
+            experiment_id=intent.experiment_id,
+            dataset_id=intent.dataset_id,
+            symbol=intent.symbol,
+            direction=intent.direction,
+            signal_timestamp=intent.signal_timestamp,
+            stop_loss=intent.stop_loss,
+            take_profit=intent.take_profit,
+            quantity=intent.quantity,
             intent_metadata_json=json.dumps(intent.metadata, sort_keys=True, separators=(",", ":")),
         )
 
@@ -95,27 +154,34 @@ class BacktestEngine:
         self._emit("rejection", trade_intent_id=intent.trade_intent_id, reason=reason)
         return LedgerRecord(**self._base(intent), exit_reason="REJECTED", rejection_reason=reason, status=PositionStatus.REJECTED)
 
-    def _execute(self, intent: TradeIntent, frame: pd.DataFrame) -> LedgerRecord:
+    def _entry_index(self, intent: TradeIntent, market: _PreparedMarket, signal: pd.Timestamp) -> int | None:
+        if intent.requested_entry_type == EntryType.MARKET_NEXT_OPEN:
+            position = int(np.searchsorted(market.timestamp_ns, signal.value, side="left"))
+            return None if position >= len(market.timestamp_ns) else position
+        open_ns = signal.value - market.interval_ns
+        position = int(np.searchsorted(market.timestamp_ns, open_ns, side="left"))
+        if position >= len(market.timestamp_ns) or int(market.timestamp_ns[position]) != open_ns:
+            return None
+        return position
+
+    def _execute(self, intent: TradeIntent, market: _PreparedMarket) -> LedgerRecord:
         if intent.requested_entry_type in (EntryType.LIMIT, EntryType.STOP):
             return self._reject(intent, "UNSUPPORTED_ENTRY_TYPE")
-        timestamps = frame.timestamp_utc
         signal = pd.Timestamp(intent.signal_timestamp)
-        interval = pd.Timedelta(int(self.config.candle_interval_seconds) * 1_000_000_000, unit="ns")
-        dataset_end = timestamps.max() + interval
-        if signal < timestamps.min() or signal > dataset_end:
+        if market.start is not None and (signal < market.start or signal > market.dataset_end):
             return self._reject(intent, "SIGNAL_OUTSIDE_DATASET")
+        entry_index = self._entry_index(intent, market, signal)
+        if entry_index is None:
+            reason = ("MISSING_NEXT_OPEN_EXECUTION_CANDLE" if intent.requested_entry_type == EntryType.MARKET_NEXT_OPEN else "IMPOSSIBLE_SIGNAL_TIMESTAMP")
+            return self._reject(intent, reason)
         if intent.requested_entry_type == EntryType.MARKET_NEXT_OPEN:
-            candidates = frame.index[timestamps >= signal]
-            if len(candidates) == 0:
-                return self._reject(intent, "MISSING_NEXT_OPEN_EXECUTION_CANDLE")
-            entry_index = int(candidates[0]); entry_price = float(frame.at[entry_index, "open"]); exit_start = entry_index
+            entry_price = float(market.opens[entry_index])
+            exit_start = entry_index
+            entry_timestamp = market.timestamps[entry_index].to_pydatetime()
         else:
-            close_times = timestamps + interval
-            candidates = frame.index[close_times == signal]
-            if len(candidates) == 0:
-                return self._reject(intent, "IMPOSSIBLE_SIGNAL_TIMESTAMP")
-            entry_index = int(candidates[0]); entry_price = float(frame.at[entry_index, "close"]); exit_start = entry_index + 1
-        entry_timestamp = (signal if intent.requested_entry_type == EntryType.MARKET_CLOSE else timestamps.iloc[entry_index]).to_pydatetime()
+            entry_price = float(market.closes[entry_index])
+            exit_start = entry_index + 1
+            entry_timestamp = signal.to_pydatetime()
         if entry_timestamp < intent.signal_timestamp:
             return self._reject(intent, "EXECUTION_BEFORE_SIGNAL")
         if intent.direction == Direction.LONG:
@@ -130,35 +196,35 @@ class BacktestEngine:
             return self._reject(intent, "INVALID_TAKE_PROFIT")
         self._emit("execution", trade_intent_id=intent.trade_intent_id, entry_timestamp=entry_timestamp.isoformat(), entry_price=entry_price)
         market_gap_count = 0
-        for index in range(exit_start, len(frame)):
-            if index > entry_index:
-                elapsed = pd.Timestamp(frame.at[index, "timestamp_utc"]) - pd.Timestamp(frame.at[index-1, "timestamp_utc"])
-                if elapsed > interval:
-                    market_gap_count += 1
-                    self._emit("market_gap", trade_intent_id=intent.trade_intent_id, elapsed=str(elapsed), reopening_timestamp=pd.Timestamp(frame.at[index, "timestamp_utc"]).isoformat())
-            outcome = self._resolve_bar(intent, frame.iloc[index])
+        length = len(market.timestamp_ns)
+        for index in range(exit_start, length):
+            if index > entry_index and market.gap_after_previous[index]:
+                market_gap_count += 1
+                elapsed = market.timestamps[index] - market.timestamps[index - 1]
+                self._emit("market_gap", trade_intent_id=intent.trade_intent_id, elapsed=str(elapsed), reopening_timestamp=market.timestamps[index].isoformat())
+            outcome = self._resolve_bar_values(intent, float(market.opens[index]), float(market.highs[index]), float(market.lows[index]), float(market.spreads[index]))
             if outcome is not None:
                 exit_price, reason = outcome
                 direction_sign = 1.0 if intent.direction == Direction.LONG else -1.0
                 gross = (exit_price - entry_price) * direction_sign * intent.quantity
-                spread = spread_cost(self.config, float(frame.at[entry_index, "spread"]), intent.quantity)
+                spread = spread_cost(self.config, float(market.spreads[entry_index]), intent.quantity)
                 commission = commission_cost(self.config, intent.quantity)
                 slippage = slippage_cost(self.config, intent.quantity)
                 net = gross - spread - commission - slippage
                 risk_value = risk * intent.quantity
                 self._emit("exit", trade_intent_id=intent.trade_intent_id, reason=reason)
                 return LedgerRecord(**self._base(intent), entry_timestamp=entry_timestamp, entry_price=entry_price,
-                    exit_timestamp=pd.Timestamp(frame.at[index, "timestamp_utc"]).to_pydatetime(), exit_price=exit_price,
+                    exit_timestamp=market.timestamps[index].to_pydatetime(), exit_price=exit_price,
                     exit_reason=reason, gross_pnl=gross, spread_cost=spread, commission_cost=commission,
                     slippage_cost=slippage, net_pnl=net, gross_r=gross/risk_value, net_r=net/risk_value,
-                    bars_held=index-entry_index+1, market_gap_count=market_gap_count, initial_risk_price_distance=risk, status=PositionStatus.CLOSED)
+                    bars_held=index-entry_index+1, market_gap_count=market_gap_count,
+                    initial_risk_price_distance=risk, status=PositionStatus.CLOSED)
         return LedgerRecord(**self._base(intent), entry_timestamp=entry_timestamp, entry_price=entry_price,
             exit_reason="END_OF_DATA", initial_risk_price_distance=risk,
-            bars_held=max(0, len(frame)-entry_index), market_gap_count=market_gap_count, status=PositionStatus.OPEN)
+            bars_held=max(0, length-entry_index), market_gap_count=market_gap_count, status=PositionStatus.OPEN)
 
-    def _resolve_bar(self, intent: TradeIntent, row: pd.Series) -> tuple[float, str] | None:
-        open_, high, low = float(row.open), float(row.high), float(row.low)
-        spread = spread_distance(self.config, float(row.spread))
+    def _resolve_bar_values(self, intent: TradeIntent, open_: float, high: float, low: float, candle_spread: float) -> tuple[float, str] | None:
+        spread = spread_distance(self.config, candle_spread)
         if intent.direction == Direction.LONG:
             if open_ <= intent.stop_loss:
                 return open_, "GAP_THROUGH_SL"
@@ -179,3 +245,6 @@ class BacktestEngine:
         if tp_hit:
             return intent.take_profit, "TAKE_PROFIT"
         return None
+
+    def _resolve_bar(self, intent: TradeIntent, row: pd.Series) -> tuple[float, str] | None:
+        return self._resolve_bar_values(intent, float(row.open), float(row.high), float(row.low), float(row.spread))

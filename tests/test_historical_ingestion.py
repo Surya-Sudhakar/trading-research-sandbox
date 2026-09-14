@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 from types import SimpleNamespace
 from uuid import uuid4
 import json
@@ -70,7 +71,7 @@ def test_preflight_rejects_corruption_without_relaxing_rules(real_bars, problem)
     if problem=="duplicate":f.loc[1,"timestamp_utc"]=f.timestamp_utc.iloc[0]
     if problem=="unordered":f=f.iloc[::-1]
     if problem=="naive":f.timestamp_utc=f.timestamp_utc.dt.tz_localize(None)
-    if problem=="offgrid":f.timestamp_utc += pd.Timedelta("1s")
+    if problem=="offgrid":f.timestamp_utc += timedelta(seconds=1)
     if problem=="nonfinite":f.loc[0,"high"]=float("inf")
     if problem=="negative":f.loc[0,"low"]=-1
     if problem=="geometry":f.loc[0,"high"]=f.low.iloc[0]-.01

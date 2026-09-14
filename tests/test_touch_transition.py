@@ -7,7 +7,10 @@ from sandbox.market_state.price_geometry import ProjectionLevelSpec
 from sandbox.market_state.geometry_lifecycle import build_geometry_instance
 from sandbox.market_state.level_interaction_history import build_level_interaction_history
 from sandbox.market_state.level_state_sequence import LevelRangeState, build_level_state_sequence
-from sandbox.market_state.touch_transition import build_touch_transition_patterns
+from sandbox.market_state.touch_transition import (
+    ReclaimDirection, SweepDirection, build_touch_transition_patterns,
+    classify_level_transition,
+)
 
 START = datetime(2024, 1, 15, tzinfo=timezone.utc)
 STEP = timedelta(minutes=15)
@@ -17,7 +20,7 @@ def sequence(pattern):
     end = START + timedelta(hours=3)
     candle = AnchoredBlockCandle(START.date(), "C1", 0, START, end, START, end, 10, 12, 8, 9, 12, 12)
     source = build_geometry_instance(candle, "CUSTOM", (ProjectionLevelSpec("LEVEL", 0),))
-    prices = {"A": (11, 12, 11, 11), "T": (11, 12, 10, 11), "B": (8, 9, 7, 8)}
+    prices = {"A": (11, 12, 11, 11), "T": (11, 12, 9, 11), "B": (8, 9, 7, 8)}
     bars = [OHLCBar(end + i * STEP, *prices[state]) for i, state in enumerate(pattern)]
     return build_level_state_sequence(build_level_interaction_history(source, "LEVEL", bars, end + len(bars) * STEP))
 
@@ -130,3 +133,15 @@ def test_immutable():
     pattern, = build_touch_transition_patterns(sequence("ATA"))
     with pytest.raises(FrozenInstanceError):
         pattern.pattern_code = "OTHER"
+
+
+@pytest.mark.parametrize("states,sweep,reclaim", [
+    ("BTB", SweepDirection.ABOVE, ReclaimDirection.BELOW),
+    ("ATA", SweepDirection.BELOW, ReclaimDirection.ABOVE),
+    ("BTA", None, ReclaimDirection.ABOVE),
+    ("ATB", None, ReclaimDirection.BELOW),
+])
+def test_generic_sweep_and_reclaim_semantics(states, sweep, reclaim):
+    pattern, = build_touch_transition_patterns(sequence(states))
+    assert classify_level_transition(pattern).sweep is sweep
+    assert classify_level_transition(pattern).reclaim is reclaim

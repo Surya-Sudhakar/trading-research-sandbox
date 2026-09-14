@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections.abc import Iterable
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
@@ -30,7 +30,8 @@ class UniversalFeatureEngine:
         self.decision_timeframe = decision_timeframe
         self.analysis_timezone = analysis_timezone or FeatureConfiguration().analysis_timezone
         self._timezone = ZoneInfo(self.analysis_timezone)
-        self._duration = pd.Timedelta(minutes=minutes)
+        self._duration = timedelta(minutes=int(minutes))
+        self._frequency = f"{int(minutes)}min"
 
     @property
     def definitions(self):
@@ -57,7 +58,7 @@ class UniversalFeatureEngine:
         frame["timestamp_utc"] = pd.to_datetime(times, utc=True)
         if frame.timestamp_utc.duplicated().any() or not frame.timestamp_utc.is_monotonic_increasing:
             raise ValueError("bars must be strictly ordered without duplicates")
-        if (frame.timestamp_utc != frame.timestamp_utc.dt.floor(self._duration)).any():
+        if (frame.timestamp_utc != frame.timestamp_utc.dt.floor(self._frequency)).any():
             raise ValueError("bar opens must align with the decision timeframe UTC grid")
         if as_of is not None:
             cutoff = pd.Timestamp(as_of)

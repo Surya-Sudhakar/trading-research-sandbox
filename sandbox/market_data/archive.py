@@ -1,5 +1,5 @@
 """Read-only incremental M1 feed archive, immutable content-addressed monthly revisions."""
-from datetime import datetime,timezone
+from datetime import datetime,timezone,timedelta
 from pathlib import Path
 import json,os
 import pandas as pd
@@ -47,7 +47,7 @@ class MT5Archive:
         if incoming.empty:return dict(status="NO_DATA",new_rows=0)
         ts=pd.DatetimeIndex(incoming.timestamp_utc)
         if ts.tz is None:raise ValueError("aware source timestamps required")
-        incoming=incoming[ts+pd.Timedelta("1min")<=cutoff].copy()
+        incoming=incoming[ts+timedelta(minutes=1)<=cutoff].copy()
         if incoming.empty:return dict(status="NO_COMPLETED_DATA",new_rows=0)
         # Identical overlap is deduplicated before strict validation; conflict is fatal.
         existing=self.read();merged=merge_archive(existing,incoming)
@@ -101,7 +101,7 @@ class MT5Archive:
         now=pd.Timestamp(now or datetime.now(timezone.utc))
         if now.tzinfo is None or initial_days<1 or overlap_minutes<1:raise ValueError("invalid archive polling configuration")
         existing=self.read()
-        start=(existing.timestamp_utc.max()-pd.Timedelta(minutes=overlap_minutes) if len(existing)
-               else now-pd.Timedelta(days=initial_days))
+        start=(existing.timestamp_utc.max()-timedelta(minutes=int(overlap_minutes)) if len(existing)
+               else now-timedelta(days=int(initial_days)))
         incoming=adapter.rates(self.symbol,start.to_pydatetime(),now.to_pydatetime())
         return self.ingest(incoming,as_of=now,source_identifier=f"MT5:{self.provider_symbol}:{start.isoformat()}:{now.isoformat()}")
