@@ -126,22 +126,6 @@ Strategies live behind `sandbox.strategies` and declare metadata, causal timefra
 
 `S001` is an implementation example and has been software-tested with synthetic fixtures. That is **not evidence of profitability or a validated edge**. Its detailed assumptions belong in [sandbox/strategies/s001/README.md](sandbox/strategies/s001/README.md), not in this root README.
 
-## Local UI and API
-
-The React/TypeScript frontend in `frontend/` is a view/control surface over the Python implementation, not a second research engine. The controlled FastAPI adapter prevents the browser from directly accessing databases, Parquet, MT5, protected partitions, research journals or the Final-Test vault.
-
-```powershell
-# Terminal 1 - project root
-python -m sandbox api serve
-
-# Terminal 2
-cd frontend
-npm install
-npm run dev
-```
-
-The intended deployment remains local.
-
 ## Installation
 
 Windows is required for the IC Markets MT5 integration. Python 3.12+ is supported.
@@ -183,11 +167,9 @@ sandbox/
   partition/           Discovery/Validation/Final partition controls
   strategies/          strategy plugins and DSL-related components
   execution/           deterministic historical execution
-  api/                 controlled local API
 
 experiments/            versioned research experiment specifications
 docs/                   architecture and technical documentation
-frontend/               local interface
 data/                    governed market-data artifacts and metadata
 results/                 generated research/execution outputs
 .github/workflows/       focused and diagnostic CI workflows
