@@ -30,7 +30,7 @@ class UniversalFeatureEngine:
         self.decision_timeframe = decision_timeframe
         self.analysis_timezone = analysis_timezone or FeatureConfiguration().analysis_timezone
         self._timezone = ZoneInfo(self.analysis_timezone)
-        self._duration = pd.Timedelta(minutes=minutes)
+        self._duration = pd.Timedelta(f"{int(minutes)}min")
 
     @property
     def definitions(self):
