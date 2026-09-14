@@ -14,7 +14,7 @@ def completed_context(frame, decision_timeframe, context_timeframes):
     frames = PartitionService._strategy_timeframe_frames(source, request, decision_timeframe)
     result = {}
     for tf, bars in frames.items():
-        duration = pd.Timedelta(minutes=timeframe_minutes(tf))
+        duration = pd.Timedelta(f"{int(timeframe_minutes(tf))}min")
         result[tf] = [
             (r.timestamp_utc + duration, int(r.close > r.open)-int(r.close < r.open))
             for r in bars.itertuples(index=False)
