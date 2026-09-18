@@ -71,3 +71,26 @@ def test_state_projection_is_exactly_the_frozen_14_not_context_or_legacy_fields(
     assert "atr_14" not in MARKET_STATE_FEATURE_NAMES_V1
     assert "completed_h1_direction" not in MARKET_STATE_FEATURE_NAMES_V1
     assert "completed_h3_direction" not in MARKET_STATE_FEATURE_NAMES_V1
+
+
+def test_v1_projection_is_deterministic_across_repeated_computation():
+    frame = bars(1200)
+    first = [project_market_state_v1(r) for r in compute(frame)]
+    second = [project_market_state_v1(r) for r in compute(frame.copy())]
+    assert first == second
+    assert [x for x in first if x is not None]
+
+
+def test_frozen_vector_order_matches_schema_registry_order():
+    from sandbox.market_state.universal.schema import definitions
+    registry = {d.name: d for d in definitions("M15")}
+    assert tuple(name for name in MARKET_STATE_FEATURE_NAMES_V1 if name in registry) == MARKET_STATE_FEATURE_NAMES_V1
+    assert [registry[name].timeframe for name in MARKET_STATE_FEATURE_NAMES_V1] == [
+        "M15", "M15", "M15", "M15", "M15", "M15", "M15", "M15",
+        "H1", "H1", "H1", "H3", "H3", "H3",
+    ]
+
+
+def test_expanded_universal_artifact_has_new_version_identity():
+    from sandbox.market_state.universal.dataset import ARTIFACT_VERSION
+    assert ARTIFACT_VERSION == "UNIVERSAL_FEATURE_DATASET_V2"
