@@ -37,6 +37,10 @@ class FeatureRow(BaseModel):
     completed_h1_direction: int | None
     completed_h3_direction: int | None
     analysis_hour: int
+    weekday: int
+    london_active: bool
+    new_york_active: bool
+    london_new_york_overlap: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -80,6 +84,10 @@ def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
         ("completed_h1_direction", "context", "int", 1, "sign(close-open) of latest complete H1 with end<=decision"),
         ("completed_h3_direction", "context", "int", 1, "sign(close-open) of latest complete H3 with end<=decision"),
         ("analysis_hour", "time", "int", 1, "decision close timestamp hour in configured analysis timezone"),
+        ("weekday", "time_context", "int", 1, "UTC decision-close weekday, Monday=0"),
+        ("london_active", "time_context", "bool", 1, "decision close is in 08:00<=Europe/London local time<17:00"),
+        ("new_york_active", "time_context", "bool", 1, "decision close is in 08:00<=America/New_York local time<17:00"),
+        ("london_new_york_overlap", "time_context", "bool", 1, "London-active AND New-York-active at decision close"),
     ]
     return tuple(FeatureDefinition(n, c, d, "H1" if n == "completed_h1_direction" else
                  "H3" if n == "completed_h3_direction" else decision_timeframe, lb, desc)
