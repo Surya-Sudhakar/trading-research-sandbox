@@ -34,6 +34,8 @@ class UniversalFeatureEngine:
         self.decision_timeframe = decision_timeframe
         self.analysis_timezone = analysis_timezone or FeatureConfiguration().analysis_timezone
         self._timezone = ZoneInfo(self.analysis_timezone)
+        self._london_timezone = ZoneInfo("Europe/London")
+        self._new_york_timezone = ZoneInfo("America/New_York")
         self._duration = timedelta(minutes=int(minutes))
         self._frequency = f"{int(minutes)}min"
 
@@ -109,7 +111,14 @@ class UniversalFeatureEngine:
                           **prior_structure(h, l, c[i], i),
                           completed_h1_direction=current["H1"],
                           completed_h3_direction=current["H3"],
-                          analysis_hour=decision.to_pydatetime().astimezone(self._timezone).hour)
+                          analysis_hour=decision.to_pydatetime().astimezone(self._timezone).hour,
+                          weekday=decision.weekday(),
+                          london_active=8 <= decision.to_pydatetime().astimezone(self._london_timezone).hour < 17,
+                          new_york_active=8 <= decision.to_pydatetime().astimezone(self._new_york_timezone).hour < 17,
+                          london_new_york_overlap=(
+                              8 <= decision.to_pydatetime().astimezone(self._london_timezone).hour < 17
+                              and 8 <= decision.to_pydatetime().astimezone(self._new_york_timezone).hour < 17
+                          ))
             rows.append(FeatureRow(timestamp=decision.to_pydatetime(), symbol=symbol,
                                    decision_timeframe=self.decision_timeframe,
                                    feature_ready=all(v is not None for v in values.values()), **values))
