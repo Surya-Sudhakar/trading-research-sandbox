@@ -24,7 +24,7 @@ from sandbox.research.registry import ResearchRegistry
 from .engine import UniversalFeatureEngine
 from .continuity import QualityContext
 
-ARTIFACT_VERSION = "UNIVERSAL_FEATURE_DATASET_V1"
+ARTIFACT_VERSION = "UNIVERSAL_FEATURE_DATASET_V2"
 
 
 def validate_bars(frame: pd.DataFrame, timeframe: str) -> dict:
@@ -154,7 +154,7 @@ def export_discovery_features(service: PartitionService, partition_id: str) -> d
                     earliest_timestamp=first[0].timestamp.isoformat(),
                     latest_timestamp=first[-1].timestamp.isoformat(),
                     generated_at=datetime.now(timezone.utc).isoformat(),
-                    feature_definitions_version=1, source_validation=source_quality,
+                    feature_definitions_version=2, source_validation=source_quality,
                     decision_validation=quality, transformation_history=lineage,
                     parquet_sha256=sha256_file(target/"features.parquet"),
                     artifact_path=(target/"features.parquet").relative_to(service.registry.project_root).as_posix(),
