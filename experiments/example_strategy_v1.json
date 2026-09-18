@@ -1,0 +1,20 @@
+{
+  "strategy_id": "EXAMPLE_STRATEGY_V1",
+  "partition_id": "REPLACE_WITH_DISCOVERY_PARTITION_ID",
+  "direction": "LONG",
+  "conditions": [
+    {
+      "field_id": "x.anchor_kind",
+      "operator": "=",
+      "value": "TOUCH_TRANSITION"
+    },
+    {
+      "field_id": "x.geometry.coordinate",
+      "operator": ">=",
+      "value": 0.0
+    }
+  ],
+  "entry": {"type": "NEXT_OPEN"},
+  "stop_loss": {"type": "FIXED_PIPS", "value": 10.0},
+  "take_profit": {"type": "R_MULTIPLE", "value": 2.0}
+}

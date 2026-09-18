@@ -1,0 +1,23 @@
+{
+  "strategy_id": "EURUSD_PROOF_V2",
+  "partition_id": "PART-f7c5f1e199fe2cfbebef9fd7",
+  "direction": "LONG",
+  "conditions": [
+    {
+      "field_id": "x.anchor_kind",
+      "operator": "=",
+      "value": "TOUCH_TRANSITION"
+    }
+  ],
+  "entry": {
+    "type": "NEXT_OPEN"
+  },
+  "stop_loss": {
+    "type": "FIXED_PIPS",
+    "value": 10.0
+  },
+  "take_profit": {
+    "type": "R_MULTIPLE",
+    "value": 2.0
+  }
+}

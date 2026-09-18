@@ -29,10 +29,11 @@ class IntegrityReport:
 
 
 def _weekend_closure(previous: pd.Timestamp, current: pd.Timestamp) -> bool:
-    # Typical FX close: Friday 22:00 UTC through Sunday 22:00 UTC; broker DST may shift one hour.
-    if previous.weekday() != 4 or current.weekday() != 6:
+    # FX broker weeks can reopen late Sunday or at Monday 00:00 UTC.
+    if previous.weekday() != 4 or previous.hour < 20 or current - previous > timedelta(days=3):
         return False
-    return previous.hour >= 20 and current.hour >= 20 and current.hour <= 23
+    return ((current.weekday() == 6 and 20 <= current.hour <= 23)
+            or (current.weekday() == 0 and current.hour <= 2))
 
 
 def audit(frame: pd.DataFrame, expected: timedelta = timedelta(minutes=1), suspicious: timedelta = timedelta(minutes=5)) -> IntegrityReport:
@@ -63,6 +64,8 @@ def audit(frame: pd.DataFrame, expected: timedelta = timedelta(minutes=1), suspi
         if _weekend_closure(previous, current):
             category = "expected_market_closure"
         else:
-            category = "suspicious_gap" if gap >= suspicious else "confirmed_data_error"
+            # Missing observations are preserved as explicit gaps. Their absence is
+            # suspicious, but does not prove that any observed market bar is corrupt.
+            category = "suspicious_gap"
         issues.append(IntegrityIssue(category, "missing_interval", current.isoformat(), f"gap of {gap}"))
     return IntegrityReport(len(frame), tuple(issues))

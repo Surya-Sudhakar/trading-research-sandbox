@@ -1,0 +1,48 @@
+{
+  "search_id": "PREVIOUS_DAY_STRUCTURE_V1",
+  "experiment_id": "PHASE2-E001",
+  "hypothesis_id": "PREVIOUS_DAY_STRUCTURE",
+  "partition_id": "REPLACE_WITH_DISCOVERY_PARTITION_ID",
+  "target_field_ids": [
+    "y.h4.close_return_fraction",
+    "y.h8.close_return_fraction"
+  ],
+  "fields": [
+    {
+      "field_id": "x.level_transition.sweep",
+      "kind": "categorical",
+      "categorical_values": ["ABOVE", "BELOW"]
+    },
+    {
+      "field_id": "x.level_transition.reclaim",
+      "kind": "categorical",
+      "categorical_values": ["ABOVE", "BELOW"]
+    },
+    {
+      "field_id": "x.market.m15.swing.high.label",
+      "kind": "categorical",
+      "categorical_values": ["HH", "LH"]
+    },
+    {
+      "field_id": "x.market.m15.swing.low.label",
+      "kind": "categorical",
+      "categorical_values": ["HL", "LL"]
+    },
+    {
+      "field_id": "x.daily.previous.level.high.close_distance_atr",
+      "kind": "numeric",
+      "threshold_values": [-0.5, 0.0, 0.25, 0.5],
+      "operators": ["<", "<=", ">", ">="]
+    },
+    {
+      "field_id": "x.daily.previous.level.low.close_distance_atr",
+      "kind": "numeric",
+      "threshold_values": [-0.5, 0.0, 0.25, 0.5],
+      "operators": ["<", "<=", ">", ">="]
+    }
+  ],
+  "swing_left_values": [2, 3, 4],
+  "swing_right_values": [2, 3, 4],
+  "swing_count_window_values": [6, 8, 12],
+  "max_conditions_per_candidate": 2
+}

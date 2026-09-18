@@ -11,10 +11,9 @@ import pandas as pd
 from sandbox.catalog import Catalog
 from sandbox.config import Settings
 from sandbox.history import download, inspect_history
-from sandbox.integrity import audit
+from sandbox.integrity import audit as audit_market_data
 from sandbox.logging import configure
 from sandbox.mt5 import MT5Adapter, MT5Error
-from sandbox.provenance import Provenance
 from sandbox.storage import RawStore
 from sandbox.execution.artifacts import store_run
 from sandbox.execution.engine import BacktestEngine
@@ -371,7 +370,7 @@ def main(argv: list[str] | None = None) -> int:
             if not paths:
                 raise ValueError(f"no Parquet datasets found for {args.target}")
             frame = pd.concat([pd.read_parquet(p) for p in paths], ignore_index=True)
-            report = audit(frame).to_dict(); catalog.add_integrity(None, report); _print(report); return 0 if report["status"] != "error" else 2
+            report = audit_market_data(frame).to_dict(); catalog.add_integrity(None, report); _print(report); return 0 if report["status"] != "error" else 2
         adapter = _connect(settings)
         try:
             status = adapter.status()
@@ -393,12 +392,8 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"chunk {i}/{total}: {left.isoformat()} to {right.isoformat()} ({rows} rows)", file=sys.stderr)
                 frame = download(adapter, symbol.broker_symbol, start, end, args.chunk_days or settings.chunk_days, settings.max_retries, progress)
                 catalog.record_download(symbol.broker_symbol, start.isoformat(), end.isoformat(), "empty" if frame.empty else "retrieved", f"rows={len(frame)}")
-                paths = RawStore(settings.data_dir).write_months(frame, status.server or "unknown", symbol.broker_symbol, status.company or "unknown", start, end)
-                records = []
-                for path in paths:
-                    stored = pd.read_parquet(path)
-                    prov = Provenance.create(path, status.company or "unknown", status.server or "unknown", symbol.broker_symbol, "M1", stored.timestamp_utc.min().to_pydatetime(), stored.timestamp_utc.max().to_pydatetime(), len(stored))
-                    catalog.add_dataset(prov); records.append(prov.to_dict())
+                paths = RawStore(settings.data_dir,catalog).write_months(frame, status.server or "unknown", symbol.broker_symbol, status.company or "unknown", start, end)
+                records = [catalog.dataset_for_path(path) for path in paths]
                 _print(records); return 0
         finally:
             adapter.shutdown()
