@@ -36,6 +36,12 @@ class FeatureRow(BaseModel):
     breakout_low_12: bool | None
     completed_h1_direction: int | None
     completed_h3_direction: int | None
+    h1_er_8: float | None
+    h1_atr_change_4: float | None
+    h1_slope_atr_8: float | None
+    h3_er_8: float | None
+    h3_atr_change_4: float | None
+    h3_slope_atr_8: float | None
     analysis_hour: int
     weekday: int
     london_active: bool
@@ -83,6 +89,12 @@ def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
         ("breakout_low_12", "structure", "bool", 13, "close<prior_low_12; equality false"),
         ("completed_h1_direction", "context", "int", 1, "sign(close-open) of latest complete H1 with end<=decision"),
         ("completed_h3_direction", "context", "int", 1, "sign(close-open) of latest complete H3 with end<=decision"),
+        ("h1_er_8", "state_context", "float", 9, "ER8 on latest strictly completed H1 history"),
+        ("h1_atr_change_4", "state_context", "float", 19, "completed-H1 ATR14[t]/ATR14[t-4]-1"),
+        ("h1_slope_atr_8", "state_context", "float", 15, "OLS slope over 8 completed H1 closes / completed-H1 ATR14"),
+        ("h3_er_8", "state_context", "float", 9, "ER8 on latest strictly completed H3 history"),
+        ("h3_atr_change_4", "state_context", "float", 19, "completed-H3 ATR14[t]/ATR14[t-4]-1"),
+        ("h3_slope_atr_8", "state_context", "float", 15, "OLS slope over 8 completed H3 closes / completed-H3 ATR14"),
         ("analysis_hour", "time", "int", 1, "decision close timestamp hour in configured analysis timezone"),
         ("weekday", "time_context", "int", 1, "UTC decision-close weekday, Monday=0"),
         ("london_active", "time_context", "bool", 1, "decision close is in 08:00<=Europe/London local time<17:00"),
@@ -90,6 +102,7 @@ def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
         ("london_new_york_overlap", "time_context", "bool", 1, "London-active AND New-York-active at decision close"),
     ]
     return tuple(FeatureDefinition(n, c, d, "H1" if n == "completed_h1_direction" else
-                 "H3" if n == "completed_h3_direction" else decision_timeframe, lb, desc)
+                 "H3" if n == "completed_h3_direction" else
+                 "H1" if n.startswith("h1_") else "H3" if n.startswith("h3_") else decision_timeframe, lb, desc)
                  for n, c, d, lb, desc in specs)
 
