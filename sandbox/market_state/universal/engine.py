@@ -131,7 +131,19 @@ class UniversalFeatureEngine:
                               8 <= decision.to_pydatetime().astimezone(self._london_timezone).hour < 17
                               and 8 <= decision.to_pydatetime().astimezone(self._new_york_timezone).hour < 17
                           ))
+            # Preserve the established UniversalFeatureEngine readiness contract.
+            # The new H1/H3 state-context measurements have a much longer warm-up
+            # and are optional on otherwise valid generic feature rows.  Market-state
+            # dataset readiness is enforced separately against the selected V1 vector.
+            optional_state_context = {
+                "h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+                "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8",
+            }
+            feature_ready = all(
+                value is not None for name, value in values.items()
+                if name not in optional_state_context
+            )
             rows.append(FeatureRow(timestamp=decision.to_pydatetime(), symbol=symbol,
                                    decision_timeframe=self.decision_timeframe,
-                                   feature_ready=all(v is not None for v in values.values()), **values))
+                                   feature_ready=feature_ready, **values))
         return tuple(rows)
