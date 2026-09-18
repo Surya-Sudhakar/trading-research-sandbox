@@ -148,7 +148,7 @@ def test_invalid_input_rejected(kind):
 def test_registry_covers_exact_features_and_configuration():
     engine = UniversalFeatureEngine()
     names = {d.name for d in engine.definitions}
-    assert len(names) == 32
+    assert len(names) == 38
     assert names == set(FeatureRow.model_fields)-{"timestamp", "symbol", "decision_timeframe", "feature_ready"}
     assert all(d.lookback > 0 and d.description and d.version == 1 for d in engine.definitions)
     assert engine.analysis_timezone == FeatureConfiguration().analysis_timezone
@@ -240,3 +240,37 @@ def test_session_context_is_prefix_invariant():
     for a, b in zip(full[:100], prefix):
         assert (a.weekday, a.london_active, a.new_york_active, a.london_new_york_overlap) == (
             b.weekday, b.london_active, b.new_york_active, b.london_new_york_overlap)
+
+
+def test_completed_h1_h3_state_features_never_use_forming_source_bar():
+    frame = bars(900)
+    baseline = compute(frame)
+    # At an M15 decision, mutating later bars must not change any already emitted HTF state context.
+    index = 700
+    mutated = frame.copy()
+    mutated.loc[index+1:, ["open", "high", "low", "close"]] = [500, 1000, 1, 2]
+    changed = compute(mutated)
+    fields = ("h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+              "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8")
+    assert tuple(getattr(baseline[index], x) for x in fields) == tuple(getattr(changed[index], x) for x in fields)
+
+
+def test_completed_h1_h3_state_features_have_expected_warmup_and_values():
+    rows = compute(bars(1200))
+    ready = [r for r in rows if all(getattr(r, x) is not None for x in (
+        "h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+        "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8"))]
+    assert ready
+    row = ready[-1]
+    assert 0 <= row.h1_er_8 <= 1 and 0 <= row.h3_er_8 <= 1
+    assert row.h1_slope_atr_8 > 0 and row.h3_slope_atr_8 > 0
+
+
+def test_completed_h1_h3_state_features_prefix_invariant():
+    frame = bars(1200)
+    full = compute(frame)
+    prefix = compute(frame.iloc[:900])
+    fields = ("h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+              "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8")
+    for a, b in zip(full[:900], prefix):
+        assert tuple(getattr(a, x) for x in fields) == tuple(getattr(b, x) for x in fields)
