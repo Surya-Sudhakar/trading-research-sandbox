@@ -11,6 +11,10 @@ from .candle import geometry
 from .volatility import atr_series, percentile_series
 from .momentum import displacement
 from .structure import prior_structure
+from .market_metrics import (
+    atr_change, efficiency_ratio, normalized_regression_slope,
+    prior_range_position, realized_volatility,
+)
 from .multitimeframe import completed_context
 from .schema import FeatureRow, definitions
 from .continuity import QualityContext
@@ -94,6 +98,14 @@ class UniversalFeatureEngine:
                           range_percentile_100=range_rank[i],
                           displacement_4_atr=displacement(c, i, 4, atr[i]),
                           displacement_8_atr=displacement(c, i, 8, atr[i]),
+                          er_4=efficiency_ratio(c, i, 4),
+                          er_16=efficiency_ratio(c, i, 16),
+                          rv_16=realized_volatility(c, i, 16),
+                          atr_change_1=atr_change(atr, i, 1),
+                          atr_change_8=atr_change(atr, i, 8),
+                          slope_atr_4=normalized_regression_slope(c, i, 4, atr[i]),
+                          slope_atr_16=normalized_regression_slope(c, i, 16, atr[i]),
+                          range_pos_16=prior_range_position(h, l, c[i], i, 16),
                           **prior_structure(h, l, c[i], i),
                           completed_h1_direction=current["H1"],
                           completed_h3_direction=current["H3"],
