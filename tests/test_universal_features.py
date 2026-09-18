@@ -274,3 +274,10 @@ def test_completed_h1_h3_state_features_prefix_invariant():
               "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8")
     for a, b in zip(full[:900], prefix):
         assert tuple(getattr(a, x) for x in fields) == tuple(getattr(b, x) for x in fields)
+
+
+def test_universal_feature_ready_does_not_wait_for_optional_htf_state_context():
+    rows = compute(bars(150))
+    # Backward-compatible universal readiness occurs before the long H3 state warm-up.
+    assert rows[113].feature_ready
+    assert rows[113].h3_atr_change_4 is None
