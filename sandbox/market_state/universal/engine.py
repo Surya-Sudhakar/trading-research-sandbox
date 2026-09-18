@@ -15,7 +15,7 @@ from .market_metrics import (
     atr_change, efficiency_ratio, normalized_regression_slope,
     prior_range_position, realized_volatility,
 )
-from .multitimeframe import completed_context
+from .multitimeframe import completed_context, completed_state_context
 from .schema import FeatureRow, definitions
 from .continuity import QualityContext
 
@@ -83,8 +83,11 @@ class UniversalFeatureEngine:
             raise ValueError("invalid OHLC relationship")
         frame[required[1:]] = prices
         contexts = completed_context(frame, self.decision_timeframe, ("H1", "H3"))
+        state_contexts = completed_state_context(frame, self.decision_timeframe, ("H1", "H3"))
         positions = dict(H1=0, H3=0)
         current = dict(H1=None, H3=None)
+        state_positions = dict(H1=0, H3=0)
+        current_state = dict(H1=None, H3=None)
         atr = atr_series(h, l, c)
         atr_rank = percentile_series(atr)
         range_rank = percentile_series([hi-lo for hi, lo in zip(h, l)])
@@ -95,6 +98,9 @@ class UniversalFeatureEngine:
                 while positions[tf] < len(contexts[tf]) and contexts[tf][positions[tf]][0] <= decision:
                     current[tf] = contexts[tf][positions[tf]][1]
                     positions[tf] += 1
+                while state_positions[tf] < len(state_contexts[tf]) and state_contexts[tf][state_positions[tf]][0] <= decision:
+                    current_state[tf] = state_contexts[tf][state_positions[tf]][1]
+                    state_positions[tf] += 1
             values = geometry(o[i], h[i], l[i], c[i])
             values.update(atr_14=atr[i], atr_percentile_100=atr_rank[i],
                           range_percentile_100=range_rank[i],
@@ -111,6 +117,12 @@ class UniversalFeatureEngine:
                           **prior_structure(h, l, c[i], i),
                           completed_h1_direction=current["H1"],
                           completed_h3_direction=current["H3"],
+                          h1_er_8=None if current_state["H1"] is None else current_state["H1"]["er_8"],
+                          h1_atr_change_4=None if current_state["H1"] is None else current_state["H1"]["atr_change_4"],
+                          h1_slope_atr_8=None if current_state["H1"] is None else current_state["H1"]["slope_atr_8"],
+                          h3_er_8=None if current_state["H3"] is None else current_state["H3"]["er_8"],
+                          h3_atr_change_4=None if current_state["H3"] is None else current_state["H3"]["atr_change_4"],
+                          h3_slope_atr_8=None if current_state["H3"] is None else current_state["H3"]["slope_atr_8"],
                           analysis_hour=decision.to_pydatetime().astimezone(self._timezone).hour,
                           weekday=decision.weekday(),
                           london_active=8 <= decision.to_pydatetime().astimezone(self._london_timezone).hour < 17,
