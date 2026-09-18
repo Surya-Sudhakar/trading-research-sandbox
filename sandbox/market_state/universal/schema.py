@@ -22,6 +22,14 @@ class FeatureRow(BaseModel):
     range_percentile_100: float | None
     displacement_4_atr: float | None
     displacement_8_atr: float | None
+    er_4: float | None
+    er_16: float | None
+    rv_16: float | None
+    atr_change_1: float | None
+    atr_change_8: float | None
+    slope_atr_4: float | None
+    slope_atr_16: float | None
+    range_pos_16: float | None
     prior_high_12: float | None
     prior_low_12: float | None
     breakout_high_12: bool | None
@@ -57,6 +65,14 @@ def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
         ("range_percentile_100", "volatility", "float", 100, "100*count(range<=current)/100 over 100 trailing bars including current"),
         ("displacement_4_atr", "momentum", "float", 15, "(close[t]-close[t-4])/ATR[t]"),
         ("displacement_8_atr", "momentum", "float", 15, "(close[t]-close[t-8])/ATR[t]"),
+        ("er_4", "state_efficiency", "float", 5, "abs(C[t]-C[t-4])/sum(abs(dC)) over 4 intervals"),
+        ("er_16", "state_efficiency", "float", 17, "abs(C[t]-C[t-16])/sum(abs(dC)) over 16 intervals"),
+        ("rv_16", "state_volatility", "float", 17, "sqrt(sum(log(C[i]/C[i-1])^2)) over 16 intervals; not annualized"),
+        ("atr_change_1", "state_volatility_transition", "float", 16, "ATR14[t]/ATR14[t-1]-1"),
+        ("atr_change_8", "state_volatility_transition", "float", 23, "ATR14[t]/ATR14[t-8]-1"),
+        ("slope_atr_4", "state_trend", "float", 15, "OLS close slope over last 4 closes / ATR14[t]"),
+        ("slope_atr_16", "state_trend", "float", 16, "OLS close slope over last 16 closes / ATR14[t]"),
+        ("range_pos_16", "state_structure", "float", 17, "(close-prior_low_16)/(prior_high_16-prior_low_16); current excluded"),
         ("prior_high_12", "structure", "float", 13, "max(high[t-12:t]); current excluded"),
         ("prior_low_12", "structure", "float", 13, "min(low[t-12:t]); current excluded"),
         ("breakout_high_12", "structure", "bool", 13, "close>prior_high_12; equality false"),
