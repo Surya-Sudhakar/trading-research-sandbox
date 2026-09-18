@@ -148,7 +148,7 @@ def test_invalid_input_rejected(kind):
 def test_registry_covers_exact_features_and_configuration():
     engine = UniversalFeatureEngine()
     names = {d.name for d in engine.definitions}
-    assert len(names) == 28
+    assert len(names) == 32
     assert names == set(FeatureRow.model_fields)-{"timestamp", "symbol", "decision_timeframe", "feature_ready"}
     assert all(d.lookback > 0 and d.description and d.version == 1 for d in engine.definitions)
     assert engine.analysis_timezone == FeatureConfiguration().analysis_timezone
@@ -213,3 +213,30 @@ def test_market_state_feature_warmups_are_explicit():
     assert rows[14].atr_change_1 is None and rows[15].atr_change_1 is not None
     assert rows[21].atr_change_8 is None and rows[22].atr_change_8 is not None
     assert rows[15].range_pos_16 is None and rows[16].range_pos_16 is not None
+
+
+def test_session_context_uses_real_dst_timezones():
+    # 2024-01-15 13:00 UTC: London 13:00, New York 08:00 -> overlap.
+    winter = compute(bars(1, start="2024-01-15 12:45"))[0]
+    assert winter.weekday == 0
+    assert winter.london_active and winter.new_york_active and winter.london_new_york_overlap
+
+    # During the US/UK DST mismatch: 12:00 UTC is London 12:00 but New York 08:00.
+    mismatch = compute(bars(1, start="2024-03-15 11:45"))[0]
+    assert mismatch.london_active and mismatch.new_york_active
+    assert mismatch.london_new_york_overlap
+
+    # 17:00 London is excluded by the half-open session definition.
+    london_close = compute(bars(1, start="2024-01-15 16:45"))[0]
+    assert not london_close.london_active
+    assert london_close.new_york_active
+    assert not london_close.london_new_york_overlap
+
+
+def test_session_context_is_prefix_invariant():
+    frame = bars(200, start="2024-03-29")
+    full = compute(frame)
+    prefix = compute(frame.iloc[:100])
+    for a, b in zip(full[:100], prefix):
+        assert (a.weekday, a.london_active, a.new_york_active, a.london_new_york_overlap) == (
+            b.weekday, b.london_active, b.new_york_active, b.london_new_york_overlap)
