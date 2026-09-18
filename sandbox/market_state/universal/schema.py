@@ -22,13 +22,31 @@ class FeatureRow(BaseModel):
     range_percentile_100: float | None
     displacement_4_atr: float | None
     displacement_8_atr: float | None
+    er_4: float | None
+    er_16: float | None
+    rv_16: float | None
+    atr_change_1: float | None
+    atr_change_8: float | None
+    slope_atr_4: float | None
+    slope_atr_16: float | None
+    range_pos_16: float | None
     prior_high_12: float | None
     prior_low_12: float | None
     breakout_high_12: bool | None
     breakout_low_12: bool | None
     completed_h1_direction: int | None
     completed_h3_direction: int | None
+    h1_er_8: float | None
+    h1_atr_change_4: float | None
+    h1_slope_atr_8: float | None
+    h3_er_8: float | None
+    h3_atr_change_4: float | None
+    h3_slope_atr_8: float | None
     analysis_hour: int
+    weekday: int
+    london_active: bool
+    new_york_active: bool
+    london_new_york_overlap: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,15 +75,34 @@ def definitions(decision_timeframe="M15") -> tuple[FeatureDefinition, ...]:
         ("range_percentile_100", "volatility", "float", 100, "100*count(range<=current)/100 over 100 trailing bars including current"),
         ("displacement_4_atr", "momentum", "float", 15, "(close[t]-close[t-4])/ATR[t]"),
         ("displacement_8_atr", "momentum", "float", 15, "(close[t]-close[t-8])/ATR[t]"),
+        ("er_4", "state_efficiency", "float", 5, "abs(C[t]-C[t-4])/sum(abs(dC)) over 4 intervals"),
+        ("er_16", "state_efficiency", "float", 17, "abs(C[t]-C[t-16])/sum(abs(dC)) over 16 intervals"),
+        ("rv_16", "state_volatility", "float", 17, "sqrt(sum(log(C[i]/C[i-1])^2)) over 16 intervals; not annualized"),
+        ("atr_change_1", "state_volatility_transition", "float", 16, "ATR14[t]/ATR14[t-1]-1"),
+        ("atr_change_8", "state_volatility_transition", "float", 23, "ATR14[t]/ATR14[t-8]-1"),
+        ("slope_atr_4", "state_trend", "float", 15, "OLS close slope over last 4 closes / ATR14[t]"),
+        ("slope_atr_16", "state_trend", "float", 16, "OLS close slope over last 16 closes / ATR14[t]"),
+        ("range_pos_16", "state_structure", "float", 17, "(close-prior_low_16)/(prior_high_16-prior_low_16); current excluded"),
         ("prior_high_12", "structure", "float", 13, "max(high[t-12:t]); current excluded"),
         ("prior_low_12", "structure", "float", 13, "min(low[t-12:t]); current excluded"),
         ("breakout_high_12", "structure", "bool", 13, "close>prior_high_12; equality false"),
         ("breakout_low_12", "structure", "bool", 13, "close<prior_low_12; equality false"),
         ("completed_h1_direction", "context", "int", 1, "sign(close-open) of latest complete H1 with end<=decision"),
         ("completed_h3_direction", "context", "int", 1, "sign(close-open) of latest complete H3 with end<=decision"),
+        ("h1_er_8", "state_context", "float", 9, "ER8 on latest strictly completed H1 history"),
+        ("h1_atr_change_4", "state_context", "float", 19, "completed-H1 ATR14[t]/ATR14[t-4]-1"),
+        ("h1_slope_atr_8", "state_context", "float", 15, "OLS slope over 8 completed H1 closes / completed-H1 ATR14"),
+        ("h3_er_8", "state_context", "float", 9, "ER8 on latest strictly completed H3 history"),
+        ("h3_atr_change_4", "state_context", "float", 19, "completed-H3 ATR14[t]/ATR14[t-4]-1"),
+        ("h3_slope_atr_8", "state_context", "float", 15, "OLS slope over 8 completed H3 closes / completed-H3 ATR14"),
         ("analysis_hour", "time", "int", 1, "decision close timestamp hour in configured analysis timezone"),
+        ("weekday", "time_context", "int", 1, "UTC decision-close weekday, Monday=0"),
+        ("london_active", "time_context", "bool", 1, "decision close is in 08:00<=Europe/London local time<17:00"),
+        ("new_york_active", "time_context", "bool", 1, "decision close is in 08:00<=America/New_York local time<17:00"),
+        ("london_new_york_overlap", "time_context", "bool", 1, "London-active AND New-York-active at decision close"),
     ]
     return tuple(FeatureDefinition(n, c, d, "H1" if n == "completed_h1_direction" else
-                 "H3" if n == "completed_h3_direction" else decision_timeframe, lb, desc)
+                 "H3" if n == "completed_h3_direction" else
+                 "H1" if n.startswith("h1_") else "H3" if n.startswith("h3_") else decision_timeframe, lb, desc)
                  for n, c, d, lb, desc in specs)
 

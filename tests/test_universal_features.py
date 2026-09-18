@@ -148,7 +148,7 @@ def test_invalid_input_rejected(kind):
 def test_registry_covers_exact_features_and_configuration():
     engine = UniversalFeatureEngine()
     names = {d.name for d in engine.definitions}
-    assert len(names) == 20
+    assert len(names) == 38
     assert names == set(FeatureRow.model_fields)-{"timestamp", "symbol", "decision_timeframe", "feature_ready"}
     assert all(d.lookback > 0 and d.description and d.version == 1 for d in engine.definitions)
     assert engine.analysis_timezone == FeatureConfiguration().analysis_timezone
@@ -190,3 +190,94 @@ def test_h3_utc_anchor_does_not_follow_analysis_timezone():
     utc = UniversalFeatureEngine(analysis_timezone="UTC").compute(full, symbol="EURUSD")
     ny = compute(full)
     assert [r.completed_h3_direction for r in utc] == [r.completed_h3_direction for r in ny]
+
+
+def test_selected_m15_market_state_features_are_integrated():
+    frame = bars(40)
+    row = compute(frame)[-1]
+    assert row.er_4 == pytest.approx(1.0)
+    assert row.er_16 == pytest.approx(1.0)
+    assert row.rv_16 > 0
+    assert row.atr_change_1 == pytest.approx(0.0)
+    assert row.atr_change_8 == pytest.approx(0.0)
+    assert row.slope_atr_4 > 0
+    assert row.slope_atr_16 > 0
+    assert row.range_pos_16 > 0.5
+
+
+def test_market_state_feature_warmups_are_explicit():
+    rows = compute(bars(30))
+    assert rows[3].er_4 is None and rows[4].er_4 is not None
+    assert rows[15].er_16 is None and rows[16].er_16 is not None
+    assert rows[15].rv_16 is None and rows[16].rv_16 is not None
+    assert rows[14].atr_change_1 is None and rows[15].atr_change_1 is not None
+    assert rows[21].atr_change_8 is None and rows[22].atr_change_8 is not None
+    assert rows[15].range_pos_16 is None and rows[16].range_pos_16 is not None
+
+
+def test_session_context_uses_real_dst_timezones():
+    # 2024-01-15 13:00 UTC: London 13:00, New York 08:00 -> overlap.
+    winter = compute(bars(1, start="2024-01-15 12:45"))[0]
+    assert winter.weekday == 0
+    assert winter.london_active and winter.new_york_active and winter.london_new_york_overlap
+
+    # During the US/UK DST mismatch: 12:00 UTC is London 12:00 but New York 08:00.
+    mismatch = compute(bars(1, start="2024-03-15 11:45"))[0]
+    assert mismatch.london_active and mismatch.new_york_active
+    assert mismatch.london_new_york_overlap
+
+    # 17:00 London is excluded by the half-open session definition.
+    london_close = compute(bars(1, start="2024-01-15 16:45"))[0]
+    assert not london_close.london_active
+    assert london_close.new_york_active
+    assert not london_close.london_new_york_overlap
+
+
+def test_session_context_is_prefix_invariant():
+    frame = bars(200, start="2024-03-29")
+    full = compute(frame)
+    prefix = compute(frame.iloc[:100])
+    for a, b in zip(full[:100], prefix):
+        assert (a.weekday, a.london_active, a.new_york_active, a.london_new_york_overlap) == (
+            b.weekday, b.london_active, b.new_york_active, b.london_new_york_overlap)
+
+
+def test_completed_h1_h3_state_features_never_use_forming_source_bar():
+    frame = bars(900)
+    baseline = compute(frame)
+    # At an M15 decision, mutating later bars must not change any already emitted HTF state context.
+    index = 700
+    mutated = frame.copy()
+    mutated.loc[index+1:, ["open", "high", "low", "close"]] = [500, 1000, 1, 2]
+    changed = compute(mutated)
+    fields = ("h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+              "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8")
+    assert tuple(getattr(baseline[index], x) for x in fields) == tuple(getattr(changed[index], x) for x in fields)
+
+
+def test_completed_h1_h3_state_features_have_expected_warmup_and_values():
+    rows = compute(bars(1200))
+    ready = [r for r in rows if all(getattr(r, x) is not None for x in (
+        "h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+        "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8"))]
+    assert ready
+    row = ready[-1]
+    assert 0 <= row.h1_er_8 <= 1 and 0 <= row.h3_er_8 <= 1
+    assert row.h1_slope_atr_8 > 0 and row.h3_slope_atr_8 > 0
+
+
+def test_completed_h1_h3_state_features_prefix_invariant():
+    frame = bars(1200)
+    full = compute(frame)
+    prefix = compute(frame.iloc[:900])
+    fields = ("h1_er_8", "h1_atr_change_4", "h1_slope_atr_8",
+              "h3_er_8", "h3_atr_change_4", "h3_slope_atr_8")
+    for a, b in zip(full[:900], prefix):
+        assert tuple(getattr(a, x) for x in fields) == tuple(getattr(b, x) for x in fields)
+
+
+def test_universal_feature_ready_does_not_wait_for_optional_htf_state_context():
+    rows = compute(bars(150))
+    # Backward-compatible universal readiness occurs before the long H3 state warm-up.
+    assert rows[113].feature_ready
+    assert rows[113].h3_atr_change_4 is None
