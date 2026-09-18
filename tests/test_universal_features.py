@@ -148,7 +148,7 @@ def test_invalid_input_rejected(kind):
 def test_registry_covers_exact_features_and_configuration():
     engine = UniversalFeatureEngine()
     names = {d.name for d in engine.definitions}
-    assert len(names) == 20
+    assert len(names) == 28
     assert names == set(FeatureRow.model_fields)-{"timestamp", "symbol", "decision_timeframe", "feature_ready"}
     assert all(d.lookback > 0 and d.description and d.version == 1 for d in engine.definitions)
     assert engine.analysis_timezone == FeatureConfiguration().analysis_timezone
@@ -190,3 +190,26 @@ def test_h3_utc_anchor_does_not_follow_analysis_timezone():
     utc = UniversalFeatureEngine(analysis_timezone="UTC").compute(full, symbol="EURUSD")
     ny = compute(full)
     assert [r.completed_h3_direction for r in utc] == [r.completed_h3_direction for r in ny]
+
+
+def test_selected_m15_market_state_features_are_integrated():
+    frame = bars(40)
+    row = compute(frame)[-1]
+    assert row.er_4 == pytest.approx(1.0)
+    assert row.er_16 == pytest.approx(1.0)
+    assert row.rv_16 > 0
+    assert row.atr_change_1 == pytest.approx(0.0)
+    assert row.atr_change_8 == pytest.approx(0.0)
+    assert row.slope_atr_4 > 0
+    assert row.slope_atr_16 > 0
+    assert row.range_pos_16 > 0.5
+
+
+def test_market_state_feature_warmups_are_explicit():
+    rows = compute(bars(30))
+    assert rows[3].er_4 is None and rows[4].er_4 is not None
+    assert rows[15].er_16 is None and rows[16].er_16 is not None
+    assert rows[15].rv_16 is None and rows[16].rv_16 is not None
+    assert rows[14].atr_change_1 is None and rows[15].atr_change_1 is not None
+    assert rows[21].atr_change_8 is None and rows[22].atr_change_8 is not None
+    assert rows[15].range_pos_16 is None and rows[16].range_pos_16 is not None
