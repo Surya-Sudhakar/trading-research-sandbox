@@ -103,11 +103,21 @@ def test_continuity_resets_unexplained_and_can_continue_expected_weekend():
     assert sanitize(weekend,META,known,ContinuityPolicy(continue_expected_weekend=False))[0].continuity_segment_id.nunique()==2
 
 
+def test_one_missing_bar_is_preserved_and_starts_a_new_continuity_segment():
+    raw=bars(4)
+    raw.loc[2:,"timestamp_utc"]+=timedelta(minutes=15)
+    clean,_,gaps,manifest=sanitize(raw,META)
+    pd.testing.assert_frame_equal(clean[["timestamp_utc","open","high","low","close"]],raw)
+    assert clean.continuity_segment_id.tolist()==[0,0,1,1]
+    assert gaps.iloc[0].missing_slots==1 and gaps.iloc[0].reset
+    assert manifest["gap_counts"]=={"UNEXPLAINED_GAP":1}
+
+
 def test_feature_optional_quality_no_reset_regression_and_unexplained_reset():
     engine=UniversalFeatureEngine();raw=bars(280)
     clean,_,_,_=sanitize(raw,META)
     assert engine.compute(clean,symbol="EURUSD")==engine.compute(clean,symbol="EURUSD",quality_context=QualityContext())
-    raw.loc[140:,"timestamp_utc"]+=timedelta(hours=4)
+    raw.loc[140:,"timestamp_utc"]+=timedelta(minutes=15)
     clean,_,_,_=sanitize(raw,META)
     rows=engine.compute(clean,symbol="EURUSD",quality_context=QualityContext())
     assert rows[139].feature_ready and not rows[140].feature_ready

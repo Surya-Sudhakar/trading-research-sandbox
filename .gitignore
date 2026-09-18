@@ -37,3 +37,8 @@ results/discovery_runner/materialized/
 
 # Binary research snapshots
 *.bin
+
+# Local audit exports and generated strategy/test runs
+/08_audit.csv
+/pytest_tmp/
+/results/strategy_runs/

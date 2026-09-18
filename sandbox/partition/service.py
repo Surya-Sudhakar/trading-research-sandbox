@@ -66,6 +66,12 @@ class PartitionService:
             integrity=audit(validation_view(frame))
         else:integrity=audit(frame)
         if integrity.status=="error":raise ResearchError("SOURCE_DATA_INTEGRITY_FAILED: "+",".join(x.code for x in integrity.issues if x.category=="confirmed_data_error"))
+        if "continuity_segment_id" not in frame:
+            from types import SimpleNamespace
+            from sandbox.market_data.gaps import inventory
+            metadata=SimpleNamespace(provider=source["broker"],symbol=symbol,timeframe=timeframe)
+            _,segments=inventory(frame,metadata)
+            frame["continuity_segment_id"]=segments
         frame["timestamp_utc"]=pd.to_datetime(frame.timestamp_utc,utc=True);part=frame[(frame.timestamp_utc>=start)&(frame.timestamp_utc<end)].sort_values("timestamp_utc",kind="mergesort").reset_index(drop=True)
         if part.empty:raise ResearchError("EMPTY_PARTITION_BLOCKED")
         target_root=self.vault_root if role==PartitionRole.FINAL_TEST else self.root

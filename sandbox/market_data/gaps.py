@@ -46,10 +46,10 @@ class SessionProfile:
 
 @dataclass(frozen=True)
 class ContinuityPolicy:
-    reset_missing_minutes: int = 60
+    reset_missing_minutes: int = 1
     continue_expected_weekend: bool = True
     reset_invalid_exclusion: bool = True
-    version: str = "CONTINUITY_V1"
+    version: str = "CONTINUITY_V2"
 
     def __post_init__(self):
         if self.reset_missing_minutes < 1:raise ValueError("positive reset threshold required")
