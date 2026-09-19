@@ -80,3 +80,13 @@ class GaussianMixtureStateModel:
     def _require_fit(self) -> None:
         if not self._fitted:
             raise RuntimeError("GMM state model has not been fitted")
+
+    def save(self, path) -> None:
+        from .parameter_artifact import gmm_state, save_payload
+        save_payload(path, "GaussianMixtureStateModel", gmm_state(self))
+
+    @classmethod
+    def load(cls, path, *, expected_sha256=None, **expected_identity) -> "GaussianMixtureStateModel":
+        from .parameter_artifact import load_payload, restore_gmm
+        return restore_gmm(load_payload(path, "GaussianMixtureStateModel", expected_sha256=expected_sha256),
+                           **expected_identity)

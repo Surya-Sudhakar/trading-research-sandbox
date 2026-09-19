@@ -69,6 +69,16 @@ class DiscoveryStandardScaler:
             raise RuntimeError("discovery scaler has not been fitted")
         return self._scaler.transform(validate_state_matrix(X))
 
+    def save(self, path) -> None:
+        from .parameter_artifact import save_payload, scaler_state
+        save_payload(path, "DiscoveryStandardScaler", scaler_state(self))
+
+    @classmethod
+    def load(cls, path, *, expected_sha256=None, **expected_identity) -> "DiscoveryStandardScaler":
+        from .parameter_artifact import load_payload, restore_scaler
+        return restore_scaler(load_payload(path, "DiscoveryStandardScaler", expected_sha256=expected_sha256),
+                              **expected_identity)
+
 
 def _require_utc(value: datetime) -> datetime:
     if not isinstance(value, datetime) or value.tzinfo is None:

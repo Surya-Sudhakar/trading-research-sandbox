@@ -1,0 +1,31 @@
+{
+  "configuration": {
+    "covariance_type": "full",
+    "max_iter": 300,
+    "n_components": 3,
+    "n_init": 5,
+    "random_state": 42,
+    "reg_covar": 1e-06
+  },
+  "discovery_input_sha256": "7f5ff8001f93381bb305804e950c77d1859d25555de3edffa704260d2581a13f",
+  "historical_assignment_equivalence": "original per-row assignment digest unavailable; counts match original report",
+  "labels_sha256": "9eca33d3bb5193a871fb2b9aaffbcbe92f43b13c6dde03ea193aec6cd541534b",
+  "model_artifact_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+  "observations": 93662,
+  "predictions_exact": true,
+  "probabilities_exact": true,
+  "probabilities_max_abs_error": 0.0,
+  "state_counts": {
+    "S0": 4755,
+    "S1": 44972,
+    "S2": 43935
+  },
+  "status": "VERIFIED_DISCOVERY_ONLY",
+  "tolerance": {
+    "proba_atol": 1e-12,
+    "proba_rtol": 1e-12,
+    "transform_atol": 1e-12
+  },
+  "transform_exact": true,
+  "transform_max_abs_error": 0.0
+}
