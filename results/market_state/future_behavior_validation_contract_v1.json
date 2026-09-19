@@ -1,0 +1,275 @@
+{
+  "continuity": {
+    "all_outcome_close_timestamps_before": "2025-01-01T00:00:00+00:00",
+    "bar_timestamp_convention": "UTC bar opens; UTC feature decision closes",
+    "bridge_weekends_or_missing_bars": false,
+    "exclude_incomplete_horizons_independently": true,
+    "exclusion_counts": [
+      "missing_reference",
+      "gap_or_segment_boundary",
+      "end_of_validation_data"
+    ],
+    "fabricate_or_pad_prices": false,
+    "future_bars": "bar opens T through T+(H-1)*15 minutes",
+    "missing_features": "Exclude incomplete frozen vectors from assignments; report count; do not impute.",
+    "reference_and_future_bars_within_validation": true,
+    "spacing_minutes": 15,
+    "unchanged_continuity_id_required": true,
+    "yearly_occupancy_basis": "UTC state-assignment year; independent denominators for 2023 and 2024"
+  },
+  "contract_sha256": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+  "contract_version": "MARKET_STATE_FUTURE_BEHAVIOUR_VALIDATION_CONTRACT_V1",
+  "decision_timeframe": "M15",
+  "discovery_artifact": {
+    "experiment": "FUTURE_MARKET_BEHAVIOUR_V1",
+    "path": "results/market_state/future_behavior_v1.json",
+    "sha256": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98"
+  },
+  "discovery_fit_period": {
+    "end_exclusive": "2023-01-01T00:00:00+00:00",
+    "first_fitted_observation": "2016-01-05T09:00:00+00:00",
+    "last_fitted_observation": "2022-12-30T22:00:00+00:00",
+    "start_inclusive": "2016-01-01T00:00:00+00:00"
+  },
+  "execution_gate": "Contract creation/testing authorizes no validation run or data access; separate authorization and fitted-parameter verification required.",
+  "experiment": "MARKET_STATE_FUTURE_BEHAVIOUR_VALIDATION",
+  "feature_artifact": {
+    "metadata_sha256": "532efc118bf13fabc01d37fd5912d757cfbaf1f2ead217c5c67de990538687d2",
+    "path": "data/derived/features/EURUSD/M15/adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d/features.parquet",
+    "sha256": "4354250c1f98190fe30924d6133dea652c24abe1dcad4a9e671a1fe79be2422b"
+  },
+  "feature_schema": {
+    "changes_allowed": false,
+    "definition_authority": "sandbox.market_state.universal.market_state_v1.MARKET_STATE_FEATURES_V1",
+    "feature_count": 14,
+    "ordered_names": [
+      "er_4",
+      "er_16",
+      "rv_16",
+      "atr_change_1",
+      "atr_change_8",
+      "slope_atr_4",
+      "slope_atr_16",
+      "range_pos_16",
+      "h1_er_8",
+      "h1_atr_change_4",
+      "h1_slope_atr_8",
+      "h3_er_8",
+      "h3_atr_change_4",
+      "h3_slope_atr_8"
+    ],
+    "version": "MARKET_STATE_FEATURES_V1"
+  },
+  "final_holdout": {
+    "access_allowed": false,
+    "start_inclusive": "2025-01-01T00:00:00+00:00"
+  },
+  "fitted_model_reuse": {
+    "allowed_gmm_operations": [
+      "predict",
+      "predict_proba"
+    ],
+    "allowed_scaler_operation": "transform",
+    "component_order": [
+      "S0",
+      "S1",
+      "S2"
+    ],
+    "fit_allowed": false,
+    "parameter_artifact_checksums_in_discovery_summary": null,
+    "partial_fit_allowed": false,
+    "relabeling_allowed": false,
+    "seed_alone_is_sufficient_identity": false,
+    "validation_prerequisites": [
+      "Verify discovery and feature artifact SHA256 before validation access.",
+      "Verify immutable discovery-fitted scaler and GMM parameter artifacts and their checksums against discovery provenance.",
+      "Preserve scaler mean_/scale_ and GMM weights_/means_/covariances_/precisions_cholesky_ without modification.",
+      "Preserve original component indices; no occupancy or outcome-based relabeling.",
+      "Record model serialization and library versions in a separate immutable execution manifest before validation access.",
+      "If discovery-fitted parameters or their binding are unavailable, stop; do not fit a replacement model in validation."
+    ]
+  },
+  "formulas": {
+    "absolute_return": "abs(signed_return)",
+    "cohens_d": "(mean_A-mean_B)/pooled sample SD; null if either n<2 or SD=0",
+    "flat": "C(T+H) == C(T) exactly",
+    "mae_down": "C(T)-min(future lows), not clamped",
+    "mfe_up": "max(future highs)-C(T), not clamped",
+    "realized_volatility": "sqrt(sum(log(C_i/C_(i-1))**2)), i=1..H; unannualized",
+    "signed_return": "C(T+H)/C(T)-1",
+    "standard_deviation": "sample, ddof=1"
+  },
+  "horizons": [
+    {
+      "bars": 1,
+      "minutes": 15
+    },
+    {
+      "bars": 2,
+      "minutes": 30
+    },
+    {
+      "bars": 4,
+      "minutes": 60
+    },
+    {
+      "bars": 8,
+      "minutes": 120
+    },
+    {
+      "bars": 12,
+      "minutes": 180
+    }
+  ],
+  "hypotheses": {
+    "H1_MAGNITUDE": {
+      "comparisons": [
+        [
+          "S0",
+          "S1"
+        ],
+        [
+          "S0",
+          "S2"
+        ]
+      ],
+      "expectation": "S0 has greater future absolute return than both S1 and S2.",
+      "metric": "absolute_return",
+      "per_horizon_rule": {
+        "combine": "AND",
+        "operator": ">",
+        "statistic": "mean"
+      },
+      "required_effect_sizes": "Cohen's d for S0-S1 and S0-S2 at every horizon"
+    },
+    "H2_VOLATILITY": {
+      "comparisons": [
+        [
+          "S0",
+          "S1"
+        ],
+        [
+          "S0",
+          "S2"
+        ]
+      ],
+      "expectation": "S0 has greater future realized volatility than both S1 and S2.",
+      "metric": "realized_volatility",
+      "per_horizon_rule": {
+        "combine": "AND",
+        "operator": ">",
+        "statistic": "mean"
+      },
+      "required_effect_sizes": "Cohen's d for S0-S1 and S0-S2 at every horizon"
+    },
+    "H3_DIRECTION": {
+      "assessment": "DESCRIPTIVE_ONLY_NO_BINARY_MATERIALITY_VERDICT",
+      "comparisons": [
+        [
+          "S0",
+          "S1"
+        ],
+        [
+          "S0",
+          "S2"
+        ],
+        [
+          "S1",
+          "S2"
+        ]
+      ],
+      "expectation": "Signed-return separation is much smaller than magnitude/volatility separation; no substantial unconditional directional separation expected.",
+      "materiality_margin": null,
+      "metric": "signed_return",
+      "post_validation_materiality_cutoff_allowed": false,
+      "ratio_zero_denominator_or_undefined_d": "null with reason; never coerce to zero or infinity",
+      "report": "Report ratios and whether abs(d_signed) is smaller than each comparator; do not infer materiality or equivalence from a missing prespecified margin.",
+      "required_effect_sizes": "Signed-return, absolute-return and realized-volatility Cohen's d for every pair and horizon",
+      "required_ratios": [
+        "abs(d_signed_return)/abs(d_absolute_return)",
+        "abs(d_signed_return)/abs(d_realized_volatility)"
+      ]
+    }
+  },
+  "model_configuration": {
+    "class": "GaussianMixtureStateModel",
+    "covariance_type": "full",
+    "max_iter": 300,
+    "n_components": 3,
+    "n_init": 5,
+    "random_state": 42,
+    "reg_covar": 1e-06
+  },
+  "pip_normalization": "Only explicit reliable symbol pip metadata; otherwise retain price/return units.",
+  "price_reference": "close of the bar opening at T-15 minutes; feature timestamp T is its decision close",
+  "prohibited_actions": [
+    "refit_scaler",
+    "refit_gmm",
+    "partial_fit_or_parameter_updates",
+    "change_n_components",
+    "change_seed",
+    "change_features_or_order",
+    "change_horizons",
+    "change_formulas",
+    "select_favorable_horizons",
+    "use_version_0",
+    "use_tp_sl_pnl_or_profitability",
+    "optimize_thresholds",
+    "access_2025_plus_data",
+    "modify_criteria_after_validation_results",
+    "relabel_components",
+    "derive_trading_rules",
+    "feed_outcomes_into_features_scaler_model_or_assignment",
+    "filter_states_or_rows_by_posterior_confidence"
+  ],
+  "replication_criteria": {
+    "applies_to": [
+      "H1_MAGNITUDE",
+      "H2_VOLATILITY"
+    ],
+    "denominator": 5,
+    "exact_discovery_effect_size_required": false,
+    "failed_direction": "Either strict inequality does not hold, including a tie or unavailable mean.",
+    "hypothesis_tests": "None prescribed; no significance-only success criterion.",
+    "labels": [
+      "replicated direction",
+      "failed direction"
+    ],
+    "minimum_effect_size_threshold": null,
+    "missing_comparison": "Count as failed direction; separately flag insufficient evidence, not evidence of reversal.",
+    "overall_report": "For each hypothesis: X / 5 horizons replicated; always list all five horizons.",
+    "profitability_criterion": null,
+    "replicated_direction": "Both strict mean inequalities hold at that horizon."
+  },
+  "robustness_diagnostics": {
+    "continuity_exclusions": "Reason counts for every state/horizon; include incomplete-feature exclusions separately.",
+    "observations": "Observation count for every state/horizon including zero counts.",
+    "occupancy": "State counts/fractions over all eligible validation assignments, before future-window exclusions.",
+    "posterior_confidence": "Frozen-model maximum posterior: mean, median, p10, p90 overall and per assigned state; no confidence filtering.",
+    "state_transitions": "Counts and row-normalized probabilities in S0/S1/S2 order; consecutive exact 15-minute observations with unchanged continuity ID only; empty rows are zero with outgoing count zero.",
+    "use": "Report only; never optimization or model-selection inputs.",
+    "yearly_occupancy": {
+      "report": "counts and fractions per state independently; empty denominator gives null",
+      "years": [
+        2023,
+        2024
+      ]
+    }
+  },
+  "scaler_configuration": {
+    "class": "DiscoveryStandardScaler",
+    "with_mean": true,
+    "with_std": true
+  },
+  "state_ids": [
+    "S0",
+    "S1",
+    "S2"
+  ],
+  "status": "FROZEN_BEFORE_VALIDATION",
+  "symbol": "EURUSD",
+  "validation_period": {
+    "end_exclusive": "2025-01-01T00:00:00+00:00",
+    "start_inclusive": "2023-01-01T00:00:00+00:00"
+  }
+}
