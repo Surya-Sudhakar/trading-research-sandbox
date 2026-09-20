@@ -16,6 +16,7 @@ dependencies = [
   "pydantic>=2.7",
   "numpy>=2.0",
   "scikit-learn>=1.5",
+  "mcp==2.2.0",
 ]
 
 [project.optional-dependencies]

@@ -138,7 +138,7 @@ class PartitionService:
         if p.role==PartitionRole.FINAL_TEST:self._contaminate(p.program_id,candidate_id,self.control.get_candidate(candidate_id).candidate_base_id if candidate_id and self.control.get_candidate(candidate_id) else None,p.partition_id,ContaminationType.UNAUTHORIZED_ACCESS_ATTEMPT,"ACCESS_DENIED",reason,"CRITICAL")
         raise ResearchError(reason)
 
-    def access(self,partition_id,context,operation,actor="researcher",candidate_id=None,experiment_id=None):
+    def access(self,partition_id,context,operation,actor="researcher",candidate_id=None,experiment_id=None,*,start_timestamp=None,end_timestamp=None):
         p=self._get_partition(partition_id);context=AccessContext(context);operation=AccessOperation(operation)
         if not p:raise ResearchError("partition not found")
         if operation==AccessOperation.METADATA_READ:
@@ -157,7 +157,18 @@ class PartitionService:
             if not candidate or candidate.candidate_fingerprint!=binding.candidate_fingerprint:return self._deny(p,actor,context,operation,"VALIDATION_ACCESS_DENIED: candidate fingerprint mismatch",candidate_id,experiment_id)
             if sha256_canonical(candidate.evaluation_spec)!=binding.evaluation_spec_fingerprint:return self._deny(p,actor,context,operation,"VALIDATION_ACCESS_DENIED: evaluation fingerprint mismatch",candidate_id,experiment_id)
             if self._lineage_contaminated(candidate,partition_id):return self._deny(p,actor,context,operation,"VALIDATION_ACCESS_DENIED: partition contaminated for lineage",candidate_id,experiment_id)
-        frame=pd.read_parquet(p.path);self._append_access(actor=actor,program_id=p.program_id,candidate_id=candidate_id,experiment_id=experiment_id,partition_id=partition_id,operation=operation,context=context,decision=AccessDecision.ALLOWED,reason="policy requirements satisfied",rows=len(frame))
+        read_options={};reason="policy requirements satisfied"
+        if start_timestamp is not None or end_timestamp is not None:
+            if start_timestamp is None or end_timestamp is None:raise ResearchError("both read-window boundaries required")
+            start,end=pd.Timestamp(start_timestamp),pd.Timestamp(end_timestamp)
+            if start.tzinfo is None or end.tzinfo is None or start>=end:raise ResearchError("increasing aware read-window boundaries required")
+            start,end=start.tz_convert("UTC"),end.tz_convert("UTC")
+            read_options["filters"]=[("timestamp_utc",">=",start),("timestamp_utc","<",end)]
+            reason+=f"; bounded read [{start.isoformat()}, {end.isoformat()})"
+        if read_options and sha256_file(Path(p.path))!=p.partition_checksum:raise ResearchError("bounded-read partition checksum mismatch")
+        frame=pd.read_parquet(p.path,**read_options)
+        if read_options and sha256_file(Path(p.path))!=p.partition_checksum:raise ResearchError("partition changed during bounded read")
+        self._append_access(actor=actor,program_id=p.program_id,candidate_id=candidate_id,experiment_id=experiment_id,partition_id=partition_id,operation=operation,context=context,decision=AccessDecision.ALLOWED,reason=reason,rows=len(frame))
         if context==AccessContext.DISCOVERY_CONTEXT:self._contaminate(p.program_id,candidate_id,self.control.get_candidate(candidate_id).candidate_base_id if candidate_id and self.control.get_candidate(candidate_id) else None,partition_id,ContaminationType.DISCOVERY_EXPOSURE,operation.value,"discovery values exposed","INFO")
         if context==AccessContext.VALIDATION_CONTEXT and operation in {AccessOperation.EVALUATION_READ,AccessOperation.BACKTEST_EXECUTION,AccessOperation.RAW_CANDLE_READ}:candidate=self.control.get_candidate(candidate_id);self._contaminate(p.program_id,candidate_id,candidate.candidate_base_id,partition_id,ContaminationType.VALIDATION_EXPOSURE,operation.value,"validation values/results exposed","HIGH")
         return frame
@@ -187,19 +198,83 @@ class PartitionService:
     def complete_validation(self,*args,**kwargs):
         raise ResearchError("VALIDATION_RESULT_FORGERY_DENIED: use sealed_validation_execute; pass/fail cannot be supplied manually")
 
-    def sealed_validation_execute(self,candidate_id,partition_id,intents,actor="sealed-validator",results_root:Path|None=None):
-        candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id);binding=self._binding("VALIDATION",candidate_id,partition_id)
-        if not candidate or not binding or candidate.status!=CandidateStatus.FROZEN:raise ResearchError("VALIDATION_ACCESS_DENIED: frozen bound candidate required")
-        if callable(intents):raise ResearchError("VALIDATION_ACCESS_DENIED: arbitrary execution callback prohibited")
-        if candidate.candidate_fingerprint!=binding.candidate_fingerprint or sha256_canonical(candidate.execution_config)!=binding.execution_config_fingerprint or sha256_canonical(candidate.evaluation_spec)!=binding.evaluation_spec_fingerprint:raise ResearchError("VALIDATION_ACCESS_DENIED: frozen fingerprint mismatch")
+    def _sealed_preflight(self, candidate_id, partition_id, role, actor, strategy_registry=None):
+        """Authorize and reserve execution before returning any protected observations.
+
+        The claim is never released on failure: a partial plugin run cannot be retried.
+        This is an application boundary, not isolation from hostile Python code.
+        """
+        candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id)
+        final=role==PartitionRole.FINAL_TEST
+        prefix="FINAL_TEST_ACCESS_DENIED" if final else "VALIDATION_ACCESS_DENIED"
+        def deny(reason):
+            if final and p is not None:
+                return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,prefix+": "+reason,candidate_id,None)
+            raise ResearchError(prefix+": "+reason)
+        if not candidate or not p or p.role!=role or candidate.program_id!=p.program_id:
+            deny("candidate and protected partition role/program must match")
+        if final:
+            with self.registry.catalog.connection() as con:
+                row=con.execute("SELECT record_json FROM final_authorizations WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone()
+            if not row:deny("authorization required")
+            binding=FinalAuthorization.model_validate_json(row[0])
+            if candidate.status!=CandidateStatus.VALIDATED or candidate.validation_status!="PASSED":deny("successful validation required")
+            with self.registry.catalog.connection() as con:
+                valid=con.execute("SELECT 1 FROM sealed_validation_results WHERE validation_result_id=? AND candidate_id=? AND json_extract(result_json,'$.passed')=1",(binding.validation_result_id,candidate_id)).fetchone()
+            if not valid:deny("verified sealed validation required")
+        else:
+            binding=self._binding("VALIDATION",candidate_id,partition_id)
+            if not binding or candidate.status!=CandidateStatus.FROZEN:deny("frozen bound candidate required")
+            if binding.status!="BOUND":deny("validation already exposed")
+        if (binding.candidate_id!=candidate_id or binding.partition_id!=partition_id
+                or candidate.candidate_fingerprint!=binding.candidate_fingerprint
+                or sha256_canonical(candidate.execution_config)!=binding.execution_config_fingerprint
+                or sha256_canonical(candidate.evaluation_spec)!=binding.evaluation_spec_fingerprint):
+            deny("frozen fingerprint mismatch")
+        # Check results before contamination so repeated successful execution retains its explicit error.
+        table="sealed_final_results" if final else "sealed_validation_results"
+        claims="final_execution_claims" if final else "validation_execution_claims"
         with self.registry.catalog.connection() as con:
-            if con.execute("SELECT 1 FROM sealed_validation_results WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone():raise ResearchError("VALIDATION_ACCESS_DENIED: validation already executed")
-            try:con.execute("INSERT INTO validation_execution_claims VALUES (?,?,?,?)",(candidate_id,partition_id,"RUNNING",now_utc().isoformat()))
-            except sqlite3.IntegrityError:raise ResearchError("VALIDATION_ACCESS_DENIED: execution already claimed")
+            if con.execute(f"SELECT 1 FROM {table} WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone():
+                deny("independent final test already used" if final else "validation already executed")
+        if self._lineage_contaminated(candidate,partition_id) or (final and self._final_partition_exposed(p.program_id,partition_id)):
+            deny("partition contaminated or final data exposed")
+        from sandbox.execution.models import ExecutionConfig
+        ExecutionConfig.model_validate(candidate.execution_config)
+        plugin=None
+        if strategy_registry is not None:
+            spec=candidate.strategy_spec
+            plugin=strategy_registry.resolve(spec.get("strategy_id"),spec.get("strategy_version"))
+            strategy_registry.validate(plugin)
+            parameters=dict(plugin.metadata.default_parameters);parameters.update(spec.get("parameters",{}))
+            _,code,params=strategy_registry.fingerprint(plugin,parameters)
+            if spec.get("strategy_code_fingerprint")!=code or spec.get("parameter_fingerprint")!=params:
+                deny("frozen strategy fingerprint mismatch")
+        claimed=True
+        with self.registry.catalog.connection() as con:
+            try:con.execute(f"INSERT INTO {claims} VALUES (?,?,?,?)",(candidate_id,partition_id,"RUNNING",now_utc().isoformat()))
+            except sqlite3.IntegrityError:claimed=False
+        if not claimed:deny("execution already claimed")
+        if sha256_file(Path(p.path))!=p.partition_checksum:deny("partition checksum mismatch")
+        return candidate,p,binding,plugin
+
+    def _sealed_frame(self,p):
+        frame=pd.read_parquet(p.path)
+        if len(frame)!=p.row_count or sha256_file(Path(p.path))!=p.partition_checksum:
+            raise ResearchError("PROTECTED_PARTITION_CHANGED: execution denied")
+        return frame
+
+    def sealed_validation_execute(self,candidate_id,partition_id,intents,actor="sealed-validator",results_root:Path|None=None):
+        if callable(intents):raise ResearchError("VALIDATION_ACCESS_DENIED: arbitrary execution callback prohibited")
+        candidate,p,binding,_=self._sealed_preflight(candidate_id,partition_id,PartitionRole.VALIDATION,actor)
+        return self._finish_validation(candidate,p,binding,intents,actor)
+
+    def _finish_validation(self,candidate,p,binding,intents,actor):
+        candidate_id=candidate.candidate_id;partition_id=p.partition_id
         from sandbox.execution.engine import BacktestEngine
         from sandbox.execution.models import ExecutionConfig,TradeIntent
         from sandbox.execution.artifacts import store_run
-        frame=pd.read_parquet(p.path);validated=[x if isinstance(x,TradeIntent) else TradeIntent.model_validate(x) for x in intents]
+        frame=self._sealed_frame(p);validated=[x if isinstance(x,TradeIntent) else TradeIntent.model_validate(x) for x in intents]
         if not validated or any(x.dataset_id!=partition_id for x in validated):raise ResearchError("VALIDATION_ACCESS_DENIED: non-empty intents must be bound to the Validation partition_id")
         run=BacktestEngine(ExecutionConfig.model_validate(candidate.execution_config)).run(validated,frame.copy());stored=store_run(run,self.registry.results_root/"validation");self.registry.catalog.add_research_run(stored.run_id,stored.run_fingerprint,partition_id,run.execution_engine_version,run.ledger_schema_version,run.metrics_version,candidate.execution_config,str(stored.ledger_path),str(stored.summary_path));summary=json.loads(stored.summary_path.read_text(encoding="utf-8"));metrics=summary["metrics"];mapping={"minimum_win_rate":"win_rate","minimum_trades_per_year":"trades_per_year","minimum_resolved_trades":"resolved_trades","minimum_net_r":"net_R"};criteria=[]
         for criterion,required in sorted(candidate.evaluation_spec.items()):
@@ -234,12 +309,10 @@ class PartitionService:
 
     def sealed_validation_strategy_execute(self,candidate_id,partition_id,strategy_registry,actor="sealed-strategy-validator"):
         from sandbox.strategies.runtime import StrategyRuntime,_PROTECTED_PHASE_AUTHORITY
-        candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id);binding=self._binding("VALIDATION",candidate_id,partition_id)
-        if not candidate or not p or not binding or candidate.status!=CandidateStatus.FROZEN:raise ResearchError("VALIDATION_ACCESS_DENIED: frozen bound candidate required")
-        if candidate.candidate_fingerprint!=binding.candidate_fingerprint:raise ResearchError("VALIDATION_ACCESS_DENIED: frozen fingerprint mismatch")
-        spec=candidate.strategy_spec;plugin=strategy_registry.resolve(spec.get("strategy_id"),spec.get("strategy_version"));frame=pd.read_parquet(p.path);runtime=StrategyRuntime(strategy_registry);frames=self._strategy_timeframe_frames(frame,plugin,p.timeframe)
+        candidate,p,binding,plugin=self._sealed_preflight(candidate_id,partition_id,PartitionRole.VALIDATION,actor,strategy_registry)
+        spec=candidate.strategy_spec;frame=self._sealed_frame(p);runtime=StrategyRuntime(strategy_registry);frames=self._strategy_timeframe_frames(frame,plugin,p.timeframe)
         run=runtime.assert_deterministic(plugin.metadata.strategy_id,frames,symbol=p.symbol,dataset_id=partition_id,experiment_id=candidate.originating_hypothesis_id,parameters=spec.get("parameters",{}),phase="VALIDATION",version=plugin.metadata.strategy_version,_phase_authority=_PROTECTED_PHASE_AUTHORITY);runtime.assert_frozen_binding(candidate,run)
-        return self.sealed_validation_execute(candidate_id,partition_id,run.intents,actor=actor)
+        return self._finish_validation(candidate,p,binding,run.intents,actor)
 
     def authorize_final(self,candidate_id,partition_id,validation_result_id,authorized_by):
         candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id)
@@ -254,23 +327,16 @@ class PartitionService:
 
     def sealed_final_execute(self,candidate_id,partition_id,intents,actor="sealed-runner",results_root:Path|None=None):
         """Execute the installed deterministic engine inside the vault; arbitrary callbacks are prohibited."""
-        candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id)
-        with self.registry.catalog.connection() as con:row=con.execute("SELECT record_json FROM final_authorizations WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone();used=con.execute("SELECT 1 FROM sealed_final_results WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone()
-        if not row:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: authorization required",candidate_id,None)
-        if used:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: independent final test already used",candidate_id,None)
-        auth=FinalAuthorization.model_validate_json(row[0])
-        if candidate.candidate_fingerprint!=auth.candidate_fingerprint or sha256_canonical(candidate.execution_config)!=auth.execution_config_fingerprint or sha256_canonical(candidate.evaluation_spec)!=auth.evaluation_spec_fingerprint:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: frozen fingerprint mismatch",candidate_id,None)
-        if self._lineage_contaminated(candidate,partition_id) or self._final_partition_exposed(candidate.program_id,partition_id):return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: final data exposed",candidate_id,None)
-        if callable(intents):return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: arbitrary execution callback prohibited",candidate_id,None)
-        claim_created=True
-        with self.registry.catalog.connection() as con:
-            try:con.execute("INSERT INTO final_execution_claims VALUES (?,?,?,?)",(candidate_id,partition_id,"RUNNING",now_utc().isoformat()))
-            except sqlite3.IntegrityError:claim_created=False
-        if not claim_created:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: execution already claimed",candidate_id,None)
+        if callable(intents):raise ResearchError("FINAL_TEST_ACCESS_DENIED: arbitrary execution callback prohibited")
+        candidate,p,auth,_=self._sealed_preflight(candidate_id,partition_id,PartitionRole.FINAL_TEST,actor)
+        return self._finish_final(candidate,p,auth,intents,actor)
+
+    def _finish_final(self,candidate,p,auth,intents,actor):
+        candidate_id=candidate.candidate_id;partition_id=p.partition_id
         from sandbox.execution.engine import BacktestEngine
         from sandbox.execution.models import ExecutionConfig,TradeIntent
         from sandbox.execution.artifacts import store_run
-        frame=pd.read_parquet(p.path);validated_intents=[x if isinstance(x,TradeIntent) else TradeIntent.model_validate(x) for x in intents]
+        frame=self._sealed_frame(p);validated_intents=[x if isinstance(x,TradeIntent) else TradeIntent.model_validate(x) for x in intents]
         if not validated_intents or any(x.dataset_id!=partition_id for x in validated_intents):return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: non-empty intents must be bound to the Final partition_id",candidate_id,None)
         run=BacktestEngine(ExecutionConfig.model_validate(candidate.execution_config)).run(validated_intents,frame.copy());stored=store_run(run,self.vault_root/"artifacts")
         summary=json.loads(stored.summary_path.read_text(encoding="utf-8"));metrics=summary["metrics"];mapping={"minimum_win_rate":"win_rate","minimum_trades_per_year":"trades_per_year","minimum_resolved_trades":"resolved_trades","minimum_net_r":"net_R"};criteria=[]
@@ -287,14 +353,10 @@ class PartitionService:
     def sealed_final_strategy_execute(self,candidate_id,partition_id,strategy_registry,actor="sealed-strategy-final"):
         """Generate signals and execute them without exposing Final market values or the signal stream."""
         from sandbox.strategies.runtime import StrategyRuntime,_PROTECTED_PHASE_AUTHORITY
-        candidate=self.control.get_candidate(candidate_id);p=self._get_partition(partition_id)
-        with self.registry.catalog.connection() as con:row=con.execute("SELECT record_json FROM final_authorizations WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone();used=con.execute("SELECT 1 FROM sealed_final_results WHERE candidate_id=? AND partition_id=?",(candidate_id,partition_id)).fetchone()
-        if not candidate or not p or not row or used:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: unused authorization required",candidate_id,None)
-        auth=FinalAuthorization.model_validate_json(row[0])
-        if candidate.candidate_fingerprint!=auth.candidate_fingerprint:return self._deny(p,actor,AccessContext.FINAL_TEST_CONTEXT,AccessOperation.BACKTEST_EXECUTION,"FINAL_TEST_ACCESS_DENIED: frozen fingerprint mismatch",candidate_id,None)
-        spec=candidate.strategy_spec;plugin=strategy_registry.resolve(spec.get("strategy_id"),spec.get("strategy_version"));frame=pd.read_parquet(p.path);runtime=StrategyRuntime(strategy_registry);frames=self._strategy_timeframe_frames(frame,plugin,p.timeframe)
+        candidate,p,auth,plugin=self._sealed_preflight(candidate_id,partition_id,PartitionRole.FINAL_TEST,actor,strategy_registry)
+        spec=candidate.strategy_spec;frame=self._sealed_frame(p);runtime=StrategyRuntime(strategy_registry);frames=self._strategy_timeframe_frames(frame,plugin,p.timeframe)
         run=runtime.assert_deterministic(plugin.metadata.strategy_id,frames,symbol=p.symbol,dataset_id=partition_id,experiment_id=candidate.originating_hypothesis_id,parameters=spec.get("parameters",{}),phase="FINAL_TEST",version=plugin.metadata.strategy_version,_phase_authority=_PROTECTED_PHASE_AUTHORITY);runtime.assert_frozen_binding(candidate,run)
-        return self.sealed_final_execute(candidate_id,partition_id,run.intents,actor=actor)
+        return self._finish_final(candidate,p,auth,run.intents,actor)
 
     def warmup(self,candidate_id,discovery_partition_id,validation_partition_id,bars,actor="validator"):
         candidate=self.control.get_candidate(candidate_id);discovery=self._get_partition(discovery_partition_id);validation=self._get_partition(validation_partition_id)

@@ -27,7 +27,7 @@ from sandbox.audit.report import write_audit_report
 from sandbox.control.service import ResearchControl
 from sandbox.control.models import StrategyFamilyStatus
 from sandbox.partition.service import PartitionService
-from sandbox.partition.models import AccessContext,AccessOperation
+from sandbox.partition.models import AccessContext,AccessOperation,PartitionRole
 from sandbox.statistics.service import StatisticalEvidenceEngine
 from sandbox.external_import import ExternalImportGateway,ImportSpec,Resolution,PriceType,TimestampFormat,ImportError as ExternalImportError
 from sandbox.strategies.registry import default_registry
@@ -146,15 +146,21 @@ def _connect(settings: Settings) -> MT5Adapter:
     return adapter
 
 def _assert_unprotected_market_path(catalog:Catalog,path:Path)->None:
-    resolved=path.resolve()
     try:
+        resolved=path.resolve()
         with catalog.connection() as con:
-            protected=[Path(x[0]).resolve() for x in con.execute("SELECT path FROM data_partitions WHERE role IN ('VALIDATION','FINAL_TEST')")]
-            protected_sources=[Path(x[0]).resolve() for x in con.execute("SELECT DISTINCT d.path FROM datasets d JOIN data_partitions p ON p.source_dataset_id=d.dataset_id WHERE p.role IN ('VALIDATION','FINAL_TEST')")]
-    except Exception as exc:
-        if isinstance(exc,ResearchError):raise
-        protected=[];protected_sources=[]
-    if resolved in protected or resolved in protected_sources:raise ResearchError("PROTECTED_DATA_PATH: use the Stage 6 controlled execution boundary")
+            rows=con.execute("SELECT p.role,p.path,d.path FROM data_partitions p LEFT JOIN datasets d ON p.source_dataset_id=d.dataset_id").fetchall()
+        protected=[]
+        for row in rows:
+            role=PartitionRole(row[0])
+            if role not in {PartitionRole.VALIDATION,PartitionRole.FINAL_TEST}:continue
+            for value in row[1:]:
+                if not isinstance(value,str) or not value.strip() or "\x00" in value:
+                    raise ValueError("invalid protection metadata")
+                protected.append(Path(value).resolve())
+    except Exception:
+        raise ResearchError("PROTECTED_DATA_PATH_CHECK_FAILED: access denied; protection metadata unavailable") from None
+    if resolved in protected:raise ResearchError("PROTECTED_DATA_PATH: use the Stage 6 controlled execution boundary")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -325,6 +331,7 @@ def main(argv: list[str] | None = None) -> int:
                 _print(value);return 0
         if args.group == "backtest":
             if args.command == "run":
+                if not catalog.path.exists():PartitionService(ResearchRegistry(settings.catalog_path))
                 _assert_unprotected_market_path(catalog,args.dataset)
                 market = pd.read_parquet(args.dataset)
                 intent_payload = json.loads(args.intents.read_text(encoding="utf-8"))
@@ -365,10 +372,12 @@ def main(argv: list[str] | None = None) -> int:
             _print(value);return 0
         if args.group == "data" and args.command == "audit":
             path = Path(args.target)
+            if not catalog.path.exists():PartitionService(ResearchRegistry(settings.catalog_path))
             if path.exists():_assert_unprotected_market_path(catalog,path)
             paths = [path] if path.exists() else list((settings.data_dir / "raw").rglob(f"{args.target}/M1/**/*.parquet"))
             if not paths:
                 raise ValueError(f"no Parquet datasets found for {args.target}")
+            for p in paths:_assert_unprotected_market_path(catalog,p)
             frame = pd.concat([pd.read_parquet(p) for p in paths], ignore_index=True)
             report = audit_market_data(frame).to_dict(); catalog.add_integrity(None, report); _print(report); return 0 if report["status"] != "error" else 2
         adapter = _connect(settings)
