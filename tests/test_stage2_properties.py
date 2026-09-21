@@ -32,8 +32,7 @@ def test_duplicate_ids_are_all_rejected():
 
 
 def test_unsupported_order_types_never_approximated():
-    for entry in (EntryType.LIMIT, EntryType.STOP):
-        assert BacktestEngine(ExecutionConfig()).run([intent(entry=entry)], candles()).ledger[0].rejection_reason == "UNSUPPORTED_ENTRY_TYPE"
+    assert BacktestEngine(ExecutionConfig()).run([intent(entry=EntryType.STOP)], candles()).ledger[0].rejection_reason == "UNSUPPORTED_ENTRY_TYPE"
 
 
 def test_lookahead_and_impossible_market_close_are_rejected():

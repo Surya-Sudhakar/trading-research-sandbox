@@ -1,0 +1,2009 @@
+{
+  "S1_concentration": {
+    "interpretation_policy": "Descriptive contributions and leave-one-period-out totals only; no dominance or quality threshold.",
+    "largest_net_profit_month": {
+      "N": 20,
+      "expectancy_eur_per_trade": 0.394,
+      "losses": 0,
+      "net_profit_eur": 7.88,
+      "period": "2022-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 20
+    },
+    "largest_net_profit_year": {
+      "N": 140,
+      "expectancy_eur_per_trade": 0.33314285714285713,
+      "losses": 1,
+      "net_profit_eur": 46.64,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 17.947435256089584,
+      "s1_total_trade_share_percent": 17.632241813602015,
+      "state": "S1",
+      "win_rate": 0.9928571428571429,
+      "wins": 139,
+      "yearly_matched_trade_share_percent": 35.44303797468354
+    },
+    "largest_trade_count_year": {
+      "N": 140,
+      "expectancy_eur_per_trade": 0.33314285714285713,
+      "losses": 1,
+      "net_profit_eur": 46.64,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 17.947435256089584,
+      "s1_total_trade_share_percent": 17.632241813602015,
+      "state": "S1",
+      "win_rate": 0.9928571428571429,
+      "wins": 139,
+      "yearly_matched_trade_share_percent": 35.44303797468354
+    },
+    "leave_one_month_out": [
+      {
+        "excluded_period": "2016-01",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.3261764705882353,
+        "remaining_net_profit_eur": 255.07
+      },
+      {
+        "excluded_period": "2016-02",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3269035532994924,
+        "remaining_net_profit_eur": 257.6
+      },
+      {
+        "excluded_period": "2016-03",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.3270722433460076,
+        "remaining_net_profit_eur": 258.06
+      },
+      {
+        "excluded_period": "2016-04",
+        "remaining_N": 783,
+        "remaining_expectancy_eur_per_trade": 0.3266794380587484,
+        "remaining_net_profit_eur": 255.79
+      },
+      {
+        "excluded_period": "2016-05",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.33196451204055766,
+        "remaining_net_profit_eur": 261.92
+      },
+      {
+        "excluded_period": "2016-06",
+        "remaining_N": 780,
+        "remaining_expectancy_eur_per_trade": 0.32637179487179485,
+        "remaining_net_profit_eur": 254.57
+      },
+      {
+        "excluded_period": "2016-07",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.32678934010152283,
+        "remaining_net_profit_eur": 257.51
+      },
+      {
+        "excluded_period": "2016-08",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.3268535031847134,
+        "remaining_net_profit_eur": 256.58
+      },
+      {
+        "excluded_period": "2016-09",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.3268869123252859,
+        "remaining_net_profit_eur": 257.26
+      },
+      {
+        "excluded_period": "2016-10",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.32694162436548224,
+        "remaining_net_profit_eur": 257.63
+      },
+      {
+        "excluded_period": "2016-11",
+        "remaining_N": 778,
+        "remaining_expectancy_eur_per_trade": 0.3250385604113111,
+        "remaining_net_profit_eur": 252.88
+      },
+      {
+        "excluded_period": "2016-12",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.32636942675159236,
+        "remaining_net_profit_eur": 256.2
+      },
+      {
+        "excluded_period": "2017-01",
+        "remaining_N": 783,
+        "remaining_expectancy_eur_per_trade": 0.3258109833971903,
+        "remaining_net_profit_eur": 255.11
+      },
+      {
+        "excluded_period": "2017-02",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.32595907928388745,
+        "remaining_net_profit_eur": 254.9
+      },
+      {
+        "excluded_period": "2017-03",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.32603072983354675,
+        "remaining_net_profit_eur": 254.63
+      },
+      {
+        "excluded_period": "2017-04",
+        "remaining_N": 793,
+        "remaining_expectancy_eur_per_trade": 0.32721311475409837,
+        "remaining_net_profit_eur": 259.48
+      },
+      {
+        "excluded_period": "2017-05",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.3264968152866242,
+        "remaining_net_profit_eur": 256.3
+      },
+      {
+        "excluded_period": "2017-06",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.3319186785260483,
+        "remaining_net_profit_eur": 261.22
+      },
+      {
+        "excluded_period": "2017-07",
+        "remaining_N": 791,
+        "remaining_expectancy_eur_per_trade": 0.32701643489254106,
+        "remaining_net_profit_eur": 258.67
+      },
+      {
+        "excluded_period": "2017-08",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3317157490396927,
+        "remaining_net_profit_eur": 259.07
+      },
+      {
+        "excluded_period": "2017-09",
+        "remaining_N": 779,
+        "remaining_expectancy_eur_per_trade": 0.3318100128369705,
+        "remaining_net_profit_eur": 258.48
+      },
+      {
+        "excluded_period": "2017-10",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3266837387964149,
+        "remaining_net_profit_eur": 255.14
+      },
+      {
+        "excluded_period": "2017-11",
+        "remaining_N": 779,
+        "remaining_expectancy_eur_per_trade": 0.32706033376123234,
+        "remaining_net_profit_eur": 254.78
+      },
+      {
+        "excluded_period": "2017-12",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.32710627400768244,
+        "remaining_net_profit_eur": 255.47
+      },
+      {
+        "excluded_period": "2018-01",
+        "remaining_N": 784,
+        "remaining_expectancy_eur_per_trade": 0.3269515306122449,
+        "remaining_net_profit_eur": 256.33
+      },
+      {
+        "excluded_period": "2018-02",
+        "remaining_N": 783,
+        "remaining_expectancy_eur_per_trade": 0.32710089399744574,
+        "remaining_net_profit_eur": 256.12
+      },
+      {
+        "excluded_period": "2018-03",
+        "remaining_N": 780,
+        "remaining_expectancy_eur_per_trade": 0.32705128205128203,
+        "remaining_net_profit_eur": 255.1
+      },
+      {
+        "excluded_period": "2018-04",
+        "remaining_N": 776,
+        "remaining_expectancy_eur_per_trade": 0.32655927835051546,
+        "remaining_net_profit_eur": 253.41
+      },
+      {
+        "excluded_period": "2018-05",
+        "remaining_N": 777,
+        "remaining_expectancy_eur_per_trade": 0.3263963963963964,
+        "remaining_net_profit_eur": 253.61
+      },
+      {
+        "excluded_period": "2018-06",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.3313554987212276,
+        "remaining_net_profit_eur": 259.12
+      },
+      {
+        "excluded_period": "2018-07",
+        "remaining_N": 779,
+        "remaining_expectancy_eur_per_trade": 0.3268421052631579,
+        "remaining_net_profit_eur": 254.61
+      },
+      {
+        "excluded_period": "2018-08",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3265428937259923,
+        "remaining_net_profit_eur": 255.03
+      },
+      {
+        "excluded_period": "2018-09",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.32692993630573247,
+        "remaining_net_profit_eur": 256.64
+      },
+      {
+        "excluded_period": "2018-10",
+        "remaining_N": 784,
+        "remaining_expectancy_eur_per_trade": 0.3267091836734694,
+        "remaining_net_profit_eur": 256.14
+      },
+      {
+        "excluded_period": "2018-11",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32690839694656487,
+        "remaining_net_profit_eur": 256.95
+      },
+      {
+        "excluded_period": "2018-12",
+        "remaining_N": 791,
+        "remaining_expectancy_eur_per_trade": 0.32710493046776234,
+        "remaining_net_profit_eur": 258.74
+      },
+      {
+        "excluded_period": "2019-01",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.33208651399491096,
+        "remaining_net_profit_eur": 261.02
+      },
+      {
+        "excluded_period": "2019-02",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32684478371501274,
+        "remaining_net_profit_eur": 256.9
+      },
+      {
+        "excluded_period": "2019-03",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3269670050761421,
+        "remaining_net_profit_eur": 257.65
+      },
+      {
+        "excluded_period": "2019-04",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.3271464968152866,
+        "remaining_net_profit_eur": 256.81
+      },
+      {
+        "excluded_period": "2019-05",
+        "remaining_N": 783,
+        "remaining_expectancy_eur_per_trade": 0.327037037037037,
+        "remaining_net_profit_eur": 256.07
+      },
+      {
+        "excluded_period": "2019-06",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.32661125319693096,
+        "remaining_net_profit_eur": 255.41
+      },
+      {
+        "excluded_period": "2019-07",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3269796954314721,
+        "remaining_net_profit_eur": 257.66
+      },
+      {
+        "excluded_period": "2019-08",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.326848792884371,
+        "remaining_net_profit_eur": 257.23
+      },
+      {
+        "excluded_period": "2019-09",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3268781725888325,
+        "remaining_net_profit_eur": 257.58
+      },
+      {
+        "excluded_period": "2019-10",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.3270737913486005,
+        "remaining_net_profit_eur": 257.08
+      },
+      {
+        "excluded_period": "2019-11",
+        "remaining_N": 791,
+        "remaining_expectancy_eur_per_trade": 0.3272187104930468,
+        "remaining_net_profit_eur": 258.83
+      },
+      {
+        "excluded_period": "2019-12",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3323604060913706,
+        "remaining_net_profit_eur": 261.9
+      },
+      {
+        "excluded_period": "2020-01",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.32693282636248416,
+        "remaining_net_profit_eur": 257.95
+      },
+      {
+        "excluded_period": "2020-02",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.3267770700636943,
+        "remaining_net_profit_eur": 256.52
+      },
+      {
+        "excluded_period": "2020-03",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.3263554987212276,
+        "remaining_net_profit_eur": 255.21
+      },
+      {
+        "excluded_period": "2020-04",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3262996158770807,
+        "remaining_net_profit_eur": 254.84
+      },
+      {
+        "excluded_period": "2020-05",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32669211195928755,
+        "remaining_net_profit_eur": 256.78
+      },
+      {
+        "excluded_period": "2020-06",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3264916773367478,
+        "remaining_net_profit_eur": 254.99
+      },
+      {
+        "excluded_period": "2020-07",
+        "remaining_N": 776,
+        "remaining_expectancy_eur_per_trade": 0.32640463917525775,
+        "remaining_net_profit_eur": 253.29
+      },
+      {
+        "excluded_period": "2020-08",
+        "remaining_N": 784,
+        "remaining_expectancy_eur_per_trade": 0.326875,
+        "remaining_net_profit_eur": 256.27
+      },
+      {
+        "excluded_period": "2020-09",
+        "remaining_N": 778,
+        "remaining_expectancy_eur_per_trade": 0.3267994858611825,
+        "remaining_net_profit_eur": 254.25
+      },
+      {
+        "excluded_period": "2020-10",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.33226869455006336,
+        "remaining_net_profit_eur": 262.16
+      },
+      {
+        "excluded_period": "2020-11",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.32719898605830167,
+        "remaining_net_profit_eur": 258.16
+      },
+      {
+        "excluded_period": "2020-12",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32599236641221374,
+        "remaining_net_profit_eur": 256.23
+      },
+      {
+        "excluded_period": "2021-01",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.3271830985915493,
+        "remaining_net_profit_eur": 255.53
+      },
+      {
+        "excluded_period": "2021-02",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32717557251908397,
+        "remaining_net_profit_eur": 257.16
+      },
+      {
+        "excluded_period": "2021-03",
+        "remaining_N": 780,
+        "remaining_expectancy_eur_per_trade": 0.3269102564102564,
+        "remaining_net_profit_eur": 254.99
+      },
+      {
+        "excluded_period": "2021-04",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.327141041931385,
+        "remaining_net_profit_eur": 257.46
+      },
+      {
+        "excluded_period": "2021-05",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.32720812182741116,
+        "remaining_net_profit_eur": 257.84
+      },
+      {
+        "excluded_period": "2021-06",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.3271501272264631,
+        "remaining_net_profit_eur": 257.14
+      },
+      {
+        "excluded_period": "2021-07",
+        "remaining_N": 779,
+        "remaining_expectancy_eur_per_trade": 0.3267779204107831,
+        "remaining_net_profit_eur": 254.56
+      },
+      {
+        "excluded_period": "2021-08",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.32714828897338405,
+        "remaining_net_profit_eur": 258.12
+      },
+      {
+        "excluded_period": "2021-09",
+        "remaining_N": 789,
+        "remaining_expectancy_eur_per_trade": 0.3271609632446134,
+        "remaining_net_profit_eur": 258.13
+      },
+      {
+        "excluded_period": "2021-10",
+        "remaining_N": 786,
+        "remaining_expectancy_eur_per_trade": 0.32702290076335877,
+        "remaining_net_profit_eur": 257.04
+      },
+      {
+        "excluded_period": "2021-11",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3269035532994924,
+        "remaining_net_profit_eur": 257.6
+      },
+      {
+        "excluded_period": "2021-12",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.33221227621483373,
+        "remaining_net_profit_eur": 259.79
+      },
+      {
+        "excluded_period": "2022-01",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.3269123252858958,
+        "remaining_net_profit_eur": 257.28
+      },
+      {
+        "excluded_period": "2022-02",
+        "remaining_N": 787,
+        "remaining_expectancy_eur_per_trade": 0.3270266836086404,
+        "remaining_net_profit_eur": 257.37
+      },
+      {
+        "excluded_period": "2022-03",
+        "remaining_N": 784,
+        "remaining_expectancy_eur_per_trade": 0.3269515306122449,
+        "remaining_net_profit_eur": 256.33
+      },
+      {
+        "excluded_period": "2022-04",
+        "remaining_N": 791,
+        "remaining_expectancy_eur_per_trade": 0.3270290771175727,
+        "remaining_net_profit_eur": 258.68
+      },
+      {
+        "excluded_period": "2022-05",
+        "remaining_N": 782,
+        "remaining_expectancy_eur_per_trade": 0.326150895140665,
+        "remaining_net_profit_eur": 255.05
+      },
+      {
+        "excluded_period": "2022-06",
+        "remaining_N": 781,
+        "remaining_expectancy_eur_per_trade": 0.326056338028169,
+        "remaining_net_profit_eur": 254.65
+      },
+      {
+        "excluded_period": "2022-07",
+        "remaining_N": 788,
+        "remaining_expectancy_eur_per_trade": 0.3265355329949239,
+        "remaining_net_profit_eur": 257.31
+      },
+      {
+        "excluded_period": "2022-08",
+        "remaining_N": 785,
+        "remaining_expectancy_eur_per_trade": 0.32611464968152865,
+        "remaining_net_profit_eur": 256.0
+      },
+      {
+        "excluded_period": "2022-09",
+        "remaining_N": 791,
+        "remaining_expectancy_eur_per_trade": 0.32687737041719345,
+        "remaining_net_profit_eur": 258.56
+      },
+      {
+        "excluded_period": "2022-10",
+        "remaining_N": 784,
+        "remaining_expectancy_eur_per_trade": 0.32590561224489795,
+        "remaining_net_profit_eur": 255.51
+      },
+      {
+        "excluded_period": "2022-11",
+        "remaining_N": 790,
+        "remaining_expectancy_eur_per_trade": 0.3268481012658228,
+        "remaining_net_profit_eur": 258.21
+      },
+      {
+        "excluded_period": "2022-12",
+        "remaining_N": 774,
+        "remaining_expectancy_eur_per_trade": 0.32556847545219636,
+        "remaining_net_profit_eur": 251.99
+      }
+    ],
+    "leave_one_year_out": [
+      {
+        "excluded_period": "2016",
+        "remaining_N": 688,
+        "remaining_expectancy_eur_per_trade": 0.3234011627906977,
+        "remaining_net_profit_eur": 222.5
+      },
+      {
+        "excluded_period": "2017",
+        "remaining_N": 669,
+        "remaining_expectancy_eur_per_trade": 0.33584454409566517,
+        "remaining_net_profit_eur": 224.68
+      },
+      {
+        "excluded_period": "2018",
+        "remaining_N": 654,
+        "remaining_expectancy_eur_per_trade": 0.32603975535168195,
+        "remaining_net_profit_eur": 213.23
+      },
+      {
+        "excluded_period": "2019",
+        "remaining_N": 704,
+        "remaining_expectancy_eur_per_trade": 0.33461647727272725,
+        "remaining_net_profit_eur": 235.57
+      },
+      {
+        "excluded_period": "2020",
+        "remaining_N": 672,
+        "remaining_expectancy_eur_per_trade": 0.32452380952380955,
+        "remaining_net_profit_eur": 218.08
+      },
+      {
+        "excluded_period": "2021",
+        "remaining_N": 687,
+        "remaining_expectancy_eur_per_trade": 0.3301164483260553,
+        "remaining_net_profit_eur": 226.79
+      },
+      {
+        "excluded_period": "2022",
+        "remaining_N": 690,
+        "remaining_expectancy_eur_per_trade": 0.3164782608695652,
+        "remaining_net_profit_eur": 218.37
+      }
+    ]
+  },
+  "definitions": {
+    "calendar": "UTC entry calendar; completed-trade profit attributed entirely to entry year/month",
+    "empty_period": "N=0, net=0; WR and expectancy null; excluded from positive/negative/zero counts",
+    "population": "exactly existing MATCHED rows; no reassignment, warm-up or eligibility changes",
+    "profit": "existing ledger profit: net EUR cash including costs; decimal summation of stored values",
+    "profit_contribution": "signed yearly net / total S1 net; may be negative or exceed 100%; undefined if total net zero",
+    "win_rate": "wins/N, fraction 0..1; null for empty periods"
+  },
+  "expectancy_sign_year_counts": {
+    "S0": {
+      "negative": 6,
+      "no_trades": 0,
+      "positive": 1,
+      "zero": 0
+    },
+    "S1": {
+      "negative": 0,
+      "no_trades": 0,
+      "positive": 7,
+      "zero": 0
+    },
+    "S2": {
+      "negative": 7,
+      "no_trades": 0,
+      "positive": 0,
+      "zero": 0
+    }
+  },
+  "experiment": "H5_TEMPORAL_STABILITY_V1",
+  "monthly_S1": [
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.4,
+      "losses": 0,
+      "net_profit_eur": 4.8,
+      "period": "2016-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 12
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.37833333333333335,
+      "losses": 0,
+      "net_profit_eur": 2.27,
+      "period": "2016-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": 0.362,
+      "losses": 0,
+      "net_profit_eur": 1.81,
+      "period": "2016-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 5
+    },
+    {
+      "N": 11,
+      "expectancy_eur_per_trade": 0.3709090909090909,
+      "losses": 0,
+      "net_profit_eur": 4.08,
+      "period": "2016-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 11
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": -0.41,
+      "losses": 1,
+      "net_profit_eur": -2.05,
+      "period": "2016-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.8,
+      "wins": 4
+    },
+    {
+      "N": 14,
+      "expectancy_eur_per_trade": 0.37857142857142856,
+      "losses": 0,
+      "net_profit_eur": 5.3,
+      "period": "2016-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 14
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.3933333333333333,
+      "losses": 0,
+      "net_profit_eur": 2.36,
+      "period": "2016-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.3655555555555556,
+      "losses": 0,
+      "net_profit_eur": 3.29,
+      "period": "2016-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": 0.37285714285714283,
+      "losses": 0,
+      "net_profit_eur": 2.61,
+      "period": "2016-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 7
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.37333333333333335,
+      "losses": 0,
+      "net_profit_eur": 2.24,
+      "period": "2016-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 16,
+      "expectancy_eur_per_trade": 0.436875,
+      "losses": 0,
+      "net_profit_eur": 6.99,
+      "period": "2016-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 16
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.4077777777777778,
+      "losses": 0,
+      "net_profit_eur": 3.67,
+      "period": "2016-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 11,
+      "expectancy_eur_per_trade": 0.43272727272727274,
+      "losses": 0,
+      "net_profit_eur": 4.76,
+      "period": "2017-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 11
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.4141666666666667,
+      "losses": 0,
+      "net_profit_eur": 4.97,
+      "period": "2017-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 12
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.40307692307692305,
+      "losses": 0,
+      "net_profit_eur": 5.24,
+      "period": "2017-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 1,
+      "expectancy_eur_per_trade": 0.39,
+      "losses": 0,
+      "net_profit_eur": 0.39,
+      "period": "2017-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 1
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.39666666666666667,
+      "losses": 0,
+      "net_profit_eur": 3.57,
+      "period": "2017-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": -0.19285714285714287,
+      "losses": 1,
+      "net_profit_eur": -1.35,
+      "period": "2017-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.8571428571428571,
+      "wins": 6
+    },
+    {
+      "N": 3,
+      "expectancy_eur_per_trade": 0.4,
+      "losses": 0,
+      "net_profit_eur": 1.2,
+      "period": "2017-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 3
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.06153846153846154,
+      "losses": 1,
+      "net_profit_eur": 0.8,
+      "period": "2017-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.9230769230769231,
+      "wins": 12
+    },
+    {
+      "N": 15,
+      "expectancy_eur_per_trade": 0.09266666666666666,
+      "losses": 1,
+      "net_profit_eur": 1.39,
+      "period": "2017-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.9333333333333333,
+      "wins": 14
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.3638461538461538,
+      "losses": 0,
+      "net_profit_eur": 4.73,
+      "period": "2017-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 15,
+      "expectancy_eur_per_trade": 0.3393333333333333,
+      "losses": 0,
+      "net_profit_eur": 5.09,
+      "period": "2017-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 15
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.3384615384615385,
+      "losses": 0,
+      "net_profit_eur": 4.4,
+      "period": "2017-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 10,
+      "expectancy_eur_per_trade": 0.354,
+      "losses": 0,
+      "net_profit_eur": 3.54,
+      "period": "2018-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 10
+    },
+    {
+      "N": 11,
+      "expectancy_eur_per_trade": 0.3409090909090909,
+      "losses": 0,
+      "net_profit_eur": 3.75,
+      "period": "2018-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 11
+    },
+    {
+      "N": 14,
+      "expectancy_eur_per_trade": 0.3407142857142857,
+      "losses": 0,
+      "net_profit_eur": 4.77,
+      "period": "2018-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 14
+    },
+    {
+      "N": 18,
+      "expectancy_eur_per_trade": 0.35888888888888887,
+      "losses": 0,
+      "net_profit_eur": 6.46,
+      "period": "2018-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 18
+    },
+    {
+      "N": 17,
+      "expectancy_eur_per_trade": 0.36823529411764705,
+      "losses": 0,
+      "net_profit_eur": 6.26,
+      "period": "2018-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 17
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.0625,
+      "losses": 1,
+      "net_profit_eur": 0.75,
+      "period": "2018-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.9166666666666666,
+      "wins": 11
+    },
+    {
+      "N": 15,
+      "expectancy_eur_per_trade": 0.3506666666666667,
+      "losses": 0,
+      "net_profit_eur": 5.26,
+      "period": "2018-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 15
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.3723076923076923,
+      "losses": 0,
+      "net_profit_eur": 4.84,
+      "period": "2018-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.35888888888888887,
+      "losses": 0,
+      "net_profit_eur": 3.23,
+      "period": "2018-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 10,
+      "expectancy_eur_per_trade": 0.373,
+      "losses": 0,
+      "net_profit_eur": 3.73,
+      "period": "2018-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 10
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.365,
+      "losses": 0,
+      "net_profit_eur": 2.92,
+      "period": "2018-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 3,
+      "expectancy_eur_per_trade": 0.37666666666666665,
+      "losses": 0,
+      "net_profit_eur": 1.13,
+      "period": "2018-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 3
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": -0.14375,
+      "losses": 1,
+      "net_profit_eur": -1.15,
+      "period": "2019-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.875,
+      "wins": 7
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.37125,
+      "losses": 0,
+      "net_profit_eur": 2.97,
+      "period": "2019-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.37,
+      "losses": 0,
+      "net_profit_eur": 2.22,
+      "period": "2019-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.34,
+      "losses": 0,
+      "net_profit_eur": 3.06,
+      "period": "2019-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 11,
+      "expectancy_eur_per_trade": 0.34545454545454546,
+      "losses": 0,
+      "net_profit_eur": 3.8,
+      "period": "2019-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 11
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.37166666666666665,
+      "losses": 0,
+      "net_profit_eur": 4.46,
+      "period": "2019-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 12
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.36833333333333335,
+      "losses": 0,
+      "net_profit_eur": 2.21,
+      "period": "2019-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": 0.37714285714285717,
+      "losses": 0,
+      "net_profit_eur": 2.64,
+      "period": "2019-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 7
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.38166666666666665,
+      "losses": 0,
+      "net_profit_eur": 2.29,
+      "period": "2019-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.34875,
+      "losses": 0,
+      "net_profit_eur": 2.79,
+      "period": "2019-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 3,
+      "expectancy_eur_per_trade": 0.3466666666666667,
+      "losses": 0,
+      "net_profit_eur": 1.04,
+      "period": "2019-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 3
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": -0.3383333333333333,
+      "losses": 1,
+      "net_profit_eur": -2.03,
+      "period": "2019-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.8333333333333334,
+      "wins": 5
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": 0.384,
+      "losses": 0,
+      "net_profit_eur": 1.92,
+      "period": "2020-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 5
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.37222222222222223,
+      "losses": 0,
+      "net_profit_eur": 3.35,
+      "period": "2020-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.3883333333333333,
+      "losses": 0,
+      "net_profit_eur": 4.66,
+      "period": "2020-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 12
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.3869230769230769,
+      "losses": 0,
+      "net_profit_eur": 5.03,
+      "period": "2020-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.38625,
+      "losses": 0,
+      "net_profit_eur": 3.09,
+      "period": "2020-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.37538461538461537,
+      "losses": 0,
+      "net_profit_eur": 4.88,
+      "period": "2020-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 18,
+      "expectancy_eur_per_trade": 0.3655555555555556,
+      "losses": 0,
+      "net_profit_eur": 6.58,
+      "period": "2020-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 18
+    },
+    {
+      "N": 10,
+      "expectancy_eur_per_trade": 0.36,
+      "losses": 0,
+      "net_profit_eur": 3.6,
+      "period": "2020-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 10
+    },
+    {
+      "N": 16,
+      "expectancy_eur_per_trade": 0.35125,
+      "losses": 0,
+      "net_profit_eur": 5.62,
+      "period": "2020-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 16
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": -0.458,
+      "losses": 1,
+      "net_profit_eur": -2.29,
+      "period": "2020-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.8,
+      "wins": 4
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": 0.342,
+      "losses": 0,
+      "net_profit_eur": 1.71,
+      "period": "2020-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 5
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.455,
+      "losses": 0,
+      "net_profit_eur": 3.64,
+      "period": "2020-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.33384615384615385,
+      "losses": 0,
+      "net_profit_eur": 4.34,
+      "period": "2021-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.33875,
+      "losses": 0,
+      "net_profit_eur": 2.71,
+      "period": "2021-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 14,
+      "expectancy_eur_per_trade": 0.3485714285714286,
+      "losses": 0,
+      "net_profit_eur": 4.88,
+      "period": "2021-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 14
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": 0.3442857142857143,
+      "losses": 0,
+      "net_profit_eur": 2.41,
+      "period": "2021-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 7
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.3383333333333333,
+      "losses": 0,
+      "net_profit_eur": 2.03,
+      "period": "2021-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.34125,
+      "losses": 0,
+      "net_profit_eur": 2.73,
+      "period": "2021-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 15,
+      "expectancy_eur_per_trade": 0.354,
+      "losses": 0,
+      "net_profit_eur": 5.31,
+      "period": "2021-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 15
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": 0.35,
+      "losses": 0,
+      "net_profit_eur": 1.75,
+      "period": "2021-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 5
+    },
+    {
+      "N": 5,
+      "expectancy_eur_per_trade": 0.348,
+      "losses": 0,
+      "net_profit_eur": 1.74,
+      "period": "2021-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 5
+    },
+    {
+      "N": 8,
+      "expectancy_eur_per_trade": 0.35375,
+      "losses": 0,
+      "net_profit_eur": 2.83,
+      "period": "2021-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 8
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.37833333333333335,
+      "losses": 0,
+      "net_profit_eur": 2.27,
+      "period": "2021-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.006666666666666667,
+      "losses": 1,
+      "net_profit_eur": 0.08,
+      "period": "2021-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 0.9166666666666666,
+      "wins": 11
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": 0.37,
+      "losses": 0,
+      "net_profit_eur": 2.59,
+      "period": "2022-01",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 7
+    },
+    {
+      "N": 7,
+      "expectancy_eur_per_trade": 0.35714285714285715,
+      "losses": 0,
+      "net_profit_eur": 2.5,
+      "period": "2022-02",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 7
+    },
+    {
+      "N": 10,
+      "expectancy_eur_per_trade": 0.354,
+      "losses": 0,
+      "net_profit_eur": 3.54,
+      "period": "2022-03",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 10
+    },
+    {
+      "N": 3,
+      "expectancy_eur_per_trade": 0.39666666666666667,
+      "losses": 0,
+      "net_profit_eur": 1.19,
+      "period": "2022-04",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 3
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": 0.40166666666666667,
+      "losses": 0,
+      "net_profit_eur": 4.82,
+      "period": "2022-05",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 12
+    },
+    {
+      "N": 13,
+      "expectancy_eur_per_trade": 0.4015384615384615,
+      "losses": 0,
+      "net_profit_eur": 5.22,
+      "period": "2022-06",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 13
+    },
+    {
+      "N": 6,
+      "expectancy_eur_per_trade": 0.4266666666666667,
+      "losses": 0,
+      "net_profit_eur": 2.56,
+      "period": "2022-07",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 6
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": 0.43,
+      "losses": 0,
+      "net_profit_eur": 3.87,
+      "period": "2022-08",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 9
+    },
+    {
+      "N": 3,
+      "expectancy_eur_per_trade": 0.43666666666666665,
+      "losses": 0,
+      "net_profit_eur": 1.31,
+      "period": "2022-09",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 3
+    },
+    {
+      "N": 10,
+      "expectancy_eur_per_trade": 0.436,
+      "losses": 0,
+      "net_profit_eur": 4.36,
+      "period": "2022-10",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 10
+    },
+    {
+      "N": 4,
+      "expectancy_eur_per_trade": 0.415,
+      "losses": 0,
+      "net_profit_eur": 1.66,
+      "period": "2022-11",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 4
+    },
+    {
+      "N": 20,
+      "expectancy_eur_per_trade": 0.394,
+      "losses": 0,
+      "net_profit_eur": 7.88,
+      "period": "2022-12",
+      "period_type": "MONTH",
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 20
+    }
+  ],
+  "monthly_S1_stability": {
+    "N_max": 20,
+    "N_median": 9.0,
+    "N_min": 1,
+    "expectancy_max": 0.455,
+    "expectancy_min": -0.458,
+    "months_with_trades": 84,
+    "negative": 5,
+    "no_trades": 0,
+    "positive": 79,
+    "win_rate_max": 1.0,
+    "win_rate_min": 0.8,
+    "zero": 0
+  },
+  "overall_by_state": {
+    "S0": {
+      "N": 114,
+      "expectancy_eur_per_trade": -0.5129824561403509,
+      "losses": 25,
+      "net_profit_eur": -58.48,
+      "win_rate": 0.7807017543859649,
+      "wins": 89
+    },
+    "S1": {
+      "N": 794,
+      "expectancy_eur_per_trade": 0.32729219143576826,
+      "losses": 9,
+      "net_profit_eur": 259.87,
+      "win_rate": 0.9886649874055415,
+      "wins": 785
+    },
+    "S2": {
+      "N": 1476,
+      "expectancy_eur_per_trade": -0.331659891598916,
+      "losses": 254,
+      "net_profit_eur": -489.53,
+      "win_rate": 0.8279132791327913,
+      "wins": 1222
+    }
+  },
+  "provenance": {
+    "feature_calls": 0,
+    "model_calls": 0,
+    "source_sha256_before_and_after": {
+      "results\\market_state\\h5_discovery_2016_2022_summary.json": "c96fafe402a993434d833afc0ac9b65f3d877d128960fc1ecd661a3bc36964e9",
+      "results\\market_state\\h5_discovery_2016_2022_trades.csv": "0a4ff5319a85bbe90ecc5da9dfa9b3067f8b08b429276fc9e71714a8a913d5ed",
+      "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+      "results\\market_state\\h5_january_2016_trades.csv": "3c095916ca285b40d2cf71d4c883d2d90294e60b0749e44aaf96fc593485770f",
+      "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+      "results\\market_state\\h5_missing_state_diagnostic.csv": "617a80a054fa435be78b2ad96bccd6a4ac3a8a04413276fd6f58f12819dc3ea9",
+      "results\\market_state\\h5_missing_state_diagnostic_summary.json": "095fd07e5d21a8e2d84d33e09a5d6d1f2ce98b3700c63d7c07d5c1d4df4c40b1"
+    }
+  },
+  "reconciliation": {
+    "excluded_unmatched": 1778,
+    "matched_total": 2384,
+    "monthly_S1_N_sum": 794,
+    "state_counts": {
+      "S0": 114,
+      "S1": 794,
+      "S2": 1476
+    },
+    "yearly_N_sum": 2384
+  },
+  "yearly_S1": [
+    {
+      "N": 106,
+      "expectancy_eur_per_trade": 0.3525471698113208,
+      "losses": 1,
+      "net_profit_eur": 37.37,
+      "period": "2016",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 14.380267056605225,
+      "s1_total_trade_share_percent": 13.350125944584383,
+      "state": "S1",
+      "win_rate": 0.9905660377358491,
+      "wins": 105,
+      "yearly_matched_trade_share_percent": 27.676240208877285
+    },
+    {
+      "N": 125,
+      "expectancy_eur_per_trade": 0.28152,
+      "losses": 3,
+      "net_profit_eur": 35.19,
+      "period": "2017",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 13.541386077654211,
+      "s1_total_trade_share_percent": 15.743073047858942,
+      "state": "S1",
+      "win_rate": 0.976,
+      "wins": 122,
+      "yearly_matched_trade_share_percent": 39.43217665615142
+    },
+    {
+      "N": 140,
+      "expectancy_eur_per_trade": 0.33314285714285713,
+      "losses": 1,
+      "net_profit_eur": 46.64,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 17.947435256089584,
+      "s1_total_trade_share_percent": 17.632241813602015,
+      "state": "S1",
+      "win_rate": 0.9928571428571429,
+      "wins": 139,
+      "yearly_matched_trade_share_percent": 35.44303797468354
+    },
+    {
+      "N": 90,
+      "expectancy_eur_per_trade": 0.27,
+      "losses": 2,
+      "net_profit_eur": 24.3,
+      "period": "2019",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 9.350829260784238,
+      "s1_total_trade_share_percent": 11.335012594458439,
+      "state": "S1",
+      "win_rate": 0.9777777777777777,
+      "wins": 88,
+      "yearly_matched_trade_share_percent": 33.83458646616541
+    },
+    {
+      "N": 122,
+      "expectancy_eur_per_trade": 0.3425409836065574,
+      "losses": 1,
+      "net_profit_eur": 41.79,
+      "period": "2020",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 16.08111748181783,
+      "s1_total_trade_share_percent": 15.365239294710328,
+      "state": "S1",
+      "win_rate": 0.9918032786885246,
+      "wins": 121,
+      "yearly_matched_trade_share_percent": 34.26966292134831
+    },
+    {
+      "N": 107,
+      "expectancy_eur_per_trade": 0.3091588785046729,
+      "losses": 1,
+      "net_profit_eur": 33.08,
+      "period": "2021",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 12.729441643898873,
+      "s1_total_trade_share_percent": 13.476070528967254,
+      "state": "S1",
+      "win_rate": 0.9906542056074766,
+      "wins": 106,
+      "yearly_matched_trade_share_percent": 33.64779874213836
+    },
+    {
+      "N": 104,
+      "expectancy_eur_per_trade": 0.39903846153846156,
+      "losses": 0,
+      "net_profit_eur": 41.5,
+      "period": "2022",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 15.969523223150036,
+      "s1_total_trade_share_percent": 13.09823677581864,
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 104,
+      "yearly_matched_trade_share_percent": 29.799426934097422
+    }
+  ],
+  "yearly_states": [
+    {
+      "N": 28,
+      "expectancy_eur_per_trade": -0.04535714285714286,
+      "losses": 3,
+      "net_profit_eur": -1.27,
+      "period": "2016",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.8928571428571429,
+      "wins": 25,
+      "yearly_matched_trade_share_percent": 7.310704960835509
+    },
+    {
+      "N": 106,
+      "expectancy_eur_per_trade": 0.3525471698113208,
+      "losses": 1,
+      "net_profit_eur": 37.37,
+      "period": "2016",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 14.380267056605225,
+      "s1_total_trade_share_percent": 13.350125944584383,
+      "state": "S1",
+      "win_rate": 0.9905660377358491,
+      "wins": 105,
+      "yearly_matched_trade_share_percent": 27.676240208877285
+    },
+    {
+      "N": 249,
+      "expectancy_eur_per_trade": -0.28032128514056226,
+      "losses": 40,
+      "net_profit_eur": -69.8,
+      "period": "2016",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8393574297188755,
+      "wins": 209,
+      "yearly_matched_trade_share_percent": 65.0130548302872
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": -1.3191666666666666,
+      "losses": 5,
+      "net_profit_eur": -15.83,
+      "period": "2017",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.5833333333333334,
+      "wins": 7,
+      "yearly_matched_trade_share_percent": 3.7854889589905363
+    },
+    {
+      "N": 125,
+      "expectancy_eur_per_trade": 0.28152,
+      "losses": 3,
+      "net_profit_eur": 35.19,
+      "period": "2017",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 13.541386077654211,
+      "s1_total_trade_share_percent": 15.743073047858942,
+      "state": "S1",
+      "win_rate": 0.976,
+      "wins": 122,
+      "yearly_matched_trade_share_percent": 39.43217665615142
+    },
+    {
+      "N": 180,
+      "expectancy_eur_per_trade": -0.45461111111111113,
+      "losses": 36,
+      "net_profit_eur": -81.83,
+      "period": "2017",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8,
+      "wins": 144,
+      "yearly_matched_trade_share_percent": 56.782334384858046
+    },
+    {
+      "N": 12,
+      "expectancy_eur_per_trade": -0.9325,
+      "losses": 4,
+      "net_profit_eur": -11.19,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.6666666666666666,
+      "wins": 8,
+      "yearly_matched_trade_share_percent": 3.037974683544304
+    },
+    {
+      "N": 140,
+      "expectancy_eur_per_trade": 0.33314285714285713,
+      "losses": 1,
+      "net_profit_eur": 46.64,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 17.947435256089584,
+      "s1_total_trade_share_percent": 17.632241813602015,
+      "state": "S1",
+      "win_rate": 0.9928571428571429,
+      "wins": 139,
+      "yearly_matched_trade_share_percent": 35.44303797468354
+    },
+    {
+      "N": 243,
+      "expectancy_eur_per_trade": -0.4079012345679012,
+      "losses": 48,
+      "net_profit_eur": -99.12,
+      "period": "2018",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8024691358024691,
+      "wins": 195,
+      "yearly_matched_trade_share_percent": 61.51898734177215
+    },
+    {
+      "N": 11,
+      "expectancy_eur_per_trade": -0.035454545454545454,
+      "losses": 1,
+      "net_profit_eur": -0.39,
+      "period": "2019",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.9090909090909091,
+      "wins": 10,
+      "yearly_matched_trade_share_percent": 4.135338345864661
+    },
+    {
+      "N": 90,
+      "expectancy_eur_per_trade": 0.27,
+      "losses": 2,
+      "net_profit_eur": 24.3,
+      "period": "2019",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 9.350829260784238,
+      "s1_total_trade_share_percent": 11.335012594458439,
+      "state": "S1",
+      "win_rate": 0.9777777777777777,
+      "wins": 88,
+      "yearly_matched_trade_share_percent": 33.83458646616541
+    },
+    {
+      "N": 165,
+      "expectancy_eur_per_trade": -0.18684848484848485,
+      "losses": 22,
+      "net_profit_eur": -30.83,
+      "period": "2019",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8666666666666667,
+      "wins": 143,
+      "yearly_matched_trade_share_percent": 62.03007518796993
+    },
+    {
+      "N": 18,
+      "expectancy_eur_per_trade": 0.37777777777777777,
+      "losses": 0,
+      "net_profit_eur": 6.8,
+      "period": "2020",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 1.0,
+      "wins": 18,
+      "yearly_matched_trade_share_percent": 5.056179775280899
+    },
+    {
+      "N": 122,
+      "expectancy_eur_per_trade": 0.3425409836065574,
+      "losses": 1,
+      "net_profit_eur": 41.79,
+      "period": "2020",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 16.08111748181783,
+      "s1_total_trade_share_percent": 15.365239294710328,
+      "state": "S1",
+      "win_rate": 0.9918032786885246,
+      "wins": 121,
+      "yearly_matched_trade_share_percent": 34.26966292134831
+    },
+    {
+      "N": 216,
+      "expectancy_eur_per_trade": -0.19324074074074074,
+      "losses": 30,
+      "net_profit_eur": -41.74,
+      "period": "2020",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8611111111111112,
+      "wins": 186,
+      "yearly_matched_trade_share_percent": 60.674157303370784
+    },
+    {
+      "N": 9,
+      "expectancy_eur_per_trade": -1.3133333333333332,
+      "losses": 4,
+      "net_profit_eur": -11.82,
+      "period": "2021",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.5555555555555556,
+      "wins": 5,
+      "yearly_matched_trade_share_percent": 2.830188679245283
+    },
+    {
+      "N": 107,
+      "expectancy_eur_per_trade": 0.3091588785046729,
+      "losses": 1,
+      "net_profit_eur": 33.08,
+      "period": "2021",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 12.729441643898873,
+      "s1_total_trade_share_percent": 13.476070528967254,
+      "state": "S1",
+      "win_rate": 0.9906542056074766,
+      "wins": 106,
+      "yearly_matched_trade_share_percent": 33.64779874213836
+    },
+    {
+      "N": 202,
+      "expectancy_eur_per_trade": -0.3313861386138614,
+      "losses": 35,
+      "net_profit_eur": -66.94,
+      "period": "2021",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8267326732673267,
+      "wins": 167,
+      "yearly_matched_trade_share_percent": 63.522012578616355
+    },
+    {
+      "N": 24,
+      "expectancy_eur_per_trade": -1.0325,
+      "losses": 8,
+      "net_profit_eur": -24.78,
+      "period": "2022",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S0",
+      "win_rate": 0.6666666666666666,
+      "wins": 16,
+      "yearly_matched_trade_share_percent": 6.876790830945558
+    },
+    {
+      "N": 104,
+      "expectancy_eur_per_trade": 0.39903846153846156,
+      "losses": 0,
+      "net_profit_eur": 41.5,
+      "period": "2022",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": 15.969523223150036,
+      "s1_total_trade_share_percent": 13.09823677581864,
+      "state": "S1",
+      "win_rate": 1.0,
+      "wins": 104,
+      "yearly_matched_trade_share_percent": 29.799426934097422
+    },
+    {
+      "N": 221,
+      "expectancy_eur_per_trade": -0.44918552036199094,
+      "losses": 43,
+      "net_profit_eur": -99.27,
+      "period": "2022",
+      "period_type": "YEAR",
+      "s1_total_net_profit_share_percent": null,
+      "s1_total_trade_share_percent": null,
+      "state": "S2",
+      "win_rate": 0.8054298642533937,
+      "wins": 178,
+      "yearly_matched_trade_share_percent": 63.32378223495702
+    }
+  ]
+}

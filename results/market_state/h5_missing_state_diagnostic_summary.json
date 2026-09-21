@@ -1,0 +1,209 @@
+{
+  "by_diagnostic_reason": {
+    "INITIAL_SEGMENT_WARMUP": {
+      "count": 2,
+      "percent_of_unmatched": 0.1124859392575928
+    },
+    "MIDWEEK_SEGMENT_WARMUP": {
+      "count": 543,
+      "percent_of_unmatched": 30.539932508436447
+    },
+    "NO_FEATURE_ROW_AT_BOUNDARY": {
+      "count": 1,
+      "percent_of_unmatched": 0.0562429696287964
+    },
+    "SOURCE_BAR_GAP": {
+      "count": 391,
+      "percent_of_unmatched": 21.99100112485939
+    },
+    "SPECIFIC_FEATURE_INCOMPLETE": {
+      "count": 16,
+      "percent_of_unmatched": 0.8998875140607424
+    },
+    "WEEKLY_SEGMENT_WARMUP": {
+      "count": 825,
+      "percent_of_unmatched": 46.40044994375703
+    }
+  },
+  "by_hour_utc": {
+    "0": 36,
+    "1": 47,
+    "10": 120,
+    "11": 79,
+    "12": 28,
+    "13": 92,
+    "14": 76,
+    "15": 37,
+    "16": 130,
+    "17": 84,
+    "18": 24,
+    "19": 72,
+    "2": 103,
+    "20": 53,
+    "21": 24,
+    "22": 106,
+    "23": 57,
+    "3": 55,
+    "4": 130,
+    "5": 66,
+    "6": 25,
+    "7": 135,
+    "8": 133,
+    "9": 66
+  },
+  "by_weekday": {
+    "Friday": 259,
+    "Monday": 704,
+    "Thursday": 220,
+    "Tuesday": 398,
+    "Wednesday": 197
+  },
+  "by_year": {
+    "2016": 219,
+    "2017": 268,
+    "2018": 238,
+    "2019": 230,
+    "2020": 276,
+    "2021": 239,
+    "2022": 308
+  },
+  "continuity": {
+    "documented_gaps_in_discovery": 466,
+    "feature_segments": 467,
+    "resets_observed": 466,
+    "segments_with_documented_start": 467,
+    "unmatched_segments": 425,
+    "unmatched_with_determined_segment_age": 1386
+  },
+  "definitions": {
+    "bars_since_segment_start": "zero-based completed M15 bar index within verified segment",
+    "neighbor_timestamps": "strict previous/next stored row, and separate complete-vector neighbors; diagnostic only, never assigned",
+    "unexplained": "cause_explained=false, including feature-specific nulls without proven warm-up cause",
+    "warmup": "all missing fields individually lack required completed bars according to frozen artifact definitions",
+    "weekday_hour_basis": "required_state_timestamp UTC",
+    "weekly": "reset after Friday to Sunday/Monday; calendar association only, not certified market closure"
+  },
+  "experiment": "H5_MISSING_STATE_DIAGNOSTIC_V1",
+  "explained_count": 1761,
+  "feature_requirements": {
+    "atr_change_1": {
+      "completed_bars": 16,
+      "timeframe": "M15"
+    },
+    "atr_change_8": {
+      "completed_bars": 23,
+      "timeframe": "M15"
+    },
+    "er_16": {
+      "completed_bars": 17,
+      "timeframe": "M15"
+    },
+    "er_4": {
+      "completed_bars": 5,
+      "timeframe": "M15"
+    },
+    "h1_atr_change_4": {
+      "completed_bars": 19,
+      "timeframe": "H1"
+    },
+    "h1_er_8": {
+      "completed_bars": 9,
+      "timeframe": "H1"
+    },
+    "h1_slope_atr_8": {
+      "completed_bars": 15,
+      "timeframe": "H1"
+    },
+    "h3_atr_change_4": {
+      "completed_bars": 19,
+      "timeframe": "H3"
+    },
+    "h3_er_8": {
+      "completed_bars": 9,
+      "timeframe": "H3"
+    },
+    "h3_slope_atr_8": {
+      "completed_bars": 15,
+      "timeframe": "H3"
+    },
+    "range_pos_16": {
+      "completed_bars": 17,
+      "timeframe": "M15"
+    },
+    "rv_16": {
+      "completed_bars": 17,
+      "timeframe": "M15"
+    },
+    "slope_atr_16": {
+      "completed_bars": 16,
+      "timeframe": "M15"
+    },
+    "slope_atr_4": {
+      "completed_bars": 15,
+      "timeframe": "M15"
+    }
+  },
+  "matched_trades": 2384,
+  "missing_feature_frequency": {
+    "atr_change_1": 32,
+    "atr_change_8": 66,
+    "er_16": 36,
+    "er_4": 3,
+    "h1_atr_change_4": 242,
+    "h1_er_8": 90,
+    "h1_slope_atr_8": 168,
+    "h3_atr_change_4": 1386,
+    "h3_er_8": 307,
+    "h3_slope_atr_8": 1024,
+    "range_pos_16": 36,
+    "rv_16": 36,
+    "slope_atr_16": 32,
+    "slope_atr_4": 31
+  },
+  "missingness_status": "PARTLY_EXPLAINED",
+  "monday_plus_tuesday_before_09_utc": 1000,
+  "provenance": {
+    "feature_loading": "existing H5 read_features; predicate-filtered 2016 <= timestamp < 2023",
+    "feature_recalculations": 0,
+    "fit_calls": 0,
+    "inference_calls": 0,
+    "protected_sha256_before_and_after": {
+      "data\\derived\\features\\EURUSD\\M15\\adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d\\features.parquet": "4354250c1f98190fe30924d6133dea652c24abe1dcad4a9e671a1fe79be2422b",
+      "data\\derived\\features\\EURUSD\\M15\\adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d\\metadata.json": "532efc118bf13fabc01d37fd5912d757cfbaf1f2ead217c5c67de990538687d2",
+      "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+      "results\\market_state\\cross_feed_aug2026.csv": "591ffef672a47c11aae71ff92fef90bf44f1dbb119229aa17298e38409c4b382",
+      "results\\market_state\\cross_feed_aug2026_disagreements.csv": "7c0754ed6c7162ec36a005225ac729448efd695e8c81a25b6fa097fc6719c583",
+      "results\\market_state\\cross_feed_aug2026_summary.json": "9e21e3136a0b8c9f4d831945ffdb76fa7253cd71bfe4df2f7abed8d62e42cbb2",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\02429c95713f810bdcea3f95e75fa60cbdfb52aa6a79a1c101122b01e35c5d92.json": "292d0468b85f4d072b06a63730cc698db654baffea6061d242d70b79949765e7",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\2dcef1e88396ac52c6340414f6c2bbe3bf52aead34f31947b4164287532c8a57.json": "98a30468061d04eb8785e009e1b1b57e4a149ea651bfb516c415b4ebca31e43d",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\42566f13267d9a6abc48cedc13489d658673ff904a69cdff9ff5f78690cd53b1.json": "051fe101f31446e49e954c6df3713141d650f3058ecfc3a1f48ff939b21d7c66",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\560c8d0f824054091d7c1c8a4f8d460c00a28ca274078617ea9758a0ee4a31aa.json": "269db9af58c80240dbea91ba0a670510fd3af08b6945cc5573a7b1b4a6569b1e",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\9026efcc914e2ddf01843a02e3f73f1238b825967726a91d88d4311ebf717ef8.json": "0e7dd01529383a4fd7625c3ecb8d1f218f82fa3298459ae962b08fda6a84ab78",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\a72f25f9bd0329afbfeb7a632f4f653a89a8750ae8122d7b8c757367e5b1d7d9.json": "b73e8ab9037ee720ac02161562b7c73e75b78c08966f2517714fd81badd28d77",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\abf3dd27300ce5816ee864b50e265e9be89355e0e7475004ffa86803b8a03e29.json": "7e3549c77d17e364c2ea77e430555c1f77bcb74db0672c3e137c63c97ad2d645",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\b03ee483d5ee3378c63c716bf1e0ab98fb18857f21535a3973c2c67850c5b6c3.json": "f827b4ad1544e4c70c16034d70b5ca39445627bc03e5d026913a7a76d40d4a1d",
+      "results\\market_state\\dukascopy_h5_feature_coverage.json": "0ddcdccf24bb6771b5c9b9ae551e6b16fc0db6c3032782c071aea0aee16aeffd",
+      "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+      "results\\market_state\\frozen_market_state_model_v1\\verification.json": "b2ef11040142a961937832223ac9d1cbb4ff6a0a7bf02d285cc0d65333568415",
+      "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+      "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+      "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+      "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+      "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+      "results\\market_state\\h5_discovery_2016_2022_summary.json": "c96fafe402a993434d833afc0ac9b65f3d877d128960fc1ecd661a3bc36964e9",
+      "results\\market_state\\h5_discovery_2016_2022_trades.csv": "0a4ff5319a85bbe90ecc5da9dfa9b3067f8b08b429276fc9e71714a8a913d5ed",
+      "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+      "results\\market_state\\h5_january_2016_trades.csv": "3c095916ca285b40d2cf71d4c883d2d90294e60b0749e44aaf96fc593485770f",
+      "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+      "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+      "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+      "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56",
+      "results\\market_state\\state_transition_discovery_v1.md": "0815fcb4b49a199bf6b8dcec67b228558aeda369f9c323a2d27a3f108e5f399c"
+    }
+  },
+  "total_trades": 4162,
+  "unexplained_count": 17,
+  "unknown_count": 0,
+  "unmatched_trades": 1778,
+  "wednesday_friday_unexplained": 1
+}

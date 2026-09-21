@@ -1,0 +1,428 @@
+{
+  "aggregation": {
+    "duka": {
+      "complete_bucket_end_exclusive": "2026-08-07T20:45:00+00:00",
+      "complete_interval_grid_slots": 430,
+      "empty_m15_slots_not_filled": 12,
+      "first_complete_bucket_open": "2026-08-03T09:15:00+00:00",
+      "m15_bars": 418,
+      "partial_boundary_ticks_excluded": 1549,
+      "ticks_used": 225645
+    },
+    "ic": {
+      "complete_bucket_end_exclusive": "2026-08-07T20:45:00+00:00",
+      "complete_interval_grid_slots": 430,
+      "empty_m15_slots_not_filled": 0,
+      "first_complete_bucket_open": "2026-08-03T09:15:00+00:00",
+      "m15_bars": 430,
+      "partial_boundary_ticks_excluded": 1233,
+      "ticks_used": 318283
+    }
+  },
+  "confidence_comparison_without_cutoff": {
+    "duka": {
+      "agree": {
+        "max_posterior": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_entropy": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_margin": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        }
+      },
+      "disagree": {
+        "max_posterior": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_entropy": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_margin": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        }
+      }
+    },
+    "ic": {
+      "agree": {
+        "max_posterior": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_entropy": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_margin": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        }
+      },
+      "disagree": {
+        "max_posterior": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_entropy": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        },
+        "posterior_margin": {
+          "mean": null,
+          "median": null,
+          "n": 0,
+          "p95": null
+        }
+      }
+    }
+  },
+  "confusion_matrix_rows_duka_columns_ic": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "contract_checksum": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+  "contract_file_sha256": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+  "coverage": {
+    "duka": {
+      "absent_bars_on_union": 12,
+      "bars": 418,
+      "unavailable_by_feature": {
+        "atr_change_1": 60,
+        "atr_change_8": 88,
+        "er_16": 64,
+        "er_4": 16,
+        "h1_atr_change_4": 279,
+        "h1_er_8": 143,
+        "h1_slope_atr_8": 231,
+        "h3_atr_change_4": 418,
+        "h3_er_8": 376,
+        "h3_slope_atr_8": 418,
+        "range_pos_16": 64,
+        "rv_16": 64,
+        "slope_atr_16": 60,
+        "slope_atr_4": 56
+      },
+      "unavailable_feature_rows": 418,
+      "valid_feature_rows": 0
+    },
+    "ic": {
+      "absent_bars_on_union": 0,
+      "bars": 430,
+      "unavailable_by_feature": {
+        "atr_change_1": 15,
+        "atr_change_8": 22,
+        "er_16": 16,
+        "er_4": 4,
+        "h1_atr_change_4": 78,
+        "h1_er_8": 38,
+        "h1_slope_atr_8": 62,
+        "h3_atr_change_4": 238,
+        "h3_er_8": 118,
+        "h3_slope_atr_8": 190,
+        "range_pos_16": 16,
+        "rv_16": 16,
+        "slope_atr_16": 15,
+        "slope_atr_4": 14
+      },
+      "unavailable_feature_rows": 238,
+      "valid_feature_rows": 192
+    }
+  },
+  "diagnostic_only": true,
+  "exact_utc_overlap": {
+    "last_common_coverage_timestamp": "2026-08-07T20:56:57.847000+00:00",
+    "start_inclusive": "2026-08-03T09:00:00.145000+00:00"
+  },
+  "experiment": "CROSS_FEED_FROZEN_MARKET_STATE_AUG2026_DIAGNOSTIC_V1",
+  "feature_names": [
+    "er_4",
+    "er_16",
+    "rv_16",
+    "atr_change_1",
+    "atr_change_8",
+    "slope_atr_4",
+    "slope_atr_16",
+    "range_pos_16",
+    "h1_er_8",
+    "h1_atr_change_4",
+    "h1_slope_atr_8",
+    "h3_er_8",
+    "h3_atr_change_4",
+    "h3_slope_atr_8"
+  ],
+  "feature_schema_version": "MARKET_STATE_FEATURES_V1",
+  "fit_calls": 0,
+  "input_paths": {
+    "duka": "C:\\Users\\surya\\Desktop\\dukascopy_compare\\eurusd-tick-2026-08-03-2026-08-08.csv",
+    "ic": "C:\\Users\\surya\\Desktop\\export-tick.csv"
+  },
+  "input_sha256": {
+    "duka": "1c58f37890046ac7e63a0518237f7f5e506b9cc233afe5e69550a88a12c7b8cd",
+    "ic": "91398f40ae5986cdec229679a8f53c902a181982d390e8fcdb13c24cbc99f6c1"
+  },
+  "limitations": [
+    "Sealed-period diagnostic only; no training, thresholds, model selection, H5 or performance analysis.",
+    "Sparse/no-tick intervals cannot certify feed completeness. Empty M15 buckets are excluded and break history.",
+    "Warm-up and gaps select the matched subset. Agreement is conditional on complete vectors.",
+    "State IDs are frozen component indices; labels are never aligned or reordered."
+  ],
+  "matched_state_count": 0,
+  "model_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+  "output_csv_sha256": {
+    "cross_feed_aug2026.csv": "591ffef672a47c11aae71ff92fef90bf44f1dbb119229aa17298e38409c4b382",
+    "cross_feed_aug2026_disagreements.csv": "7c0754ed6c7162ec36a005225ac729448efd695e8c81a25b6fa097fc6719c583"
+  },
+  "overall_agreement_percent": null,
+  "per_state_agreement": {
+    "S0": {
+      "duka_reference_count": 0,
+      "percent_matching_ic_given_duka": null
+    },
+    "S1": {
+      "duka_reference_count": 0,
+      "percent_matching_ic_given_duka": null
+    },
+    "S2": {
+      "duka_reference_count": 0,
+      "percent_matching_ic_given_duka": null
+    }
+  },
+  "posterior_absolute_differences": {
+    "max_posterior": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    },
+    "p_S0": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    },
+    "p_S1": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    },
+    "p_S2": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    },
+    "posterior_entropy": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    },
+    "posterior_margin": {
+      "mean": null,
+      "median": null,
+      "n": 0,
+      "p95": null
+    }
+  },
+  "protected_after": {
+    "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "results\\market_state\\frozen_market_state_model_v1\\verification.json": "b2ef11040142a961937832223ac9d1cbb4ff6a0a7bf02d285cc0d65333568415",
+    "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+    "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+    "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+    "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+    "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+    "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+    "results\\market_state\\h5_january_2016_trades.csv": "3c095916ca285b40d2cf71d4c883d2d90294e60b0749e44aaf96fc593485770f",
+    "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+    "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+    "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+    "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56",
+    "results\\market_state\\state_transition_discovery_v1.md": "0815fcb4b49a199bf6b8dcec67b228558aeda369f9c323a2d27a3f108e5f399c",
+    "sandbox\\partition\\service.py": "6bb0314236d5061d7b3fc651a360ef387bf10f1105bdcdb6e940ae16843ee968"
+  },
+  "protected_before": {
+    "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "results\\market_state\\frozen_market_state_model_v1\\verification.json": "b2ef11040142a961937832223ac9d1cbb4ff6a0a7bf02d285cc0d65333568415",
+    "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+    "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+    "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+    "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+    "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+    "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+    "results\\market_state\\h5_january_2016_trades.csv": "3c095916ca285b40d2cf71d4c883d2d90294e60b0749e44aaf96fc593485770f",
+    "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+    "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+    "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+    "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56",
+    "results\\market_state\\state_transition_discovery_v1.md": "0815fcb4b49a199bf6b8dcec67b228558aeda369f9c323a2d27a3f108e5f399c",
+    "sandbox\\partition\\service.py": "6bb0314236d5061d7b3fc651a360ef387bf10f1105bdcdb6e940ae16843ee968"
+  },
+  "rules": {
+    "boundaries": "Agreement/disagreement confidence distributions only; no low-confidence threshold.",
+    "candles": "Bid OHLC; duplicate timestamps retain source order; quote carry is causal; no empty candle fill.",
+    "continuity": "Use existing QualityContext and unchanged UniversalFeatureEngine; no policy or schema modification.",
+    "joins": "Exact feature decision-close timestamps, complete vectors on both feeds only.",
+    "per_state_agreement": "P(IC state equals Dukascopy state | Dukascopy state), on matched rows.",
+    "timestamps": "IC server clock minus 3 hours; Dukascopy epoch milliseconds UTC.",
+    "transitions": "Adjacent matched rows separated by exactly 15 minutes and unchanged segment IDs on BOTH feeds.",
+    "warmup": "Only fully contained common-interval M15 buckets; reset at each absent M15 bucket independently per feed. No pre-overlap feature warm-up."
+  },
+  "state_distributions": {
+    "duka": {
+      "all_valid": {
+        "S0": 0,
+        "S1": 0,
+        "S2": 0
+      },
+      "matched_only": {
+        "S0": 0,
+        "S1": 0,
+        "S2": 0
+      }
+    },
+    "ic": {
+      "all_valid": {
+        "S0": 17,
+        "S1": 63,
+        "S2": 112
+      },
+      "matched_only": {
+        "S0": 0,
+        "S1": 0,
+        "S2": 0
+      }
+    }
+  },
+  "tick_inventory": {
+    "duka": {
+      "bid_unavailable": 0,
+      "crossed_quote_ticks": 0,
+      "duplicate_timestamps": 0,
+      "outside_authorized_window": 0,
+      "raw_rows": 255089,
+      "yielded_bid_ticks": 255089
+    },
+    "ic": {
+      "bid_unavailable": 0,
+      "crossed_quote_ticks": 0,
+      "duplicate_timestamps": 1,
+      "outside_authorized_window": 0,
+      "raw_rows": 319516,
+      "yielded_bid_ticks": 319516
+    }
+  },
+  "total_common_m15_bars": 418,
+  "transitions": {
+    "both_change": 0,
+    "both_stay": 0,
+    "change_event_jaccard": null,
+    "change_or_stay_agreement_percent": null,
+    "consecutive_valid_edges": 0,
+    "disconnected_edges_excluded": 0,
+    "duka": {
+      "observed_run_bars": {
+        "mean": null,
+        "median": null,
+        "n": 0,
+        "p95": null
+      },
+      "self_transition_fraction": null,
+      "self_transitions": 0,
+      "state_changes": 0,
+      "transition_counts": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "duka_only_change": 0,
+    "ic": {
+      "observed_run_bars": {
+        "mean": null,
+        "median": null,
+        "n": 0,
+        "p95": null
+      },
+      "self_transition_fraction": null,
+      "self_transitions": 0,
+      "state_changes": 0,
+      "transition_counts": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "ic_only_change": 0
+  },
+  "unavailable_or_unmatched_union_rows": 430
+}

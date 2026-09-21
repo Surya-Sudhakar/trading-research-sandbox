@@ -1,0 +1,368 @@
+{
+  "bootstrap": {
+    "entry_day_blocks": 1704,
+    "limitations": "Very few loss days. Approximate independence across days is unverified; cross-day dependence and multiplicity remain. No inferential H5 conclusion.",
+    "method": "whole UTC entry-day cluster bootstrap; 95% pointwise percentile intervals",
+    "performance": {
+      "ALL": {
+        "WR": {
+          "contributing_blocks": 1704,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.8674627285114443,
+            0.8873425321710942
+          ]
+        },
+        "expectancy_eur": {
+          "contributing_blocks": 1704,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            -0.16118735020300848,
+            -0.08011500689950098
+          ]
+        }
+      },
+      "S0": {
+        "WR": {
+          "contributing_blocks": 97,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.7026971186062095,
+            0.8603384888438131
+          ]
+        },
+        "expectancy_eur": {
+          "contributing_blocks": 97,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            -0.8340061983471077,
+            -0.18149197860962576
+          ]
+        }
+      },
+      "S1": {
+        "WR": {
+          "contributing_blocks": 564,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.9804935132883615,
+            0.9950868939893329
+          ]
+        },
+        "expectancy_eur": {
+          "contributing_blocks": 564,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.29476550288181275,
+            0.3534727089809393
+          ]
+        }
+      },
+      "S2": {
+        "WR": {
+          "contributing_blocks": 841,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.8080868803216325,
+            0.8473286292910055
+          ]
+        },
+        "expectancy_eur": {
+          "contributing_blocks": 841,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            -0.41186094102275056,
+            -0.2524148770444978
+          ]
+        }
+      },
+      "UNMATCHED": {
+        "WR": {
+          "contributing_blocks": 912,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            0.8592358626857457,
+            0.8902657547595393
+          ]
+        },
+        "expectancy_eur": {
+          "contributing_blocks": 912,
+          "defined_replicates": 2000,
+          "percentile_95_ci": [
+            -0.18353709086780115,
+            -0.05774851770501687
+          ]
+        }
+      }
+    },
+    "replicates": 2000,
+    "seed": 42,
+    "winner_minus_loser_mean": {
+      "bars_since_transition": {
+        "contributing_blocks": 253,
+        "defined_replicates": 2000,
+        "percentile_95_ci": [
+          -1.9524813760351842,
+          0.25361194411212423
+        ]
+      },
+      "max_posterior": {
+        "contributing_blocks": 266,
+        "defined_replicates": 2000,
+        "percentile_95_ci": [
+          -0.05651262346882125,
+          -0.03400417465403876
+        ]
+      },
+      "posterior_entropy": {
+        "contributing_blocks": 266,
+        "defined_replicates": 2000,
+        "percentile_95_ci": [
+          0.0804748130336142,
+          0.12262790324527309
+        ]
+      },
+      "posterior_margin": {
+        "contributing_blocks": 266,
+        "defined_replicates": 2000,
+        "percentile_95_ci": [
+          -0.11252615974376537,
+          -0.06909208740093131
+        ]
+      },
+      "state_age": {
+        "contributing_blocks": 266,
+        "defined_replicates": 2000,
+        "percentile_95_ci": [
+          -1.6666591835803857,
+          0.5818448176458301
+        ]
+      }
+    }
+  },
+  "by_state": {
+    "S0": {
+      "N": 114,
+      "WR": 0.7807017543859649,
+      "expectancy_eur": -0.5129824561403509,
+      "losses": 25,
+      "net_profit_eur": -58.48,
+      "wins": 89
+    },
+    "S1": {
+      "N": 794,
+      "WR": 0.9886649874055415,
+      "expectancy_eur": 0.32729219143576826,
+      "losses": 9,
+      "net_profit_eur": 259.87,
+      "wins": 785
+    },
+    "S2": {
+      "N": 1476,
+      "WR": 0.8279132791327913,
+      "expectancy_eur": -0.33165989159891596,
+      "losses": 254,
+      "net_profit_eur": -489.53,
+      "wins": 1222
+    }
+  },
+  "definitions": {
+    "bars_since_transition": "Zero on observed transition; increments on continuation; unknown until first transition after a gap.",
+    "entropy": "Natural logarithm; zero probability contributes zero.",
+    "profit": "Net EUR cash including swap and commission; no reconstructed fills.",
+    "state_age": "One-based observed consecutive-state M15 bars; resets at gap, missing vector or segment change. Initial age left-censored.",
+    "state_timestamp": "Feature decision/close time; exact floor(entry UTC, 15 minutes). No forward or stale gap match."
+  },
+  "experiment": "H5_DISCOVERY_2016_2022_V1",
+  "limitations": [
+    "Discovery only: no final H5 conclusion, thresholds or filters may be promoted without later validation.",
+    "Frozen model was fitted on 2016-2022, so this entire H5 period is discovery/in-sample for the state model. Feature information at each entry remains causal.",
+    "MT5 report states 0% real ticks; execution outcomes are OHLC/backtest discovery evidence only. Exact intrabar execution must be addressed at H8.",
+    "Trade report is IC Markets MT5 while the frozen historical feature feed is Dukascopy; cross-feed equivalence is not assumed and must be treated as a limitation.",
+    "Missing warm-up/gap states are retained as unmatched, never imputed or assigned from future observations."
+  ],
+  "missing_state_matches": 1778,
+  "overall": {
+    "N": 4162,
+    "WR": 0.8772224891878905,
+    "expectancy_eur": -0.12129745314752523,
+    "losses": 511,
+    "net_profit_eur": -504.84,
+    "wins": 3651
+  },
+  "pipeline_status": "FAILED_INCOMPLETE_STATE_COVERAGE",
+  "provenance": {
+    "assigned_states_sha256": "ad09ff97bd2beeb7b09a5b686566030c55285a725a831005eebdd98acef2e34d",
+    "canonical_ea_sha256": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "contract_checksum": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+    "contract_file_sha256": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+    "discovery_feature_rows": 189848,
+    "discovery_features_sha256": "736a80f4864a9cc2809432ec65b9dddf41050507a5bfc531a0fefb9ba4666aad",
+    "eligible_state_observations": 93662,
+    "feature_artifact": {
+      "metadata_sha256": "532efc118bf13fabc01d37fd5912d757cfbaf1f2ead217c5c67de990538687d2",
+      "path": "data/derived/features/EURUSD/M15/adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d/features.parquet",
+      "sha256": "4354250c1f98190fe30924d6133dea652c24abe1dcad4a9e671a1fe79be2422b"
+    },
+    "feature_names": [
+      "er_4",
+      "er_16",
+      "rv_16",
+      "atr_change_1",
+      "atr_change_8",
+      "slope_atr_4",
+      "slope_atr_16",
+      "range_pos_16",
+      "h1_er_8",
+      "h1_atr_change_4",
+      "h1_slope_atr_8",
+      "h3_er_8",
+      "h3_atr_change_4",
+      "h3_slope_atr_8"
+    ],
+    "fit_calls": 0,
+    "frozen_model_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "protected_after": {
+      "2016-2024-OHCL.xlsx": "089fa12217d0ed8fdd7e9367b8753864fec59f5fa768c26e572b15c95b0d4037",
+      "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+      "results\\market_state\\cross_feed_aug2026_summary.json": "9e21e3136a0b8c9f4d831945ffdb76fa7253cd71bfe4df2f7abed8d62e42cbb2",
+      "results\\market_state\\dukascopy_h5_feature_coverage.json": "0ddcdccf24bb6771b5c9b9ae551e6b16fc0db6c3032782c071aea0aee16aeffd",
+      "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+      "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+      "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+      "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+      "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+      "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+      "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+      "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+      "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+      "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+      "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56"
+    },
+    "protected_before": {
+      "2016-2024-OHCL.xlsx": "089fa12217d0ed8fdd7e9367b8753864fec59f5fa768c26e572b15c95b0d4037",
+      "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+      "results\\market_state\\cross_feed_aug2026_summary.json": "9e21e3136a0b8c9f4d831945ffdb76fa7253cd71bfe4df2f7abed8d62e42cbb2",
+      "results\\market_state\\dukascopy_h5_feature_coverage.json": "0ddcdccf24bb6771b5c9b9ae551e6b16fc0db6c3032782c071aea0aee16aeffd",
+      "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+      "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+      "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+      "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+      "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+      "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+      "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+      "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+      "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+      "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+      "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56"
+    },
+    "report_path": "2016-2024-OHCL.xlsx",
+    "report_sha256": "089fa12217d0ed8fdd7e9367b8753864fec59f5fa768c26e572b15c95b0d4037",
+    "trades_csv_sha256": "0a4ff5319a85bbe90ecc5da9dfa9b3067f8b08b429276fc9e71714a8a913d5ed"
+  },
+  "reconciliation": {
+    "discovery_period": "2016-01-01 through 2022-12-31 UTC",
+    "history_quality": "0% real ticks",
+    "losses": 511,
+    "net_profit_eur": -504.84,
+    "passed": true,
+    "profit_definition": "net EUR cash: deal profit + swap + commission on entry and exit",
+    "source_report_period": "M15 (2016.01.01 - 2024.12.31)",
+    "time_source": "actual Deals in/out timestamps, UTC; never pending-order creation",
+    "trades": 4162,
+    "win_rate_percent": 87.72224891878905,
+    "wins": 3651
+  },
+  "unmatched": {
+    "N": 1778,
+    "WR": 0.874578177727784,
+    "expectancy_eur": -0.12187851518560183,
+    "losses": 223,
+    "net_profit_eur": -216.7,
+    "wins": 1555
+  },
+  "winner_loser": {
+    "LOSS": {
+      "N": 511,
+      "metrics": {
+        "bars_since_transition": {
+          "mean": 9.665441176470589,
+          "median": 9.0,
+          "missing": 239,
+          "n": 272
+        },
+        "max_posterior": {
+          "mean": 0.9753163990513285,
+          "median": 0.999950766754051,
+          "missing": 223,
+          "n": 288
+        },
+        "posterior_entropy": {
+          "mean": 0.05662629295518941,
+          "median": 0.0005423949827004077,
+          "missing": 223,
+          "n": 288
+        },
+        "posterior_margin": {
+          "mean": 0.9516311700319575,
+          "median": 0.9999047502205175,
+          "missing": 223,
+          "n": 288
+        },
+        "state_age": {
+          "mean": 10.583333333333334,
+          "median": 10.0,
+          "missing": 223,
+          "n": 288
+        }
+      },
+      "state_distribution": {
+        "S0": 25,
+        "S1": 9,
+        "S2": 254,
+        "UNMATCHED": 223
+      }
+    },
+    "WIN": {
+      "N": 3651,
+      "metrics": {
+        "bars_since_transition": {
+          "mean": 8.880784708249497,
+          "median": 5.0,
+          "missing": 1663,
+          "n": 1988
+        },
+        "max_posterior": {
+          "mean": 0.9294426020761674,
+          "median": 0.9983728387981936,
+          "missing": 1555,
+          "n": 2096
+        },
+        "posterior_entropy": {
+          "mean": 0.15897573191141573,
+          "median": 0.012272786702772199,
+          "missing": 1555,
+          "n": 2096
+        },
+        "posterior_margin": {
+          "mean": 0.8597744084004219,
+          "median": 0.9968169099365454,
+          "missing": 1555,
+          "n": 2096
+        },
+        "state_age": {
+          "mean": 10.078721374045802,
+          "median": 6.0,
+          "missing": 1555,
+          "n": 2096
+        }
+      },
+      "state_distribution": {
+        "S0": 89,
+        "S1": 785,
+        "S2": 1222,
+        "UNMATCHED": 1555
+      }
+    }
+  }
+}

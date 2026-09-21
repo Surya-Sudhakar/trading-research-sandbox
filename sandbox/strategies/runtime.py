@@ -11,7 +11,7 @@ from .registry import StrategyRegistry
 _PROTECTED_PHASE_AUTHORITY=object()
 
 class StrategyRuntime:
-    ALLOWED_ENTRY_TYPES={EntryType.MARKET_NEXT_OPEN,EntryType.MARKET_CLOSE}
+    ALLOWED_ENTRY_TYPES={EntryType.MARKET_NEXT_OPEN,EntryType.MARKET_CLOSE,EntryType.LIMIT}
     def __init__(self,registry:StrategyRegistry):self.registry=registry
     def _parameters(self,p,provided):
         values=dict(p.metadata.default_parameters);values.update(provided);self.registry.validate_parameters(p,values);return values
@@ -53,7 +53,7 @@ class StrategyRuntime:
                 if s.entry_type not in self.ALLOWED_ENTRY_TYPES:raise ResearchError("UNSUPPORTED_STRATEGY_ENTRY_TYPE")
                 if s.direction not in m.supported_directions:raise ResearchError("UNSUPPORTED_STRATEGY_DIRECTION")
                 sf=sha256_canonical(s.model_dump(mode="json"));records.append(SignalLedgerRecord(signal_id=s.signal_id,setup_id=s.setup_id,strategy_id=m.strategy_id,strategy_version=m.strategy_version,symbol=s.symbol,decision_timestamp=s.decision_timestamp,information_cutoff=s.information_cutoff,direction=s.direction,entry_intent=s.entry_type.value,entry_reference=s.reference_price,stop_intent=s.stop_price,target_intent=s.target_price,parameter_fingerprint=param_fp,strategy_code_fingerprint=code_fp,signal_fingerprint=sf,metadata=s.metadata))
-                intents.append(TradeIntent(trade_intent_id=s.signal_id,strategy_id=m.strategy_id,experiment_id=experiment_id,dataset_id=dataset_id,symbol=s.symbol,direction=s.direction,signal_timestamp=s.decision_timestamp,requested_entry_type=s.entry_type,requested_entry_price=s.reference_price if s.entry_type==EntryType.MARKET_CLOSE else None,stop_loss=s.stop_price,take_profit=s.target_price,metadata={**s.metadata,"setup_id":s.setup_id,"strategy_version":m.strategy_version,"information_cutoff":s.information_cutoff.isoformat(),"signal_fingerprint":sf,"parameter_fingerprint":param_fp,"strategy_code_fingerprint":code_fp}))
+                intents.append(TradeIntent(trade_intent_id=s.signal_id,strategy_id=m.strategy_id,experiment_id=experiment_id,dataset_id=dataset_id,symbol=s.symbol,direction=s.direction,signal_timestamp=s.decision_timestamp,requested_entry_type=s.entry_type,requested_entry_price=s.reference_price if s.entry_type in (EntryType.MARKET_CLOSE,EntryType.LIMIT) else None,expires_at=s.expires_at,stop_loss=s.stop_price,take_profit=s.target_price,metadata={**s.metadata,"setup_id":s.setup_id,"strategy_version":m.strategy_version,"information_cutoff":s.information_cutoff.isoformat(),"signal_fingerprint":sf,"parameter_fingerprint":param_fp,"strategy_code_fingerprint":code_fp}))
         ledger=SignalLedger.create(records);audit={"strategy_id":m.strategy_id,"strategy_version":m.strategy_version,"strategy_code_fingerprint":code_fp,"parameter_fingerprint":param_fp,"signal_ledger_fingerprint":ledger.ledger_fingerprint,"information_cutoff_policy":"CAUSAL_LEQ_DECISION_TIME","parameter_count":len(values),"phase":phase.value}
         return StrategyRun(strategy_fingerprint=fingerprint,strategy_code_fingerprint=code_fp,parameter_fingerprint=param_fp,signal_ledger=ledger,intents=tuple(intents),audit_metadata=audit)
     def assert_deterministic(self,*args,**kwargs):

@@ -22,7 +22,7 @@ class CandleSnapshot(FrozenModel):
         if v.tzinfo is None:raise ValueError("candle timestamp must be timezone-aware")
         return v.astimezone(timezone.utc)
 class StrategySignal(FrozenModel):
-    signal_id:str;setup_id:str;symbol:str;decision_timestamp:datetime;information_cutoff:datetime;direction:Direction;entry_type:EntryType;reference_price:float;stop_price:float;target_price:float;metadata:dict[str,Any]=Field(default_factory=dict)
+    signal_id:str;setup_id:str;symbol:str;decision_timestamp:datetime;information_cutoff:datetime;direction:Direction;entry_type:EntryType;reference_price:float;stop_price:float;target_price:float;expires_at:datetime|None=None;metadata:dict[str,Any]=Field(default_factory=dict)
     @field_validator("decision_timestamp","information_cutoff")
     @classmethod
     def utc(cls,v):

@@ -65,16 +65,19 @@ class TradeIntent(FrozenModel):
     signal_timestamp: datetime
     requested_entry_type: EntryType
     requested_entry_price: float | None = None
+    expires_at: datetime | None = None
     stop_loss: float
     take_profit: float
     quantity: float = Field(default=1.0, gt=0)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
-    @field_validator("signal_timestamp")
+    @field_validator("signal_timestamp", "expires_at")
     @classmethod
-    def utc(cls, value: datetime) -> datetime:
+    def utc(cls, value: datetime | None) -> datetime | None:
+        if value is None:
+            return None
         if value.tzinfo is None:
-            raise ValueError("signal timestamp must be timezone-aware")
+            raise ValueError("timestamp must be timezone-aware")
         return value.astimezone(timezone.utc)
 
 
