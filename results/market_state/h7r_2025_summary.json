@@ -1,0 +1,1621 @@
+{
+  "MT5_report": {
+    "actual_first_executed_deal": "2025-01-03T05:17:35+00:00",
+    "actual_last_executed_deal": "2025-12-31T15:55:50+00:00",
+    "ambiguous_intrabar_outcomes": null,
+    "completed_trades": 594,
+    "ea": "F1_NY3H_Green_MT5_Version0",
+    "ea_inputs": [
+      "TakeProfitPips=5",
+      "StopLossPips=40",
+      "PipSize=0.0001",
+      "FixedLots=0.01",
+      "MagicNumber=26082930",
+      "EnableTrading=true",
+      "UseManualServerUTCOffset=true",
+      "ManualServerUTCOffsetHours=0"
+    ],
+    "entries": 594,
+    "excluded_outside_2025": 0,
+    "execution_symbol": "EURUSD_DUKASCOPY_TICK",
+    "exits": 594,
+    "expected_payoff_eur": -0.003063973063973064,
+    "first_2025_entry": "2025-01-03T05:17:35+00:00",
+    "fully_reconciled": true,
+    "history_quality_label": "100% real ticks",
+    "intrabar_note": "Actual MT5 deals are used unchanged; report does not certify tick-level counterfactual ambiguity.",
+    "last_2025_entry": "2025-12-31T14:27:01+00:00",
+    "last_2025_exit": "2025-12-31T15:55:50+00:00",
+    "losses": 69,
+    "net_profit_eur": -1.82,
+    "reconciled": true,
+    "report_expected_payoff_eur": -0.003064,
+    "report_net_eur": -1.82,
+    "report_total_trades": 594,
+    "requested_period": "M15 (2025.01.01 - 2026.01.01)",
+    "symbol_adapter": {
+      "parser_only_alias": "EURUSD_DUKASCOPY",
+      "required_source": "EURUSD_DUKASCOPY_TICK",
+      "scope": "in-memory Symbol setting and Orders/Deals symbol cells only"
+    },
+    "tester_bars": 24726.0,
+    "wins": 525
+  },
+  "by_state": {
+    "S0": {
+      "N": 13,
+      "WR": 0.6923076923076923,
+      "expectancy_eur": -0.7669230769230768,
+      "losses": 4,
+      "net_profit_eur": -9.97,
+      "wins": 9
+    },
+    "S1": {
+      "N": 147,
+      "WR": 0.8775510204081632,
+      "expectancy_eur": -0.04136054421768709,
+      "losses": 18,
+      "net_profit_eur": -6.08,
+      "wins": 129
+    },
+    "S2": {
+      "N": 247,
+      "WR": 0.9190283400809717,
+      "expectancy_eur": 0.13534412955465588,
+      "losses": 20,
+      "net_profit_eur": 33.43,
+      "wins": 227
+    }
+  },
+  "complete_state_rows": 16797,
+  "continuity": {
+    "evidence": [
+      "sandbox/market_data/gaps.py: SessionProfile.classify and inventory",
+      "sandbox/market_state/universal/dataset.py: export_discovery_features",
+      "sandbox/market_state/universal/continuity.py: QualityContext.split",
+      "sandbox/market_state/universal/engine.py: compute",
+      "tests/test_multisource_data.py: test_continuity_resets_unexplained_and_can_continue_expected_weekend"
+    ],
+    "interpretation": "Verified EXPECTED_WEEKEND can preserve history. Original training used UNKNOWN_PROVIDER_SESSION; weekend-associated unknown gaps reset when missing duration >=60 minutes. Not every possible gap resets under CONTINUITY_V1.",
+    "policy": {
+      "continue_expected_weekend": true,
+      "reset_invalid_exclusion": true,
+      "reset_missing_minutes": 60,
+      "version": "CONTINUITY_V1"
+    },
+    "quality_mode": "SEGMENT_LOCAL_V1",
+    "session_profile": {
+      "dst_behavior": "IANA_ZONEINFO",
+      "evidence": null,
+      "holiday_policy": "UNKNOWN",
+      "name": "UNKNOWN_PROVIDER_SESSION",
+      "timezone": "UTC",
+      "week_close": null,
+      "week_open": null
+    },
+    "short_gap_safety": "Any frozen-policy segment with an unexplained non-reset gap is quarantined from feature generation, never bridged or silently reclassified."
+  },
+  "data": {
+    "M15_rows": 29104,
+    "first_timestamp": "2025-01-01T00:00:00+00:00",
+    "gap_events": [
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 1,
+        "next_timestamp": "2025-01-05T00:00:00+00:00",
+        "previous_timestamp": "2025-01-03T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 2,
+        "next_timestamp": "2025-01-12T00:00:00+00:00",
+        "previous_timestamp": "2025-01-10T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 3,
+        "next_timestamp": "2025-01-19T00:00:00+00:00",
+        "previous_timestamp": "2025-01-17T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 4,
+        "next_timestamp": "2025-01-26T00:00:00+00:00",
+        "previous_timestamp": "2025-01-24T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 5,
+        "next_timestamp": "2025-02-02T00:00:00+00:00",
+        "previous_timestamp": "2025-01-31T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 6,
+        "next_timestamp": "2025-02-09T00:00:00+00:00",
+        "previous_timestamp": "2025-02-07T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 7,
+        "next_timestamp": "2025-02-16T00:00:00+00:00",
+        "previous_timestamp": "2025-02-14T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 8,
+        "next_timestamp": "2025-02-23T00:00:00+00:00",
+        "previous_timestamp": "2025-02-21T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 9,
+        "next_timestamp": "2025-03-02T00:00:00+00:00",
+        "previous_timestamp": "2025-02-28T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 10,
+        "next_timestamp": "2025-03-09T00:00:00+00:00",
+        "previous_timestamp": "2025-03-07T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 11,
+        "next_timestamp": "2025-03-16T00:00:00+00:00",
+        "previous_timestamp": "2025-03-14T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 12,
+        "next_timestamp": "2025-03-23T00:00:00+00:00",
+        "previous_timestamp": "2025-03-21T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "UNEXPLAINED_GAP",
+        "duration_minutes": 1455.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 96,
+        "next_segment_id": 13,
+        "next_timestamp": "2025-03-25T00:00:00+00:00",
+        "previous_timestamp": "2025-03-23T23:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 14,
+        "next_timestamp": "2025-03-30T00:00:00+00:00",
+        "previous_timestamp": "2025-03-28T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 15,
+        "next_timestamp": "2025-04-06T00:00:00+00:00",
+        "previous_timestamp": "2025-04-04T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 16,
+        "next_timestamp": "2025-04-13T00:00:00+00:00",
+        "previous_timestamp": "2025-04-11T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 3075.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 204,
+        "next_segment_id": 17,
+        "next_timestamp": "2025-04-21T00:00:00+00:00",
+        "previous_timestamp": "2025-04-18T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 3075.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 204,
+        "next_segment_id": 18,
+        "next_timestamp": "2025-04-28T00:00:00+00:00",
+        "previous_timestamp": "2025-04-25T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 19,
+        "next_timestamp": "2025-05-04T00:00:00+00:00",
+        "previous_timestamp": "2025-05-02T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 20,
+        "next_timestamp": "2025-05-11T00:00:00+00:00",
+        "previous_timestamp": "2025-05-09T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 21,
+        "next_timestamp": "2025-05-18T00:00:00+00:00",
+        "previous_timestamp": "2025-05-16T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 22,
+        "next_timestamp": "2025-05-25T00:00:00+00:00",
+        "previous_timestamp": "2025-05-23T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 23,
+        "next_timestamp": "2025-06-01T00:00:00+00:00",
+        "previous_timestamp": "2025-05-30T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 24,
+        "next_timestamp": "2025-06-08T00:00:00+00:00",
+        "previous_timestamp": "2025-06-06T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 25,
+        "next_timestamp": "2025-06-15T00:00:00+00:00",
+        "previous_timestamp": "2025-06-13T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 26,
+        "next_timestamp": "2025-06-22T00:00:00+00:00",
+        "previous_timestamp": "2025-06-20T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 27,
+        "next_timestamp": "2025-06-29T00:00:00+00:00",
+        "previous_timestamp": "2025-06-27T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 28,
+        "next_timestamp": "2025-07-06T00:00:00+00:00",
+        "previous_timestamp": "2025-07-04T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 29,
+        "next_timestamp": "2025-07-13T00:00:00+00:00",
+        "previous_timestamp": "2025-07-11T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 30,
+        "next_timestamp": "2025-07-20T00:00:00+00:00",
+        "previous_timestamp": "2025-07-18T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 31,
+        "next_timestamp": "2025-07-27T00:00:00+00:00",
+        "previous_timestamp": "2025-07-25T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 32,
+        "next_timestamp": "2025-08-03T00:00:00+00:00",
+        "previous_timestamp": "2025-08-01T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 33,
+        "next_timestamp": "2025-08-10T00:00:00+00:00",
+        "previous_timestamp": "2025-08-08T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 34,
+        "next_timestamp": "2025-08-17T00:00:00+00:00",
+        "previous_timestamp": "2025-08-15T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 35,
+        "next_timestamp": "2025-08-24T00:00:00+00:00",
+        "previous_timestamp": "2025-08-22T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 36,
+        "next_timestamp": "2025-08-31T00:00:00+00:00",
+        "previous_timestamp": "2025-08-29T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 37,
+        "next_timestamp": "2025-09-07T00:00:00+00:00",
+        "previous_timestamp": "2025-09-05T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 38,
+        "next_timestamp": "2025-09-14T00:00:00+00:00",
+        "previous_timestamp": "2025-09-12T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 39,
+        "next_timestamp": "2025-09-21T00:00:00+00:00",
+        "previous_timestamp": "2025-09-19T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 40,
+        "next_timestamp": "2025-09-28T00:00:00+00:00",
+        "previous_timestamp": "2025-09-26T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 41,
+        "next_timestamp": "2025-10-05T00:00:00+00:00",
+        "previous_timestamp": "2025-10-03T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "UNEXPLAINED_GAP",
+        "duration_minutes": 1455.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 96,
+        "next_segment_id": 42,
+        "next_timestamp": "2025-10-09T00:00:00+00:00",
+        "previous_timestamp": "2025-10-07T23:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 43,
+        "next_timestamp": "2025-10-12T00:00:00+00:00",
+        "previous_timestamp": "2025-10-10T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 44,
+        "next_timestamp": "2025-10-19T00:00:00+00:00",
+        "previous_timestamp": "2025-10-17T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 45,
+        "next_timestamp": "2025-10-26T00:00:00+00:00",
+        "previous_timestamp": "2025-10-24T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1635.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 108,
+        "next_segment_id": 46,
+        "next_timestamp": "2025-11-02T00:00:00+00:00",
+        "previous_timestamp": "2025-10-31T20:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 47,
+        "next_timestamp": "2025-11-09T00:00:00+00:00",
+        "previous_timestamp": "2025-11-07T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 48,
+        "next_timestamp": "2025-11-16T00:00:00+00:00",
+        "previous_timestamp": "2025-11-14T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 49,
+        "next_timestamp": "2025-11-23T00:00:00+00:00",
+        "previous_timestamp": "2025-11-21T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 50,
+        "next_timestamp": "2025-11-30T00:00:00+00:00",
+        "previous_timestamp": "2025-11-28T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 51,
+        "next_timestamp": "2025-12-07T00:00:00+00:00",
+        "previous_timestamp": "2025-12-05T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 52,
+        "next_timestamp": "2025-12-14T00:00:00+00:00",
+        "previous_timestamp": "2025-12-12T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 53,
+        "next_timestamp": "2025-12-21T00:00:00+00:00",
+        "previous_timestamp": "2025-12-19T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      },
+      {
+        "classification": "WEEKEND_ASSOCIATED_UNKNOWN",
+        "duration_minutes": 1575.0,
+        "invalid_bar_exclusion": false,
+        "missing_slots": 104,
+        "next_segment_id": 54,
+        "next_timestamp": "2025-12-28T00:00:00+00:00",
+        "previous_timestamp": "2025-12-26T21:45:00+00:00",
+        "provider": "DUKASCOPY",
+        "reset": true,
+        "symbol": "EURUSD",
+        "timeframe": "M15"
+      }
+    ],
+    "last_timestamp": "2025-12-31T21:45:00+00:00",
+    "path": "data\\external\\dukascopy\\EURUSD\\eurusd-m15-bid-2025-01-01-2026-01-01.csv",
+    "sanitation": {
+      "audit_fingerprint": "2512cb25ff71a20669b37416f7d3ef1e7681fe9e13e028fbc3c245de8ed116af",
+      "classification_counts": {
+        "VALID": 29104
+      },
+      "continuity_policy": {
+        "continue_expected_weekend": true,
+        "reset_invalid_exclusion": true,
+        "reset_missing_minutes": 60,
+        "version": "CONTINUITY_V1"
+      },
+      "continuous_segments": 55,
+      "excluded_row_count": 0,
+      "exclusions_by_reason": {},
+      "first_timestamp": "2025-01-01T00:00:00+00:00",
+      "gap_counts": {
+        "UNEXPLAINED_GAP": 2,
+        "WEEKEND_ASSOCIATED_UNKNOWN": 52
+      },
+      "gap_fingerprint": "c7e014395349f7befa7ec1469fb990cfa8a52076fe7c710c92f86588561c47f1",
+      "last_timestamp": "2025-12-31T21:45:00+00:00",
+      "original_row_count": 29104,
+      "parent_raw_dataset_id": "H7-9dc62c75808e24b84baf2965ee6a34c56a192e3da4ca882850561b4b624f960e",
+      "policy_name": "MARKET_DATA_SANITATION_V1",
+      "policy_version": 1,
+      "price_type": "BID",
+      "provider": "DUKASCOPY",
+      "provider_symbol": "EURUSD_DUKASCOPY",
+      "retained_row_count": 29104,
+      "sanitized_content_fingerprint": "3fc2b79b64bf8ab1d989a33a13e27fd6bd5252f9d15574394d1ca18953a7ddb5",
+      "session_profile": {
+        "dst_behavior": "IANA_ZONEINFO",
+        "evidence": null,
+        "holiday_policy": "UNKNOWN",
+        "name": "UNKNOWN_PROVIDER_SESSION",
+        "timezone": "UTC",
+        "week_close": null,
+        "week_open": null
+      },
+      "symbol": "EURUSD",
+      "timeframe": "M15",
+      "timezone": "UTC",
+      "unlocatable_timestamp_policy": "RESET_EVERY_RETAINED_BAR",
+      "validation_status": "RESEARCH_SAFE_WITH_DOCUMENTED_GAPS"
+    },
+    "sha256": "9dc62c75808e24b84baf2965ee6a34c56a192e3da4ca882850561b4b624f960e"
+  },
+  "directional_ordering_reproduced": false,
+  "experiment": "H7R_2025_V1",
+  "feature_rows": 29104,
+  "limitations": [
+    "2025 is exposed data; this is execution-controlled replication, not a new holdout.",
+    "Same frozen H7 comparisons and pointwise day-cluster bootstrap; no new materiality cutoff.",
+    "Incomplete vectors remain unmatched; no added warm-up, imputation or stale-state carry.",
+    "History-quality text is report metadata, not independent tick-source certification."
+  ],
+  "materiality_verdict": "No frozen numeric materiality threshold; assess reported differences and uncertainty descriptively.",
+  "missing_feature_frequency": {
+    "atr_change_1": 1,
+    "atr_change_8": 3,
+    "er_16": 1,
+    "h1_atr_change_4": 19,
+    "h1_er_8": 4,
+    "h1_slope_atr_8": 8,
+    "h3_atr_change_4": 184,
+    "h3_er_8": 23,
+    "h3_slope_atr_8": 125,
+    "range_pos_16": 1,
+    "rv_16": 1,
+    "slope_atr_16": 1,
+    "slope_atr_4": 1
+  },
+  "missing_state_reasons": {
+    "NO_FEATURE_ROW_AT_BOUNDARY": 3,
+    "SEGMENT_WARMUP": 173,
+    "SPECIFIC_FEATURE_INCOMPLETE": 11
+  },
+  "monthly": [
+    {
+      "matched": 40,
+      "month": "2025-01",
+      "overall": {
+        "N": 59,
+        "WR": 0.864406779661017,
+        "expectancy_eur": -0.06237288135593217,
+        "losses": 8,
+        "net_profit_eur": -3.68,
+        "wins": 51
+      },
+      "states": {
+        "S0": {
+          "N": 2,
+          "WR": 1.0,
+          "expectancy_eur": 0.485,
+          "losses": 0,
+          "net_profit_eur": 0.97,
+          "wins": 2
+        },
+        "S1": {
+          "N": 15,
+          "WR": 0.8,
+          "expectancy_eur": -0.2919999999999999,
+          "losses": 3,
+          "net_profit_eur": -4.38,
+          "wins": 12
+        },
+        "S2": {
+          "N": 23,
+          "WR": 0.9565217391304348,
+          "expectancy_eur": 0.301304347826087,
+          "losses": 1,
+          "net_profit_eur": 6.93,
+          "wins": 22
+        }
+      },
+      "unmatched": 19
+    },
+    {
+      "matched": 26,
+      "month": "2025-02",
+      "overall": {
+        "N": 40,
+        "WR": 0.9,
+        "expectancy_eur": 0.043,
+        "losses": 4,
+        "net_profit_eur": 1.72,
+        "wins": 36
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 11,
+          "WR": 0.8181818181818182,
+          "expectancy_eur": -0.33272727272727265,
+          "losses": 2,
+          "net_profit_eur": -3.66,
+          "wins": 9
+        },
+        "S2": {
+          "N": 15,
+          "WR": 0.9333333333333333,
+          "expectancy_eur": 0.1886666666666667,
+          "losses": 1,
+          "net_profit_eur": 2.83,
+          "wins": 14
+        }
+      },
+      "unmatched": 14
+    },
+    {
+      "matched": 24,
+      "month": "2025-03",
+      "overall": {
+        "N": 49,
+        "WR": 0.9387755102040817,
+        "expectancy_eur": 0.22102040816326532,
+        "losses": 3,
+        "net_profit_eur": 10.83,
+        "wins": 46
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 15,
+          "WR": 0.8,
+          "expectancy_eur": -0.3626666666666667,
+          "losses": 3,
+          "net_profit_eur": -5.44,
+          "wins": 12
+        },
+        "S2": {
+          "N": 9,
+          "WR": 1.0,
+          "expectancy_eur": 0.4888888888888888,
+          "losses": 0,
+          "net_profit_eur": 4.4,
+          "wins": 9
+        }
+      },
+      "unmatched": 25
+    },
+    {
+      "matched": 32,
+      "month": "2025-04",
+      "overall": {
+        "N": 52,
+        "WR": 0.8461538461538461,
+        "expectancy_eur": -0.14173076923076933,
+        "losses": 8,
+        "net_profit_eur": -7.37,
+        "wins": 44
+      },
+      "states": {
+        "S0": {
+          "N": 5,
+          "WR": 0.4,
+          "expectancy_eur": -1.918,
+          "losses": 3,
+          "net_profit_eur": -9.59,
+          "wins": 2
+        },
+        "S1": {
+          "N": 12,
+          "WR": 0.9166666666666666,
+          "expectancy_eur": 0.1416666666666667,
+          "losses": 1,
+          "net_profit_eur": 1.7,
+          "wins": 11
+        },
+        "S2": {
+          "N": 15,
+          "WR": 0.8666666666666667,
+          "expectancy_eur": -0.05999999999999999,
+          "losses": 2,
+          "net_profit_eur": -0.9,
+          "wins": 13
+        }
+      },
+      "unmatched": 20
+    },
+    {
+      "matched": 42,
+      "month": "2025-05",
+      "overall": {
+        "N": 50,
+        "WR": 0.86,
+        "expectancy_eur": -0.09699999999999996,
+        "losses": 7,
+        "net_profit_eur": -4.85,
+        "wins": 43
+      },
+      "states": {
+        "S0": {
+          "N": 1,
+          "WR": 1.0,
+          "expectancy_eur": 0.45,
+          "losses": 0,
+          "net_profit_eur": 0.45,
+          "wins": 1
+        },
+        "S1": {
+          "N": 15,
+          "WR": 0.8,
+          "expectancy_eur": -0.3346666666666666,
+          "losses": 3,
+          "net_profit_eur": -5.02,
+          "wins": 12
+        },
+        "S2": {
+          "N": 26,
+          "WR": 0.9230769230769231,
+          "expectancy_eur": 0.16,
+          "losses": 2,
+          "net_profit_eur": 4.16,
+          "wins": 24
+        }
+      },
+      "unmatched": 8
+    },
+    {
+      "matched": 38,
+      "month": "2025-06",
+      "overall": {
+        "N": 50,
+        "WR": 0.9,
+        "expectancy_eur": 0.07259999999999997,
+        "losses": 5,
+        "net_profit_eur": 3.63,
+        "wins": 45
+      },
+      "states": {
+        "S0": {
+          "N": 1,
+          "WR": 1.0,
+          "expectancy_eur": 0.46,
+          "losses": 0,
+          "net_profit_eur": 0.46,
+          "wins": 1
+        },
+        "S1": {
+          "N": 14,
+          "WR": 1.0,
+          "expectancy_eur": 0.4414285714285714,
+          "losses": 0,
+          "net_profit_eur": 6.18,
+          "wins": 14
+        },
+        "S2": {
+          "N": 23,
+          "WR": 0.9130434782608695,
+          "expectancy_eur": 0.12782608695652178,
+          "losses": 2,
+          "net_profit_eur": 2.94,
+          "wins": 21
+        }
+      },
+      "unmatched": 12
+    },
+    {
+      "matched": 41,
+      "month": "2025-07",
+      "overall": {
+        "N": 59,
+        "WR": 0.8305084745762712,
+        "expectancy_eur": -0.19983050847457628,
+        "losses": 10,
+        "net_profit_eur": -11.79,
+        "wins": 49
+      },
+      "states": {
+        "S0": {
+          "N": 2,
+          "WR": 1.0,
+          "expectancy_eur": 0.44,
+          "losses": 0,
+          "net_profit_eur": 0.88,
+          "wins": 2
+        },
+        "S1": {
+          "N": 13,
+          "WR": 0.8461538461538461,
+          "expectancy_eur": -0.14846153846153845,
+          "losses": 2,
+          "net_profit_eur": -1.93,
+          "wins": 11
+        },
+        "S2": {
+          "N": 26,
+          "WR": 0.8461538461538461,
+          "expectancy_eur": -0.12576923076923072,
+          "losses": 4,
+          "net_profit_eur": -3.27,
+          "wins": 22
+        }
+      },
+      "unmatched": 18
+    },
+    {
+      "matched": 32,
+      "month": "2025-08",
+      "overall": {
+        "N": 47,
+        "WR": 0.8723404255319149,
+        "expectancy_eur": -0.06021276595744686,
+        "losses": 6,
+        "net_profit_eur": -2.83,
+        "wins": 41
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 9,
+          "WR": 0.8888888888888888,
+          "expectancy_eur": -0.014444444444444482,
+          "losses": 1,
+          "net_profit_eur": -0.13,
+          "wins": 8
+        },
+        "S2": {
+          "N": 23,
+          "WR": 0.9130434782608695,
+          "expectancy_eur": 0.09869565217391305,
+          "losses": 2,
+          "net_profit_eur": 2.27,
+          "wins": 21
+        }
+      },
+      "unmatched": 15
+    },
+    {
+      "matched": 38,
+      "month": "2025-09",
+      "overall": {
+        "N": 52,
+        "WR": 0.8846153846153846,
+        "expectancy_eur": -0.015000000000000001,
+        "losses": 6,
+        "net_profit_eur": -0.78,
+        "wins": 46
+      },
+      "states": {
+        "S0": {
+          "N": 2,
+          "WR": 0.5,
+          "expectancy_eur": -1.57,
+          "losses": 1,
+          "net_profit_eur": -3.14,
+          "wins": 1
+        },
+        "S1": {
+          "N": 11,
+          "WR": 0.8181818181818182,
+          "expectancy_eur": -0.27272727272727276,
+          "losses": 2,
+          "net_profit_eur": -3.0,
+          "wins": 9
+        },
+        "S2": {
+          "N": 25,
+          "WR": 0.92,
+          "expectancy_eur": 0.13,
+          "losses": 2,
+          "net_profit_eur": 3.25,
+          "wins": 23
+        }
+      },
+      "unmatched": 14
+    },
+    {
+      "matched": 36,
+      "month": "2025-10",
+      "overall": {
+        "N": 56,
+        "WR": 0.8571428571428571,
+        "expectancy_eur": -0.09535714285714285,
+        "losses": 8,
+        "net_profit_eur": -5.34,
+        "wins": 48
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 16,
+          "WR": 0.9375,
+          "expectancy_eur": 0.19,
+          "losses": 1,
+          "net_profit_eur": 3.04,
+          "wins": 15
+        },
+        "S2": {
+          "N": 20,
+          "WR": 0.95,
+          "expectancy_eur": 0.22900000000000004,
+          "losses": 1,
+          "net_profit_eur": 4.58,
+          "wins": 19
+        }
+      },
+      "unmatched": 20
+    },
+    {
+      "matched": 29,
+      "month": "2025-11",
+      "overall": {
+        "N": 39,
+        "WR": 0.9487179487179487,
+        "expectancy_eur": 0.241025641025641,
+        "losses": 2,
+        "net_profit_eur": 9.4,
+        "wins": 37
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 11,
+          "WR": 1.0,
+          "expectancy_eur": 0.4263636363636364,
+          "losses": 0,
+          "net_profit_eur": 4.69,
+          "wins": 11
+        },
+        "S2": {
+          "N": 18,
+          "WR": 0.9444444444444444,
+          "expectancy_eur": 0.22166666666666665,
+          "losses": 1,
+          "net_profit_eur": 3.99,
+          "wins": 17
+        }
+      },
+      "unmatched": 10
+    },
+    {
+      "matched": 29,
+      "month": "2025-12",
+      "overall": {
+        "N": 41,
+        "WR": 0.9512195121951219,
+        "expectancy_eur": 0.22536585365853654,
+        "losses": 2,
+        "net_profit_eur": 9.24,
+        "wins": 39
+      },
+      "states": {
+        "S0": {
+          "N": 0,
+          "WR": null,
+          "expectancy_eur": null,
+          "losses": 0,
+          "net_profit_eur": 0.0,
+          "wins": 0
+        },
+        "S1": {
+          "N": 5,
+          "WR": 1.0,
+          "expectancy_eur": 0.374,
+          "losses": 0,
+          "net_profit_eur": 1.87,
+          "wins": 5
+        },
+        "S2": {
+          "N": 24,
+          "WR": 0.9166666666666666,
+          "expectancy_eur": 0.09375,
+          "losses": 2,
+          "net_profit_eur": 2.25,
+          "wins": 22
+        }
+      },
+      "unmatched": 12
+    }
+  ],
+  "overall": {
+    "N": 594,
+    "WR": 0.8838383838383839,
+    "expectancy_eur": -0.0030639730639730675,
+    "losses": 69,
+    "net_profit_eur": -1.82,
+    "wins": 525
+  },
+  "primary_comparisons": {
+    "S1_vs_S0": {
+      "S1_expectancy_greater": true,
+      "cluster_bootstrap_95_intervals": {
+        "expectancy_difference_eur": [
+          -0.50684102577684,
+          2.0380921776632692
+        ],
+        "win_rate_difference": [
+          -0.12411040145985397,
+          0.5098181957553456
+        ]
+      },
+      "cohens_d": 0.5253071609220216,
+      "defined_replicates": 2000,
+      "difference_in_means": 0.7255625327053897,
+      "difference_in_medians": 0.0,
+      "entry_day_blocks": {
+        "S0": 11,
+        "S1": 103
+      },
+      "win_rate_difference": 0.18524332810047095
+    },
+    "S1_vs_S2": {
+      "S1_expectancy_greater": false,
+      "cluster_bootstrap_95_intervals": {
+        "expectancy_difference_eur": [
+          -0.41557781842525443,
+          0.05302568257785799
+        ],
+        "win_rate_difference": [
+          -0.10054052947262944,
+          0.015503981019455604
+        ]
+      },
+      "cohens_d": -0.14836406696299467,
+      "defined_replicates": 2000,
+      "difference_in_means": -0.17670467377234297,
+      "difference_in_medians": 0.0,
+      "entry_day_blocks": {
+        "S1": 103,
+        "S2": 132
+      },
+      "win_rate_difference": -0.04147731967280843
+    }
+  },
+  "protocol": {
+    "comparisons": [
+      [
+        "S1",
+        "S0"
+      ],
+      [
+        "S1",
+        "S2"
+      ]
+    ],
+    "contract_canonical_sha256": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+    "data_status": "EXPOSED_2025",
+    "directional_check": "S1 mean net EUR profit/trade > S0 AND > S2; independent of overall profitability",
+    "ea_inputs": [
+      "TakeProfitPips=5",
+      "StopLossPips=40",
+      "PipSize=0.0001",
+      "FixedLots=0.01",
+      "MagicNumber=26082930",
+      "EnableTrading=true",
+      "UseManualServerUTCOffset=true",
+      "ManualServerUTCOffsetHours=0"
+    ],
+    "ea_sha256": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "eligibility": "same 14 frozen features, no imputation, exact floor(entry UTC,15min); no stale-state carry",
+    "end_exclusive": "2026-01-01T00:00:00+00:00",
+    "execution_symbol": "EURUSD_DUKASCOPY_TICK",
+    "experimental_change": "MT5 execution report from genuine Bid/Ask tick symbol; state input unchanged",
+    "feature_names": [
+      "er_4",
+      "er_16",
+      "rv_16",
+      "atr_change_1",
+      "atr_change_8",
+      "slope_atr_4",
+      "slope_atr_16",
+      "range_pos_16",
+      "h1_er_8",
+      "h1_atr_change_4",
+      "h1_slope_atr_8",
+      "h3_er_8",
+      "h3_atr_change_4",
+      "h3_slope_atr_8"
+    ],
+    "hypothesis": "S1 has better conditional Version 0 expectancy than S0 and S2",
+    "materiality": "No numerical materiality threshold was specified; report effect sizes and uncertainty without inventing one",
+    "model_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "monthly": "all twelve UTC entry months and all three states; descriptive only",
+    "population": "actual completed MT5 Version 0 trades whose entries and exits are in 2025; no synthetic trades",
+    "replication_of": "H7_HOLDOUT_2025_V1",
+    "start_inclusive": "2025-01-01T00:00:00+00:00",
+    "statistics": "net-EUR expectancy differences, win-rate differences, pooled-SD Cohen d",
+    "uncertainty": {
+      "interval": "pointwise percentile 95%; no tuning",
+      "method": "whole UTC entry-day cluster bootstrap, shared resamples across states",
+      "replicates": 2000,
+      "seed": 42
+    },
+    "version": "H7R_2025_V1"
+  },
+  "provenance": {
+    "contract_canonical_sha256": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+    "contract_file_sha256": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+    "csv_sha256": "9dc62c75808e24b84baf2965ee6a34c56a192e3da4ca882850561b4b624f960e",
+    "ea_sha256": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "execution_symbol": "EURUSD_DUKASCOPY_TICK",
+    "fit_calls": 0,
+    "model_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "protected_sha256_before_and_after": {
+      "C:\\Users\\surya\\Documents\\Codex\\2026-08-27\\files-pasted-by-the-user-codex\\outputs\\trading-research-sandbox\\sandbox\\market_state\\validation\\h7_holdout_2025.py": "5bf972047acf2b80e95143b6bed0f73483cd031221d6b32ac56858ffc9985f91",
+      "data\\derived\\features\\EURUSD\\M15\\adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d\\features.parquet": "4354250c1f98190fe30924d6133dea652c24abe1dcad4a9e671a1fe79be2422b",
+      "data\\derived\\features\\EURUSD\\M15\\adac311828c7e0bcf58158269069689cf7178d3720805629eed481525eacd19d\\metadata.json": "532efc118bf13fabc01d37fd5912d757cfbaf1f2ead217c5c67de990538687d2",
+      "data\\external\\dukascopy\\EURUSD\\2025-2026-dukas.xlsx": "b4a018e5faff0abd9423de219b99e57eae405683b1757d568e0a9aebc982c6d8",
+      "data\\external\\dukascopy\\EURUSD\\eurusd-m15-bid-2025-01-01-2026-01-01.csv": "9dc62c75808e24b84baf2965ee6a34c56a192e3da4ca882850561b4b624f960e",
+      "data\\external\\dukascopy\\EURUSD\\h7r_2025_genuine_ticks.xlsx": "e68201e219d8bd51182dc3974d0f2cf175bb576ebe790d3e726c9afb1238f379",
+      "reference_strategies\\F1_NY3H_Green_MT5_Version0.mq5": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+      "results\\market_state\\cross_feed_aug2026.csv": "591ffef672a47c11aae71ff92fef90bf44f1dbb119229aa17298e38409c4b382",
+      "results\\market_state\\cross_feed_aug2026_disagreements.csv": "7c0754ed6c7162ec36a005225ac729448efd695e8c81a25b6fa097fc6719c583",
+      "results\\market_state\\cross_feed_aug2026_summary.json": "9e21e3136a0b8c9f4d831945ffdb76fa7253cd71bfe4df2f7abed8d62e42cbb2",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\02429c95713f810bdcea3f95e75fa60cbdfb52aa6a79a1c101122b01e35c5d92.json": "292d0468b85f4d072b06a63730cc698db654baffea6061d242d70b79949765e7",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\2dcef1e88396ac52c6340414f6c2bbe3bf52aead34f31947b4164287532c8a57.json": "98a30468061d04eb8785e009e1b1b57e4a149ea651bfb516c415b4ebca31e43d",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\42566f13267d9a6abc48cedc13489d658673ff904a69cdff9ff5f78690cd53b1.json": "051fe101f31446e49e954c6df3713141d650f3058ecfc3a1f48ff939b21d7c66",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\560c8d0f824054091d7c1c8a4f8d460c00a28ca274078617ea9758a0ee4a31aa.json": "269db9af58c80240dbea91ba0a670510fd3af08b6945cc5573a7b1b4a6569b1e",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\9026efcc914e2ddf01843a02e3f73f1238b825967726a91d88d4311ebf717ef8.json": "0e7dd01529383a4fd7625c3ecb8d1f218f82fa3298459ae962b08fda6a84ab78",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\a72f25f9bd0329afbfeb7a632f4f653a89a8750ae8122d7b8c757367e5b1d7d9.json": "b73e8ab9037ee720ac02161562b7c73e75b78c08966f2517714fd81badd28d77",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\abf3dd27300ce5816ee864b50e265e9be89355e0e7475004ffa86803b8a03e29.json": "7e3549c77d17e364c2ea77e430555c1f77bcb74db0672c3e137c63c97ad2d645",
+      "results\\market_state\\dukascopy_h5_coverage_sources\\b03ee483d5ee3378c63c716bf1e0ab98fb18857f21535a3973c2c67850c5b6c3.json": "f827b4ad1544e4c70c16034d70b5ca39445627bc03e5d026913a7a76d40d4a1d",
+      "results\\market_state\\dukascopy_h5_feature_coverage.json": "0ddcdccf24bb6771b5c9b9ae551e6b16fc0db6c3032782c071aea0aee16aeffd",
+      "results\\market_state\\frozen_market_state_model_v1\\model.json": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+      "results\\market_state\\frozen_market_state_model_v1\\verification.json": "b2ef11040142a961937832223ac9d1cbb4ff6a0a7bf02d285cc0d65333568415",
+      "results\\market_state\\future_behavior_v1.json": "52f5bf2c3d14ad7feee7bf1fa79c9968c974705fcf8bc7c11a3576448e536b98",
+      "results\\market_state\\future_behavior_validation_contract_v1.json": "646b6ad1e585952cc7b52eef6b2c9948085b50fc0f0d8829064aab03a0a14088",
+      "results\\market_state\\future_behavior_validation_v1.attempt.json": "edea3747c4cb5e3d624132220f17fdce2ae29e81add9cba369a47b1a6efc2008",
+      "results\\market_state\\future_behavior_validation_v1.json": "bc7be5666f66398b4da00e73bcd33debd67e11da3710ebec8643af9d66b21621",
+      "results\\market_state\\gmm_v1.json": "386eadf9198018ecbac1b00678bcef7fd64d348bb414a0cc0c3f92a6d9cab8de",
+      "results\\market_state\\h5_discovery_2016_2022_summary.json": "c96fafe402a993434d833afc0ac9b65f3d877d128960fc1ecd661a3bc36964e9",
+      "results\\market_state\\h5_discovery_2016_2022_trades.csv": "0a4ff5319a85bbe90ecc5da9dfa9b3067f8b08b429276fc9e71714a8a913d5ed",
+      "results\\market_state\\h5_h7_degradation_by_state.csv": "4b95291ff58afcaaaec3504e39f1fe51698ad50b4e2839a8ac3fb2631dbcd9d6",
+      "results\\market_state\\h5_h7_degradation_summary.json": "a276bf42858fb0a2e210ad8c90cdfa04cde2d65ac2ce47836e5f4ab59a888dae",
+      "results\\market_state\\h5_h7_s1_distribution_drift.csv": "5bcc1977ee317b4d426529f5ed20cc1024d9cab0d16b3598befb674ce9c13a91",
+      "results\\market_state\\h5_january_2016_summary.json": "ea7ea09efd21dbbb29888f0adcd4ef17d2e9117a4599c5704f70c58f67f488fa",
+      "results\\market_state\\h5_january_2016_trades.csv": "3c095916ca285b40d2cf71d4c883d2d90294e60b0749e44aaf96fc593485770f",
+      "results\\market_state\\h5_january_2016_warmup_diagnostic.json": "19ecedffe3c2deb45a888e7a9d39f2506f3a5e3c04d153e4fc068d837a6732fc",
+      "results\\market_state\\h5_missing_state_diagnostic.csv": "617a80a054fa435be78b2ad96bccd6a4ac3a8a04413276fd6f58f12819dc3ea9",
+      "results\\market_state\\h5_missing_state_diagnostic_summary.json": "095fd07e5d21a8e2d84d33e09a5d6d1f2ce98b3700c63d7c07d5c1d4df4c40b1",
+      "results\\market_state\\h5_temporal_stability.csv": "99b0f835830a54120ca3eddea81f62bcdd5a72b3f969a7faffc81961e82aad73",
+      "results\\market_state\\h5_temporal_stability_summary.json": "9c52904e0289d99b019dc968205dbfd85b0746b099009ceee256bad5b2bd2050",
+      "results\\market_state\\h6_state_stability_discovery.csv": "4898cce12b87aa20e33400d330b30d5e4faac2c6a866f58d9370aca07b369c9c",
+      "results\\market_state\\h6_state_stability_discovery_summary.json": "de0ff4e10db54ca90272b0c19ef3f2ac5383ff0650ed3d1d594f6b15d17d4e95",
+      "results\\market_state\\h7_holdout_2025.attempt.json": "3687dd818b65f1528b8eeeda1442e04e6f8f043a505a51bd8c52188fc64ab00a",
+      "results\\market_state\\h7_holdout_2025_summary.json": "e9fe055bb26d6208cb62caef30502583e19ab15d1f2d48561881dfe5429fb72c",
+      "results\\market_state\\h7_holdout_2025_trades.csv": "29a0e8d6e8f84af436728b5d9c77d82cc3100ce280ac6b3847b8c1da578e7b5b",
+      "results\\market_state\\state_interpretation_v1.json": "f2afcda348d665bf5b8cc75d33ef689abccf67c9e7c92cfa957c95fdbd5a64ea",
+      "results\\market_state\\state_transition_discovery_v1.attempt.json": "f90ead05b08034cfab96a02c8cb846fa02003b3370c265b80bbc779dc27c7b9a",
+      "results\\market_state\\state_transition_discovery_v1.json": "710f50e7cdb895f73cfda72a982d09ab005f7baa1ed0bb0c1db8e6c90a5dda56",
+      "results\\market_state\\state_transition_discovery_v1.md": "0815fcb4b49a199bf6b8dcec67b228558aeda369f9c323a2d27a3f108e5f399c",
+      "sandbox\\market_data\\gaps.py": "2ace2d3aa1cdc7c824c186f96cd940c52b068f5032ad260cd1a7009c2e5f1554",
+      "sandbox\\market_data\\sanitation.py": "7c1fbfb27c0db1a172f83b774ca52106f8cf094bf7938d21e9f3cdfa36b8fd9d",
+      "sandbox\\market_state\\__init__.py": "53e1a8b4021b6b36cbbcf6cb211b8465b69cabae85f953ba5bc9871b79b5acf4",
+      "sandbox\\market_state\\artifacts.py": "61953700adbf29d0e225c3d7c22fab1bec0a02ac2ac07f2054b60b30d66c7f0f",
+      "sandbox\\market_state\\block_aggregation.py": "f988154a113b7a4698c534a2d11131237fca85f8596de9feb3ba6fbfe0477df4",
+      "sandbox\\market_state\\calendar.py": "755ac4970bf32f41f835c04825a070447077692c758eee9c74f8ba28660a589f",
+      "sandbox\\market_state\\diagnostics\\h5_h7_degradation.py": "0a3c53a7218aa652834b6394c0bc2662f4a7cfd67ccb1016bf04fcd4d6a4ca75",
+      "sandbox\\market_state\\discovery\\__init__.py": "aeea33181f35e956bf5d40111efa347bd490ee4ec33313eca2711d43191fdff7",
+      "sandbox\\market_state\\discovery\\cross_feed_diagnostic.py": "0d646ab59f8433780a652c7965cd287d31a3fabc7eb775a5e9dc13f30726de04",
+      "sandbox\\market_state\\discovery\\dukascopy_h5_coverage.py": "b19f32d6a433dda1a105c35be5f2b3444b3a0633fc99e4b025eaf16f8181da29",
+      "sandbox\\market_state\\discovery\\experiment.py": "649c959050ea14a11ae67e85959392bb911711e1e818b07c8766b5a8e768722a",
+      "sandbox\\market_state\\discovery\\frozen_model.py": "2a80ff46416edd1f7dba338b52ca1866dcf1f8a5f71904b4f5887d0bd9de5d4f",
+      "sandbox\\market_state\\discovery\\future_behavior.py": "1607f86f060d0e3c990fb4ba0d86223c27b67993e5a0cb6e3501242e7f04ae62",
+      "sandbox\\market_state\\discovery\\gmm.py": "b3908db94b567122c0fc8ddc2e6085644ec1ba8b9e987ccac687fe81173938ca",
+      "sandbox\\market_state\\discovery\\h5_discovery_2016_2022.py": "c4bd0a0b17323948e00d91d80d175dc03ce33e226013c60bcb20c1155080928c",
+      "sandbox\\market_state\\discovery\\h5_january.py": "d97f1e2087c5c3cae59aa9fc04df951e97e4c9de036fd5c7540129b1e1e07d05",
+      "sandbox\\market_state\\discovery\\h5_missing_state_diagnostic.py": "d55ea8cd1bf1f437c0958cd9169db68773f49c340d5804676a57f729cbbf2ee9",
+      "sandbox\\market_state\\discovery\\h5_temporal_stability.py": "ca54590956b26296772b7117f1280ce29fee821deb9542e1f9d1da713c263434",
+      "sandbox\\market_state\\discovery\\h5_warmup_diagnostic.py": "2364e4257bb9ca387b41b4545a9406347f4719dc165e84f95fb3b662ec1df4a2",
+      "sandbox\\market_state\\discovery\\h6_state_stability_discovery.py": "b0c80874a6239eb797c0690a80c1d04ffc8c36586199cfc202a2932b59b172b8",
+      "sandbox\\market_state\\discovery\\interpretation.py": "b32f1fbdccfc8ee081144e4baffcdfcbfb16562cf6706eddadec7c9cce421a0c",
+      "sandbox\\market_state\\discovery\\model.py": "c2b64e122e658eb4df49d923c445d886130e25ea24cfd7aa232bbded006fac3e",
+      "sandbox\\market_state\\discovery\\parameter_artifact.py": "9cc3f76f53f45bd13975fe8ebf6d376af0e48e3978c4fc5af164df73fc443301",
+      "sandbox\\market_state\\discovery\\scaler.py": "a490a284da2feefe7460bdd7156f48cdb320c99638f2c9675fbea176d7b92b6b",
+      "sandbox\\market_state\\discovery\\selection.py": "6eabbd69665098961e7351999417147282aea6c9ddf78ff2be46b05ac08dad8e",
+      "sandbox\\market_state\\discovery\\stability.py": "df59b0c68c4cc8259c2e40e7cfe832359165188882c9dd1c3570c82568556780",
+      "sandbox\\market_state\\discovery\\transition_discovery.py": "6ddd62205c1be77920436b15c2199193055737fa0ae464e8e6f66bb9ca8767a5",
+      "sandbox\\market_state\\discovery\\validation.py": "6f4c1458fb3cf8f015ee5b4515a5a0118557352daee16239395e5ef2fdddfdf0",
+      "sandbox\\market_state\\discovery\\validation_contract.py": "ab51a27f17d862b110f8fd3a03578c9673d1d2e1adc3abfde807142f105fe1d3",
+      "sandbox\\market_state\\discovery_context_projection.py": "54ce7b7d663598e4f2e03f71ddaa80f77c7778ad892a2dd8d2b90fee9c21815d",
+      "sandbox\\market_state\\discovery_dataset.py": "6b639915b4157d9e777b5e66612b741c44c6daf1fa02104d10945fa51929a961",
+      "sandbox\\market_state\\discovery_market_context.py": "5aaeee36a29c7d332c73ebe8c86239089033e9563b84d30436b31634f25fb0b1",
+      "sandbox\\market_state\\discovery_projection.py": "20bb5e69060618a0a01cc7ce83a406948ec279f279c3ae4b1c2598a14bbafaca",
+      "sandbox\\market_state\\engine.py": "774791de4c78f4bb350dd8bab7ddf93f99403a9f5235f8829258f25ba566e167",
+      "sandbox\\market_state\\future_outcome.py": "85294162c6681898996455708b9a4e8f51b9c5abfc17897d5b9b77bf005201f7",
+      "sandbox\\market_state\\geometry_lifecycle.py": "85379d41a7efb501b7057b2a600b5de5a4769a2171e257290fedb5277c9245cc",
+      "sandbox\\market_state\\historical_multitimeframe.py": "5d264df929c7480c8dea523df895421fe5757555095150571b94f47e0ead1506",
+      "sandbox\\market_state\\level_interaction.py": "db7935ec96d90d1c94d28a7859ecf12df9ac707a8dff8dd07fffa9848b5a3a1f",
+      "sandbox\\market_state\\level_interaction_history.py": "5faa95fcf9e15081230815b7f883b2e21611e95ec72bc9346854789748472537",
+      "sandbox\\market_state\\level_state_sequence.py": "389d196e64ab67fe4a8780d986e4934dc48397be26370d0701cb2298f5e235b8",
+      "sandbox\\market_state\\linkage.py": "b33a8fb7acf0839c6a7ef233fbf446e086ecd430c1dc69dcf78a28cadcc1fa35",
+      "sandbox\\market_state\\models.py": "a71edcecdfaa1c985f834cd74ee5ba27f2a30688a2eac3f4bda2ca96acfba889",
+      "sandbox\\market_state\\momentum.py": "db3d168207816472c8f90ef5c0df7a772bad5230d706d62c9295bb61e7f5b62f",
+      "sandbox\\market_state\\multitimeframe_context.py": "f84182e395bc5ad13ebd77300d74202f9accdeb51105b99af590ab8999040266",
+      "sandbox\\market_state\\normalization.py": "28dce78882805e8d9bb7459d873290f68bdebcd9650e6d2bb386fb440e9206b1",
+      "sandbox\\market_state\\price_geometry.py": "a182fc00fef35ba23edaf604785c90dc689ba2b5ae550856dfe6d9764a93d0d3",
+      "sandbox\\market_state\\registry.py": "24e2bf64e9a8bf0a6ebff0cbb3f1c94250fe65f741708305cab43c1e92d5da2e",
+      "sandbox\\market_state\\research_anchor.py": "a8c74644be3dc7cfae62b75619831519f2e7e9ece1e89bf3675f0a6abbbc1ccc",
+      "sandbox\\market_state\\research_multitimeframe_context.py": "c2a44df89a90c8e92aafc9a2b84d5c40488baad0ead9e7f05802ccb1bed4ca66",
+      "sandbox\\market_state\\research_record.py": "099771f2858b43694e37323f2e2bbd1373867ced5ea154dcaa4fcbeaffbe3478",
+      "sandbox\\market_state\\research_session_context.py": "40a2a2e17fd1120a6cd01b06998497039c566635ef7180bcc27e9444c0bfdde9",
+      "sandbox\\market_state\\research_session_relationship.py": "5838ee5c109d792373e31f03197c70e6870d85af5fcf9def779a1418c5979de0",
+      "sandbox\\market_state\\session_clock.py": "35f31f2179aef71b9b7d9ebc5a3ff074cc0337f8f6e30addb6f6f39ed70348db",
+      "sandbox\\market_state\\session_relationship.py": "797015b09eec9d6a047519f85366797c315bc1b457dd374856dd3063feb8e9f5",
+      "sandbox\\market_state\\session_summary.py": "7992622cb6df1353fd0666188bb3a216394067b2b777bbafff58a44d1b415cc4",
+      "sandbox\\market_state\\structure.py": "d5d65c6fe536284bd121b92f931b05e1e18d16a7f8c41654e498a0c1197939c1",
+      "sandbox\\market_state\\swings.py": "9ea87fad0733648f568337aad348ef53f652960e5c3b03c1b2d25ceedeaf8a79",
+      "sandbox\\market_state\\touch_episode.py": "5380512a64d7e847407307d1e64cf770f46da79fcc4311ff0563b8adddafee69",
+      "sandbox\\market_state\\touch_transition.py": "c55cfaf0e6def2bddebead6a7d8aca583a0daea6cac91c0d0a05b598a449c01e",
+      "sandbox\\market_state\\trend.py": "cd1c8a051343448f9580d22eda3627cfe550c873e06dfca8dd7db9e77ee3fb38",
+      "sandbox\\market_state\\universal\\__init__.py": "2c3fda15e5dbbca2411be80010ade75538caefda09d9935ce41ef4399b3a24c4",
+      "sandbox\\market_state\\universal\\candle.py": "698518ec16ef89f175a88ad0f05fb6ea9c71d0e655981550c21d5972dd8d4751",
+      "sandbox\\market_state\\universal\\continuity.py": "2b8389f7fa2022afec4002a607ab60ea6b03b061023eb6233261a567db5c6445",
+      "sandbox\\market_state\\universal\\dataset.py": "69c991337cf36b36b189de60db2035b4ed9e73b3ca6e27aacf6895051f54982d",
+      "sandbox\\market_state\\universal\\engine.py": "3e28e997f69bbbaebdce2bbc07ce6873046b21f2317931e9724c8c422a034654",
+      "sandbox\\market_state\\universal\\market_metrics.py": "4fbf2ee30bc5d4bc81d7f568eaf090d64ae9974a73abee8a90de15be7a2d3725",
+      "sandbox\\market_state\\universal\\market_state_v1.py": "25a6300b9c571c90ec94874223da128345c69cf6d372b896525c79f129c47432",
+      "sandbox\\market_state\\universal\\momentum.py": "ce17fd6d44f9f1520d3f59bacc65d74b3d6e26d13bd809f11224e8a52b75faf3",
+      "sandbox\\market_state\\universal\\multitimeframe.py": "ae9a8ea69b0cd11dcea43f7347c1d4d954b1c5009bed5962b88c90794d822937",
+      "sandbox\\market_state\\universal\\schema.py": "c4476594ca77eee5d1005c68ed36c2692c235786f211ef24539a042761e6c6c0",
+      "sandbox\\market_state\\universal\\state_vector.py": "9b8999c11126ca5ff9dd9b80efe1b3aadcf20274d2efc15352a8416a62a5811c",
+      "sandbox\\market_state\\universal\\structure.py": "b0f86b7f7e5a62614167342a04a526fc36603b08a7989b3f4d9676466d751cac",
+      "sandbox\\market_state\\universal\\volatility.py": "2e120b8fa95ec64673c3062c8bde613ca2e47fbe281e8b0caa13ce53a79393e0",
+      "sandbox\\market_state\\validation\\h7_holdout_2025.py": "5bf972047acf2b80e95143b6bed0f73483cd031221d6b32ac56858ffc9985f91",
+      "sandbox\\market_state\\validation\\h7r_2025.py": "b1ca3662fe2e6759feccda61b3fd549859b41e0abdcc2e95aedc84148b9fa6a8",
+      "sandbox\\market_state\\volatility.py": "51990d0429534834fef8d445e4627a035a9c20b3c6ef8f39389e7a448595ba9a",
+      "sandbox\\partition\\service.py": "1c8c1146e60927c76b7ca7924ab32f71896394a3f72e656e29c80dc469302b3b",
+      "sandbox\\strategies\\version0\\strategy.py": "b2fdd29cd5e03fe24ccc1b56af7b61c721852369e73afadda4ff41feeedf290e"
+    },
+    "report_path": "data\\external\\dukascopy\\EURUSD\\h7r_2025_genuine_ticks.xlsx",
+    "report_sha256": "e68201e219d8bd51182dc3974d0f2cf175bb576ebe790d3e726c9afb1238f379",
+    "trades_csv_sha256": "5ecacb0a0882f8812f582ff3f182c6274dc5926f1d4f7268a194a84de54cc98c"
+  },
+  "reconciliation": {
+    "matched": 407,
+    "total": 594,
+    "unmatched": 187
+  },
+  "unmatched_results": {
+    "N": 187,
+    "WR": 0.8556149732620321,
+    "expectancy_eur": -0.10267379679144385,
+    "losses": 27,
+    "net_profit_eur": -19.2,
+    "wins": 160
+  }
+}

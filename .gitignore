@@ -42,3 +42,8 @@ results/discovery_runner/materialized/
 /08_audit.csv
 /pytest_tmp/
 /results/strategy_runs/
+
+# Native Dukascopy ticks: preserve small manifests/docs in version control.
+/data/external/dukascopy/EURUSD/raw/
+/data/external/dukascopy/EURUSD/decoded/
+/data/external/dukascopy/EURUSD/mt5/

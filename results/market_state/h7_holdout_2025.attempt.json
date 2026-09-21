@@ -1,0 +1,70 @@
+{
+  "fit_calls": 0,
+  "implementation_sha256": "5bf972047acf2b80e95143b6bed0f73483cd031221d6b32ac56858ffc9985f91",
+  "input_sha256": {
+    "data\\external\\dukascopy\\EURUSD\\2025-2026-dukas.xlsx": "b4a018e5faff0abd9423de219b99e57eae405683b1757d568e0a9aebc982c6d8",
+    "data\\external\\dukascopy\\EURUSD\\eurusd-m15-bid-2025-01-01-2026-01-01.csv": "9dc62c75808e24b84baf2965ee6a34c56a192e3da4ca882850561b4b624f960e"
+  },
+  "outputs": {
+    "results\\market_state\\h7_holdout_2025_summary.json": "e9fe055bb26d6208cb62caef30502583e19ab15d1f2d48561881dfe5429fb72c",
+    "results\\market_state\\h7_holdout_2025_trades.csv": "29a0e8d6e8f84af436728b5d9c77d82cc3100ce280ac6b3847b8c1da578e7b5b"
+  },
+  "protocol": {
+    "comparisons": [
+      [
+        "S1",
+        "S0"
+      ],
+      [
+        "S1",
+        "S2"
+      ]
+    ],
+    "contract_canonical_sha256": "7b06664f386ef94fa329eacc208891ac6601d7dc71e1de25040fb6ede871b97a",
+    "directional_check": "S1 mean net EUR profit/trade > S0 AND > S2; independent of overall profitability",
+    "ea_inputs": [
+      "TakeProfitPips=5",
+      "StopLossPips=40",
+      "PipSize=0.0001",
+      "FixedLots=0.01",
+      "MagicNumber=26082930",
+      "EnableTrading=true",
+      "UseManualServerUTCOffset=true",
+      "ManualServerUTCOffsetHours=0"
+    ],
+    "ea_sha256": "80736cd520f5a28836bdf271e5a01036f1e2c3fb4f208e42d612f32ada08ce05",
+    "eligibility": "same 14 frozen features, no imputation, exact floor(entry UTC,15min); no stale-state carry",
+    "end_exclusive": "2026-01-01T00:00:00+00:00",
+    "feature_names": [
+      "er_4",
+      "er_16",
+      "rv_16",
+      "atr_change_1",
+      "atr_change_8",
+      "slope_atr_4",
+      "slope_atr_16",
+      "range_pos_16",
+      "h1_er_8",
+      "h1_atr_change_4",
+      "h1_slope_atr_8",
+      "h3_er_8",
+      "h3_atr_change_4",
+      "h3_slope_atr_8"
+    ],
+    "hypothesis": "S1 has better conditional Version 0 expectancy than S0 and S2",
+    "materiality": "No numerical materiality threshold was specified; report effect sizes and uncertainty without inventing one",
+    "model_sha256": "6895652563cf698c88d5f6c8d4145ec4502350a5a54f79f58d3e034648eb0b55",
+    "monthly": "all twelve UTC entry months and all three states; descriptive only",
+    "population": "actual completed MT5 Version 0 trades whose entries and exits are in 2025; no synthetic trades",
+    "start_inclusive": "2025-01-01T00:00:00+00:00",
+    "statistics": "net-EUR expectancy differences, win-rate differences, pooled-SD Cohen d",
+    "uncertainty": {
+      "interval": "pointwise percentile 95%; no tuning",
+      "method": "whole UTC entry-day cluster bootstrap, shared resamples across states",
+      "replicates": 2000,
+      "seed": 42
+    },
+    "version": "H7_HOLDOUT_2025_V1"
+  },
+  "status": "COMPLETED"
+}

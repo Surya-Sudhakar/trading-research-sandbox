@@ -3,7 +3,10 @@ name: pytest
 on:
   push:
     branches:
+      - main
       - phase-5a-materialized-execution
+      - market-state-features-v1
+      - market-state-gmm-v1
   pull_request:
 
 jobs:

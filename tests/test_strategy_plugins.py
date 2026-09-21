@@ -68,9 +68,9 @@ def test_partition_and_stage7_access_are_denied_by_context():
         def evaluate(self,c):c.stage7_results()
     reg=StrategyRegistry();reg.register(Stats())
     with pytest.raises(ResearchError,match="PERFORMANCE_ACCESS"):StrategyRuntime(reg).run("SYNTHETIC_INTERFACE_TEST",{"M1":frame()},symbol="SYNTH",dataset_id="D",experiment_id="E")
-def test_market_intents_accepted_and_limit_stop_rejected():
+def test_market_intents_accepted_and_stop_rejected():
     assert run().intents and all(x.requested_entry_type==EntryType.MARKET_NEXT_OPEN for x in run().intents)
-    for entry in (EntryType.LIMIT,EntryType.STOP):
+    for entry in (EntryType.STOP,):
         class Unsupported(SyntheticEveryNthBar):
             def evaluate(self,c):return [StrategySignal(signal_id="x",setup_id="x",symbol="SYNTH",decision_timestamp=c.current_time,information_cutoff=c.information_cutoff,direction="LONG",entry_type=entry,reference_price=10,stop_price=9,target_price=12)]
         reg=StrategyRegistry();reg.register(Unsupported())

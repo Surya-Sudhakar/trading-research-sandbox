@@ -164,18 +164,37 @@ class BacktestEngine:
             return None
         return position
 
+    def _limit_entry_index(self, intent: TradeIntent, market: _PreparedMarket, signal: pd.Timestamp) -> int | None:
+        if intent.requested_entry_price is None:
+            return None
+        start = int(np.searchsorted(market.timestamp_ns, signal.value, side="left"))
+        expiry_ns = pd.Timestamp(intent.expires_at).value if intent.expires_at is not None else market.dataset_end.value
+        limit = float(intent.requested_entry_price)
+        for index in range(start, len(market.timestamp_ns)):
+            if int(market.timestamp_ns[index]) >= expiry_ns:
+                break
+            if intent.direction == Direction.LONG and float(market.lows[index]) <= limit:
+                return index
+            if intent.direction == Direction.SHORT and float(market.highs[index]) >= limit:
+                return index
+        return None
+
     def _execute(self, intent: TradeIntent, market: _PreparedMarket) -> LedgerRecord:
-        if intent.requested_entry_type in (EntryType.LIMIT, EntryType.STOP):
+        if intent.requested_entry_type == EntryType.STOP:
             return self._reject(intent, "UNSUPPORTED_ENTRY_TYPE")
         signal = pd.Timestamp(intent.signal_timestamp)
         if market.start is not None and (signal < market.start or signal > market.dataset_end):
             return self._reject(intent, "SIGNAL_OUTSIDE_DATASET")
-        entry_index = self._entry_index(intent, market, signal)
+        entry_index = self._limit_entry_index(intent, market, signal) if intent.requested_entry_type == EntryType.LIMIT else self._entry_index(intent, market, signal)
         if entry_index is None:
             reason = ("MISSING_NEXT_OPEN_EXECUTION_CANDLE" if intent.requested_entry_type == EntryType.MARKET_NEXT_OPEN else "IMPOSSIBLE_SIGNAL_TIMESTAMP")
             return self._reject(intent, reason)
         if intent.requested_entry_type == EntryType.MARKET_NEXT_OPEN:
             entry_price = float(market.opens[entry_index])
+            exit_start = entry_index
+            entry_timestamp = market.timestamps[entry_index].to_pydatetime()
+        elif intent.requested_entry_type == EntryType.LIMIT:
+            entry_price = float(intent.requested_entry_price)
             exit_start = entry_index
             entry_timestamp = market.timestamps[entry_index].to_pydatetime()
         else:
